@@ -318,9 +318,19 @@ g <- ggplot(BS_2016_2017_plot,
             aes(Metric, Amount, fill = Amount)) +
   ggtitle("Facebook - Balance sheet in USD") +
   geom_bar(stat = "identity") + 
-  scale_fill_gradient(low = "red", high = "blue")+
+  scale_fill_gradient(low = "red", high = "blue") +
   facet_wrap(~ Date)
-g
+g 
+```
+
+```{r eval=FALSE, include=FALSE}
+# Para examen final.
+g <- ggplot(BS_2016_2017_plot, aes(Amount/1000000, Metric)) +
+  ggtitle("Facebook - Balance sheet in million USD") +
+  geom_bar(col = "red", fill =  "white", stat = "identity") + 
+  scale_x_continuous(labels=scales::dollar_format()) +
+  facet_wrap(~ Date)
+g 
 ```
 
 Imagine all balance sheet accounts increased as in the case of Facebook, but the firm is losing money according to the income statement. In this case, we could say there is something wrong with Facebook. On the other hand, if these increases in the balance sheet accounts are supported by an increase in profits for the same period, then things are going well in the firm. Thus, we need Facebook income statement to verify the firm's profits and evaluate whether we should be worried about the increase in the liabilities.
@@ -1581,12 +1591,24 @@ R_stocks_market_stats <- R_stocks_market %>%
   geom_text(aes(label = paste0(round(`AnnualizedSharpe(Rf=0%)`, 3))), 
             vjust = 2, color = "black", size = 3.5) +
   geom_text(aes(label = paste0(symbol)), 
-            vjust = -1, color = "black", size = 3.5) + 
-  ylim(-.17, .35) +
+            vjust = -1, color = "black", size = 3.5) + ylim(-0.17, 0.35) +
   labs(title = "The higher the risk, the higher the return?",
 subtitle = "Numerical values represent return per unit of risk.",
        x = "Risk", y = "Return") + theme_tq() +
   theme(legend.position = "none", legend.title = element_blank())
+R_stocks_market_stats
+```
+
+```{r eval=FALSE, include=FALSE}
+# Examen final.
+R_stocks_market_stats <- R_stocks_market %>%
+    tq_performance(Ra = R_stocks, Rb = NULL, 
+                   performance_fun = table.AnnualizedReturns) %>%
+  rename("Sharpe" = `AnnualizedSharpe(Rf=0%)`) %>%
+  ggplot(aes(x = symbol, y = Sharpe, fill = Sharpe)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Annualized Sharpe ratio for 10 stocks.") +
+  scale_fill_gradient(low = "red", high = "blue")
 R_stocks_market_stats
 ```
 
@@ -2247,7 +2269,7 @@ First, let's generate these two assets returns. Note that these two new assets $
 
 ```{r}
 # Library to use the multi-variate normal random number generator.
-library('MASS')
+library(MASS)
 set.seed(13)
 data = mvrnorm(n = 48, mu = c(0.2, 0.5), 
                Sigma = matrix(c(1, -1.4, -1.4, 2), nrow = 2), 
@@ -2265,6 +2287,24 @@ head(fang_xy)
 Let's now verify that these two new assets are negatively correlated.
 
 ```{r}
+cor(fang_xy)
+```
+
+```{r eval=FALSE, include=FALSE}
+# Examen final.
+library(MASS)
+set.seed(13)
+data = mvrnorm(n = 48, mu = c(0.2, 0.5), 
+               Sigma = matrix(c(1, -1.4, -1.4, 2), nrow = 2), 
+               empirical = TRUE)/10
+xy = as.data.frame(data)
+X = xy$V1
+Y = xy$V2
+# Add X and Y to the fang database.
+fang_xy <- fang
+fang_xy$X <- X
+fang_xy$Y <- -X
+head(fang_xy)
 cor(fang_xy)
 ```
 
