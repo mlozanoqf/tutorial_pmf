@@ -13,6 +13,7 @@ output:
   html_document:
     df_print: paged
 toc: yes
+bibliography: mybibfile.bib
 fontsize: 12pt
 subtitle: An introductory approach of quantitative finance.
 abstract: This is an introductory applied tutorial suitable for undergraduate students interested in the area of quantitative finance. The main objective is to show how to analyze financial data and extract basic insights from asset pricing and asset allocation applications using the powerful R programming language. We extend examples and codes freely available in Internet, and some of my own. Here, we do not follow a formal approach as most mathematical background is skipped to emphasize the data analysis, model logic, discussion, graphical approach and R coding (literate programming). This is still a work in progress and it is under revision.
@@ -74,11 +75,12 @@ This document took `r as.numeric(a$toc-a$tic)` seconds to compile in Rmarkdown.
 
 \newpage
 
-# R and \LaTeX References.
+# Internet resources.
 
-The following are a constant growing list of online R and \LaTeX references.
+**Additional bibliography.** Learn R by reading these electronic books: R for Dummies [@de2015r]; R programming for Data Science [@peng2016r]; ggplot2: Elegant Graphics for Data Analysis [@wickham2016ggplot2]; R Markdown Cookbook [@xie2020r]; R for Data Science [@grolemund2018r]; R Markdown: The Definitive Guide [@xie2021r]; Authoring Books and Technical Documents with R Markdown [@xie2021bookdown]; Happy Git and GitHub for the useR [@bryan2018happy].
 
-## Instalation guides.
+
+## YouTube instalation guides.
 
 As you may understand, versions are frequently updated. If you find a newer video for installing a newer version please share. In any case, these videos can definitely help you as a guide to install the newer version available.
 
@@ -88,31 +90,20 @@ As you may understand, versions are frequently updated. If you find a newer vide
 -   [RStudio: A Guided Tour (by Jamison Crawford).](https://youtu.be/xgPwDlAtuNI)
 -   [How to Install RStudio (and Knit to PDF).](https://youtu.be/2Sovzf6lVRo)
 -   [RStudio: Explaining the Interface & R Markdown.](https://youtu.be/AHAR7j-IUOw)
+-   [How to Connect RStudio with Git (Github) for Cloning and Pushing Repo.](https://youtu.be/lXwH2R4n3RQ)
+-   [Using git and GitHub in R Studio.](https://youtu.be/QLFc9gw_Hfs)
+-   [Using Git and GitHub in R (second part).](https://youtu.be/megZYkCLMA4)
 
 ## Main sites and program webpages.
 
 -   [The R Project for Statistical Computing.](https://www.r-project.org/)
 -   [RStudio.](https://www.rstudio.com/)
+-   [RStudio Cloud.](https://rstudio.cloud/)
 -   [DataCamp.](https://www.datacamp.com/)
 -   [Tiny\TeX: A lightweight, cross-platform, portable, and easy-to-maintain \LaTeX distribution based on \TeX Live.](https://yihui.org/tinytex/)
 -   [Swirl.](https://swirlstats.com/)
 -   [Compile R online.](https://rextester.com/l/r_online_compiler)
 -   [\LaTeX base.](https://latexbase.com)
-
-## Books and e-books.
-
-Learn R by reading these books.
-
--   [R For Dummies.](http://sgpwe.izt.uam.mx/files/users/uami/gma/R_for_dummies.pdf)
--   [R Programming for Data Science.](https://bookdown.org/rdpeng/rprogdatascience/)
--   [Foundations of Statistics with R.](https://mathstat.slu.edu/~speegle/_book/)
--   [Introduction to Econometrics with R.](https://www.econometrics-with-r.org/)
--   [Forecasting: Principles and Practice.](https://otexts.com/fpp3/)
--   [R Markdown Cookbook.](https://bookdown.org/yihui/rmarkdown-cookbook)
--   [R for Data Science.](https://r4ds.had.co.nz/)
--   [R Markdown: The Definitive Guide.](https://bookdown.org/yihui/rmarkdown/)
--   [Authoring Books and Technical Documents with R Markdown.](https://bookdown.org/yihui/bookdown)
--   [BOOKDOWN.](https://bookdown.org/)
 
 ## Blogs and tutorials.
 
@@ -128,6 +119,10 @@ Here you can find questions and answers about programming in R.
 -   [Stack Exchange.](https://tex.stackexchange.com/)
 -   [Kaggle.](https://www.kaggle.com/)
 -   [Learn Data Science.](https://www.business-science.io/)
+-   [BOOKDOWN.](https://bookdown.org/)
+-   [Foundations of Statistics with R.](https://mathstat.slu.edu/~speegle/_book/)
+-   [r-statistics.co] (<http://r-statistics.co/>)
+-   [Rdatasets is a collection of nearly 1500 datasets that were originally distributed alongside the statistical software environment R and some of its add-on packages.](https://vincentarelbundock.github.io/Rdatasets/index.html)
 
 ## Others.
 
@@ -136,14 +131,5 @@ Here you can find questions and answers about programming in R.
 -   Twitter hashtags: \#rstats, \#DataScience
 -   [Why Study a Postgraduate Degree in Quantitative Finance (by one of my current MSc students.)](https://youtu.be/7xpydgOrzkw)
 
-## Books.
-
--   Elton EJ, MJ Gruber, SJ Brown and WN Goetzmann (2014) Modern Portfolio Theory and Investment Analysis, 9th Edition, New York: Wiley.
--   Hull JC (2017) Fundamentals of Futures and Options Markets, 8th Edition, Harlow UK: Pearson.
--   Hull JC (2019) Machine Learning in Business : An Introduction to the World of Data Science: Fourth Printing.
--   Richard A. Brealey, Stewart C. Myers, Franklin Allen. Principles of Corporate Finance, 10th Edition.
--   Crouhy M, D Galai and R Mark (2014) The Essentials of Risk Management, 2nd Edition, New York: McGraw Hill.
--   Matthews K and J Thompson (2014) The Economics of Banking. 3rd Edition. Chichester UK, John Wiley & Sons.
--   Chris Brooks (2014) Introductory Econometrics for Finance. Cambridge UK: Cambridge University Press.
--   Damodar Gujarati and Dawn Porter (2009) Basic Econometrics, Fifth edition, New York: McGraw-Hill.
--   Bodie, Z., Kane, A. and Marcus, A. (2011), Investments, 9th Edition, McGraw Hill Irwin.
+\newpage
+# References.
