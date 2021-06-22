@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.7050 64-bit) (preloaded format=xelatex 2020.7.10)  5 JUN 2021 09:17
+This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.7050 64-bit) (preloaded format=xelatex 2020.7.10)  22 JUN 2021 00:30
 entering extended mode
 **./Tectutorial.tex
 (Tectutorial.tex
@@ -1114,11 +1114,7 @@ Overfull \hbox (8.30849pt too wide) in paragraph at lines 215--217
 t sites.google.com/site/mlozanoqf/ 
  []
 
-[3] [4] [5] [6]
-Overfull \vbox (0.71147pt too high) detected at line 486
- []
-
-[7] [8] [9] [10] [11]
+[3] [4] [5] [6] [7] [8] [9] [10] [11]
 Overfull \hbox (30.82452pt too wide) in paragraph at lines 903--903
 []\TU/lmtt/m/n/12 ##                                                       Metr
 ic Units      Amount[] 
@@ -1190,7 +1186,7 @@ Overfull \hbox (30.82463pt too wide) in paragraph at lines 903--903
 nt   usd 34401000000[] 
  []
 
-
+[12]
 Overfull \hbox (30.81262pt too wide) in paragraph at lines 903--903
 []\TU/lmtt/m/n/12 ## 12                                           Assets, Curre
 nt   usd 48563000000[] 
@@ -1256,7 +1252,7 @@ Overfull \hbox (30.78857pt too wide) in paragraph at lines 903--903
 ts   usd 64961000000[] 
  []
 
-[12]
+
 Overfull \hbox (30.82458pt too wide) in paragraph at lines 903--903
 []\TU/lmtt/m/n/12 ## 23                                                    Asse
 ts   usd 84524000000[] 
@@ -1443,7 +1439,7 @@ ty   usd 84524000000[]
  []
 
 [13] [14] [15]
-Overfull \vbox (2.45999pt too high) detected at line 1020
+Overfull \vbox (2.38799pt too high) detected at line 1020
  []
 
 [16] [17] [18]
@@ -1457,47 +1453,47 @@ Overfull \hbox (37.00491pt too wide) in paragraph at lines 1218--1219
  []
 
 [20] [21]
-File: Tectutorial_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-18-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-19-1.pdf>
 [22] [23] [24] [25] [26] [27]
 Overfull \hbox (6.06892pt too wide) in paragraph at lines 1687--1687
-[]\TU/lmtt/m/n/12 ##  $ volume  : num [1:2623] 4.45e+08 3.09e+08 2.56e+08 3.00e
+[]\TU/lmtt/m/n/12 ##  $ volume  : num [1:2634] 4.45e+08 3.09e+08 2.56e+08 3.00e
 +08 3.12e+08 ...[] 
  []
 
 [28]
-File: Tectutorial_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type 
-pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-27-1.pdf>
-[29]
 File: Tectutorial_files/figure-latex/unnamed-chunk-28-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-28-1.pdf>
-[30]
-File: Tectutorial_files/figure-latex/unnamed-chunk-30-1.pdf Graphic file (type 
+[29]
+File: Tectutorial_files/figure-latex/unnamed-chunk-29-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-30-1.pdf>
-[31]
+<use Tectutorial_files/figure-latex/unnamed-chunk-29-1.pdf>
+[30]
 File: Tectutorial_files/figure-latex/unnamed-chunk-31-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-31-1.pdf>
+[31]
+File: Tectutorial_files/figure-latex/unnamed-chunk-32-1.pdf Graphic file (type 
+pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-32-1.pdf>
 [32] [33]
-File: Tectutorial_files/figure-latex/unnamed-chunk-34-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-35-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-34-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-35-1.pdf>
 [34] [35]
-File: Tectutorial_files/figure-latex/unnamed-chunk-38-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-39-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-38-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-39-1.pdf>
 [36] [37]
-File: Tectutorial_files/figure-latex/unnamed-chunk-40-1.pdf Graphic file (type 
-pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-40-1.pdf>
-[38]
 File: Tectutorial_files/figure-latex/unnamed-chunk-41-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-41-1.pdf>
+[38]
+File: Tectutorial_files/figure-latex/unnamed-chunk-42-1.pdf Graphic file (type 
+pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-42-1.pdf>
 
 Overfull \hbox (37.00491pt too wide) in paragraph at lines 2110--2110
 []\TU/lmtt/m/n/12 ## $ symbol <chr> "S4248SM144NCEN", "S4248SM144NCEN", "S4248S
@@ -1517,105 +1513,105 @@ Overfull \hbox (36.89684pt too wide) in paragraph at lines 2110--2110
  []
 
 [39]
-File: Tectutorial_files/figure-latex/unnamed-chunk-44-1.pdf Graphic file (type 
-pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-44-1.pdf>
-[40]
 File: Tectutorial_files/figure-latex/unnamed-chunk-45-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-45-1.pdf>
+[40]
+File: Tectutorial_files/figure-latex/unnamed-chunk-46-1.pdf Graphic file (type 
+pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-46-1.pdf>
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
 (Font)              Font shape `TU/lmtt/b/n' tried instead on input line 2179.
 [41]
-File: Tectutorial_files/figure-latex/unnamed-chunk-47-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-48-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-47-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-48-1.pdf>
 [42] [43]
-File: Tectutorial_files/figure-latex/unnamed-chunk-49-1.pdf Graphic file (type 
-pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-49-1.pdf>
-[44]
 File: Tectutorial_files/figure-latex/unnamed-chunk-50-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-50-1.pdf>
-[45]
+[44]
 File: Tectutorial_files/figure-latex/unnamed-chunk-51-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-51-1.pdf>
-[46]
+[45]
 File: Tectutorial_files/figure-latex/unnamed-chunk-52-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-52-1.pdf>
-[47] [48]
-File: Tectutorial_files/figure-latex/unnamed-chunk-54-1.pdf Graphic file (type 
+[46]
+File: Tectutorial_files/figure-latex/unnamed-chunk-53-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-54-1.pdf>
-[49]
+<use Tectutorial_files/figure-latex/unnamed-chunk-53-1.pdf>
+[47] [48]
 File: Tectutorial_files/figure-latex/unnamed-chunk-55-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-55-1.pdf>
-[50] [51] [52]
-File: Tectutorial_files/figure-latex/unnamed-chunk-57-1.pdf Graphic file (type 
+[49]
+File: Tectutorial_files/figure-latex/unnamed-chunk-56-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-57-1.pdf>
-[53]
+<use Tectutorial_files/figure-latex/unnamed-chunk-56-1.pdf>
+[50] [51] [52]
 File: Tectutorial_files/figure-latex/unnamed-chunk-58-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-58-1.pdf>
+[53]
+File: Tectutorial_files/figure-latex/unnamed-chunk-59-1.pdf Graphic file (type 
+pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-59-1.pdf>
 [54]
-File: Tectutorial_files/figure-latex/unnamed-chunk-60-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-61-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-60-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-61-1.pdf>
 [55] [56] [57] [58]
-File: Tectutorial_files/figure-latex/unnamed-chunk-66-1.pdf Graphic file (type 
-pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-66-1.pdf>
-[59]
 File: Tectutorial_files/figure-latex/unnamed-chunk-67-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-67-1.pdf>
-[60]
+[59]
 File: Tectutorial_files/figure-latex/unnamed-chunk-68-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-68-1.pdf>
-[61]
+[60]
 File: Tectutorial_files/figure-latex/unnamed-chunk-69-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-69-1.pdf>
+[61]
 File: Tectutorial_files/figure-latex/unnamed-chunk-70-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-70-1.pdf>
-[62] [63]
 File: Tectutorial_files/figure-latex/unnamed-chunk-71-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-71-1.pdf>
+[62] [63]
 File: Tectutorial_files/figure-latex/unnamed-chunk-72-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-72-1.pdf>
-[64] [65]
-File: Tectutorial_files/figure-latex/unnamed-chunk-74-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-73-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-74-1.pdf>
-[66] [67]
+<use Tectutorial_files/figure-latex/unnamed-chunk-73-1.pdf>
+[64] [65]
 File: Tectutorial_files/figure-latex/unnamed-chunk-75-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-75-1.pdf>
+[66] [67]
+File: Tectutorial_files/figure-latex/unnamed-chunk-76-1.pdf Graphic file (type 
+pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-76-1.pdf>
 [68] [69] [70]
-File: Tectutorial_files/figure-latex/unnamed-chunk-77-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-78-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-77-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-78-1.pdf>
 [71] [72]
-File: Tectutorial_files/figure-latex/unnamed-chunk-79-1.pdf Graphic file (type 
-pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-79-1.pdf>
-[73]
 File: Tectutorial_files/figure-latex/unnamed-chunk-80-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-80-1.pdf>
-[74] [75]
-File: Tectutorial_files/figure-latex/unnamed-chunk-84-1.pdf Graphic file (type 
+[73]
+File: Tectutorial_files/figure-latex/unnamed-chunk-81-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-84-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-81-1.pdf>
+[74] [75]
+File: Tectutorial_files/figure-latex/unnamed-chunk-85-1.pdf Graphic file (type 
+pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-85-1.pdf>
 [76] [77] [78]
 Overfull \vbox (0.62747pt too high) detected at line 3745
  []
@@ -1949,319 +1945,595 @@ Missing character: There is no ， in font [lmroman12-regular]:mapping=tex-text;
 Missing character: There is no ， in font [lmroman12-regular]:mapping=tex-text;!
 Missing character: There is no ， in font [lmroman12-regular]:mapping=tex-text;!
 [81] [82] [83]
-File: Tectutorial_files/figure-latex/unnamed-chunk-91-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-92-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-91-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-92-1.pdf>
 [84] [85] [86]
-File: Tectutorial_files/figure-latex/unnamed-chunk-93-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-94-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-93-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-94-1.pdf>
 [87] [88]
 
 LaTeX Warning: File `Tectutorial_files/figure-latex/PMF E2 q3-1.pdf' not found 
-on input line 4215.
+on input line 4214.
 
 File: Tectutorial_files/figure-latex/PMF E2 q3-1.pdf Graphic file (type pdf)
 <use Tectutorial_files/figure-latex/PMF E2 q3-1.pdf>
 
-Overfull \hbox (117.75244pt too wide) in paragraph at lines 4215--4216
+Overfull \hbox (117.75244pt too wide) in paragraph at lines 4214--4215
 []\TU/lmr/m/n/12 E2 q3-1.pdf E2 q3-1.bb [] 
  []
 
 [89]
-File: Tectutorial_files/figure-latex/unnamed-chunk-94-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-96-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-94-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-96-1.pdf>
 [90]
-File: Tectutorial_files/figure-latex/unnamed-chunk-95-1.pdf Graphic file (type 
+File: Tectutorial_files/figure-latex/unnamed-chunk-97-1.pdf Graphic file (type 
 pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-95-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-97-1.pdf>
 [91] [92]
-File: Tectutorial_files/figure-latex/unnamed-chunk-98-1.pdf Graphic file (type 
-pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-98-1.pdf>
-[93] [94]
 File: Tectutorial_files/figure-latex/unnamed-chunk-100-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-100-1.pdf>
+[93] [94]
+File: Tectutorial_files/figure-latex/unnamed-chunk-102-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-102-1.pdf>
 [95] [96] [97]
-File: Tectutorial_files/figure-latex/unnamed-chunk-103-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-103-1.pdf>
-[98]
-File: Tectutorial_files/figure-latex/unnamed-chunk-104-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-104-1.pdf>
 File: Tectutorial_files/figure-latex/unnamed-chunk-105-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-105-1.pdf>
-[99]
+[98]
 File: Tectutorial_files/figure-latex/unnamed-chunk-106-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-106-1.pdf>
-[100] [101] [102]
+File: Tectutorial_files/figure-latex/unnamed-chunk-107-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-107-1.pdf>
+[99]
 File: Tectutorial_files/figure-latex/unnamed-chunk-108-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-108-1.pdf>
+[100] [101] [102]
+File: Tectutorial_files/figure-latex/unnamed-chunk-110-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-110-1.pdf>
 [103] [104] [105] [106] [107]
-Overfull \hbox (37.00487pt too wide) in paragraph at lines 4994--4994
+Overfull \hbox (37.00487pt too wide) in paragraph at lines 4993--4993
 []\TU/lmtt/m/n/12 ## optimize.portfolio(R = fang, portfolio = port_spec, optimi
 ze_method = "random",[] 
  []
 
 
-Overfull \hbox (18.46486pt too wide) in paragraph at lines 5022--5022
+Overfull \hbox (18.46486pt too wide) in paragraph at lines 5021--5021
 []\TU/lmtt/m/n/12 ## optimize.portfolio(R = fang, portfolio = port_spec, optimi
 ze_method = "ROI",[] 
  []
 
 [108]
-File: Tectutorial_files/figure-latex/unnamed-chunk-114-1.pdf Graphic file (type
+File: Tectutorial_files/figure-latex/unnamed-chunk-116-1.pdf Graphic file (type
  pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-114-1.pdf>
-File: Tectutorial_files/figure-latex/unnamed-chunk-115-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-115-1.pdf>
-[109]
-File: Tectutorial_files/figure-latex/unnamed-chunk-115-2.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-115-2.pdf>
-[110] [111]
+<use Tectutorial_files/figure-latex/unnamed-chunk-116-1.pdf>
 File: Tectutorial_files/figure-latex/unnamed-chunk-117-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-117-1.pdf>
+[109]
+File: Tectutorial_files/figure-latex/unnamed-chunk-117-2.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-117-2.pdf>
+[110] [111]
+File: Tectutorial_files/figure-latex/unnamed-chunk-119-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-119-1.pdf>
 [112] [113]
-File: Tectutorial_files/figure-latex/unnamed-chunk-120-1.pdf Graphic file (type
+File: Tectutorial_files/figure-latex/unnamed-chunk-122-1.pdf Graphic file (type
  pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-120-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-122-1.pdf>
 [114] [115] [116]
-File: Tectutorial_files/figure-latex/unnamed-chunk-125-1.pdf Graphic file (type
+File: Tectutorial_files/figure-latex/unnamed-chunk-127-1.pdf Graphic file (type
  pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-125-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-127-1.pdf>
 [117] [118]
-File: Tectutorial_files/figure-latex/unnamed-chunk-128-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-128-1.pdf>
-[119]
-Underfull \vbox (badness 3907) detected at line 5552
- []
-
-[120]
-File: Tectutorial_files/figure-latex/unnamed-chunk-129-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-129-1.pdf>
-[121]
 File: Tectutorial_files/figure-latex/unnamed-chunk-130-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-130-1.pdf>
+[119]
+Underfull \vbox (badness 3907) detected at line 5551
+ []
+
+[120]
+File: Tectutorial_files/figure-latex/unnamed-chunk-131-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-131-1.pdf>
+[121]
+File: Tectutorial_files/figure-latex/unnamed-chunk-132-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-132-1.pdf>
 [122]
-Overfull \hbox (12.28453pt too wide) in paragraph at lines 5650--5650
+Overfull \hbox (12.28453pt too wide) in paragraph at lines 5649--5649
 []\TU/lmtt/m/n/12 ##               FB        AMZN        NFLX       GOOG       
     X           Y[] 
  []
 
 
-Overfull \hbox (12.18887pt too wide) in paragraph at lines 5650--5650
+Overfull \hbox (12.18887pt too wide) in paragraph at lines 5649--5649
 []\TU/lmtt/m/n/12 ## FB    1.00000000  0.18461970  0.21820791  0.2468989  0.037
 79375 -0.04276241[] 
  []
 
 
-Overfull \hbox (12.20091pt too wide) in paragraph at lines 5650--5650
+Overfull \hbox (12.20091pt too wide) in paragraph at lines 5649--5649
 []\TU/lmtt/m/n/12 ## AMZN  0.18461970  1.00000000  0.31180203  0.6171376  0.048
 77402 -0.05611269[] 
  []
 
 
-Overfull \hbox (12.2129pt too wide) in paragraph at lines 5650--5650
+Overfull \hbox (12.2129pt too wide) in paragraph at lines 5649--5649
 []\TU/lmtt/m/n/12 ## NFLX  0.21820791  0.31180203  1.00000000  0.3586214  0.067
 72682 -0.05943567[] 
  []
 
 
-Overfull \hbox (12.18889pt too wide) in paragraph at lines 5650--5650
+Overfull \hbox (12.18889pt too wide) in paragraph at lines 5649--5649
 []\TU/lmtt/m/n/12 ## GOOG  0.24689886  0.61713764  0.35862138  1.0000000  0.206
 82201 -0.19110508[] 
  []
 
 
-Overfull \hbox (12.17686pt too wide) in paragraph at lines 5650--5650
+Overfull \hbox (12.17686pt too wide) in paragraph at lines 5649--5649
 []\TU/lmtt/m/n/12 ## X     0.03779375  0.04877402  0.06772682  0.2068220  1.000
 00000 -0.98994949[] 
  []
 
 
-Overfull \hbox (12.1409pt too wide) in paragraph at lines 5650--5650
+Overfull \hbox (12.1409pt too wide) in paragraph at lines 5649--5649
 []\TU/lmtt/m/n/12 ## Y    -0.04276241 -0.05611269 -0.05943567 -0.1911051 -0.989
 94949  1.00000000[] 
  []
 
 [123]
-File: Tectutorial_files/figure-latex/unnamed-chunk-133-1.pdf Graphic file (type
+File: Tectutorial_files/figure-latex/unnamed-chunk-136-1.pdf Graphic file (type
  pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-133-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-136-1.pdf>
 [124]
-File: Tectutorial_files/figure-latex/unnamed-chunk-135-1.pdf Graphic file (type
+File: Tectutorial_files/figure-latex/unnamed-chunk-138-1.pdf Graphic file (type
  pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-135-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-138-1.pdf>
 [125] [126] [127] [128]
-File: Tectutorial_files/figure-latex/unnamed-chunk-142-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-142-1.pdf>
-[129] [130]
 File: Tectutorial_files/figure-latex/unnamed-chunk-145-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-145-1.pdf>
-[131]
-File: Tectutorial_files/figure-latex/unnamed-chunk-147-1.pdf Graphic file (type
+[129] [130]
+File: Tectutorial_files/figure-latex/unnamed-chunk-148-1.pdf Graphic file (type
  pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-147-1.pdf>
+<use Tectutorial_files/figure-latex/unnamed-chunk-148-1.pdf>
+[131]
+File: Tectutorial_files/figure-latex/unnamed-chunk-150-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-150-1.pdf>
 [132] [133]
-Overfull \hbox (111.16487pt too wide) in paragraph at lines 6177--6177
+Overfull \hbox (111.16487pt too wide) in paragraph at lines 6176--6176
 []\TU/lmtt/m/n/12 ##  $ meanses : num  -0.428 -0.428 -0.428 -0.428 -0.428 -0.42
 8 -0.428 -0.428 -0.428 -0.428 ...[] 
  []
 
 
-Overfull \hbox (12.27274pt too wide) in paragraph at lines 6203--6203
+Overfull \hbox (12.27274pt too wide) in paragraph at lines 6202--6202
 []\TU/lmtt/m/n/12 ##  $ schid   : Factor w/ 160 levels "1224","1288",..: 1 1 1 
 1 1 1 1 1 1 1 ...[] 
  []
 
 [134]
-Overfull \hbox (111.16487pt too wide) in paragraph at lines 6203--6203
+Overfull \hbox (111.16487pt too wide) in paragraph at lines 6202--6202
 []\TU/lmtt/m/n/12 ##  $ meanses : num  -0.428 -0.428 -0.428 -0.428 -0.428 -0.42
 8 -0.428 -0.428 -0.428 -0.428 ...[] 
  []
 
-File: Tectutorial_files/figure-latex/unnamed-chunk-152-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-152-1.pdf>
-[135]
-File: Tectutorial_files/figure-latex/unnamed-chunk-153-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-153-1.pdf>
-File: Tectutorial_files/figure-latex/unnamed-chunk-154-1.pdf Graphic file (type
- pdf)
-<use Tectutorial_files/figure-latex/unnamed-chunk-154-1.pdf>
-[136]
 File: Tectutorial_files/figure-latex/unnamed-chunk-155-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-155-1.pdf>
-[137]
+[135]
 File: Tectutorial_files/figure-latex/unnamed-chunk-156-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-156-1.pdf>
-[138]
 File: Tectutorial_files/figure-latex/unnamed-chunk-157-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-157-1.pdf>
-[139]
+[136]
 File: Tectutorial_files/figure-latex/unnamed-chunk-158-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-158-1.pdf>
-[140]
+[137]
 File: Tectutorial_files/figure-latex/unnamed-chunk-159-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-159-1.pdf>
+[138]
+File: Tectutorial_files/figure-latex/unnamed-chunk-160-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-160-1.pdf>
+[139]
+File: Tectutorial_files/figure-latex/unnamed-chunk-161-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-161-1.pdf>
+[140]
+File: Tectutorial_files/figure-latex/unnamed-chunk-162-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-162-1.pdf>
 [141]
-Overfull \hbox (6.10487pt too wide) in paragraph at lines 6396--6396
+Overfull \hbox (6.10487pt too wide) in paragraph at lines 6395--6395
 []\TU/lmtt/m/n/12 ## Linear mixed model fit by maximum likelihood . t-tests use
  Satterthwaite[]s[] 
  []
 
 [142] [143] [144] [145]
-Overfull \hbox (37.00482pt too wide) in paragraph at lines 6600--6600
+Overfull \hbox (37.00482pt too wide) in paragraph at lines 6599--6599
 []\TU/lmtt/m/n/12 ## Global model call: lmer(formula = mathach ~ minority * fem
 ale * ses * schtype +[] 
  []
 
 
-Overfull \hbox (24.64484pt too wide) in paragraph at lines 6600--6600
+Overfull \hbox (24.64484pt too wide) in paragraph at lines 6599--6599
 []\TU/lmtt/m/n/12 ##       (Int) fml mnr sch   ses fml:mnr fml:sch fml:ses mnr:
 sch mnr:ses sch:ses[] 
  []
 
 
-Overfull \hbox (24.6205pt too wide) in paragraph at lines 6600--6600
+Overfull \hbox (24.6205pt too wide) in paragraph at lines 6599--6599
 []\TU/lmtt/m/n/12 ## 9168  13.34   +   +   + 2.712                       +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.59653pt too wide) in paragraph at lines 6600--6600
+Overfull \hbox (24.59653pt too wide) in paragraph at lines 6599--6599
 []\TU/lmtt/m/n/12 ## 9184  13.39   +   +   + 2.676       +               +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.62051pt too wide) in paragraph at lines 6600--6600
+Overfull \hbox (24.62051pt too wide) in paragraph at lines 6599--6599
 []\TU/lmtt/m/n/12 ## 9200  13.31   +   +   + 2.706               +       +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.57251pt too wide) in paragraph at lines 6600--6600
+Overfull \hbox (24.57251pt too wide) in paragraph at lines 6599--6599
 []\TU/lmtt/m/n/12 ## 9216  13.36   +   +   + 2.669       +       +       +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.62051pt too wide) in paragraph at lines 6600--6600
+Overfull \hbox (24.62051pt too wide) in paragraph at lines 6599--6599
 []\TU/lmtt/m/n/12 ## 9104  13.33   +   +   + 2.912                             
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.62051pt too wide) in paragraph at lines 6600--6600
+Overfull \hbox (24.62051pt too wide) in paragraph at lines 6599--6599
 []\TU/lmtt/m/n/12 ## 11232 13.39   +   +   + 2.683       +               +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (6.10487pt too wide) in paragraph at lines 6645--6645
+Overfull \hbox (6.10487pt too wide) in paragraph at lines 6644--6644
 []\TU/lmtt/m/n/12 ## Linear mixed model fit by maximum likelihood . t-tests use
  Satterthwaite[]s[] 
  []
 
 [146]
-Overfull \hbox (6.10487pt too wide) in paragraph at lines 6731--6731
+Overfull \hbox (6.10487pt too wide) in paragraph at lines 6730--6730
 []\TU/lmtt/m/n/12 ## Linear mixed model fit by maximum likelihood . t-tests use
  Satterthwaite[]s[] 
  []
 
 [147]
-Overfull \hbox (6.10477pt too wide) in paragraph at lines 6731--6731
+Overfull \hbox (6.10477pt too wide) in paragraph at lines 6730--6730
 []\TU/lmtt/m/n/12 ##     minority * schtype + minority * ses + schtype * ses + 
 (1 |      schid)[] 
  []
 
 
-Underfull \vbox (badness 10000) detected at line 6741
+Underfull \vbox (badness 10000) detected at line 6740
  []
 
-[148] [149] [150]
+[148] [149] [150] [151] [152] [153] [154]
+Underfull \vbox (badness 10000) detected at line 7177
+ []
+
+[155] [156] [157] [158] [159] [160] [161]
+File: Tectutorial_files/figure-latex/unnamed-chunk-186-1.pdf Graphic file (type
+ pdf)
+<use Tectutorial_files/figure-latex/unnamed-chunk-186-1.pdf>
+[162]
+Underfull \vbox (badness 3058) detected at line 7591
+ []
+
+[163] [164] [165] [166] [167] [168] [169] [170]
+Overfull \hbox (36.94484pt too wide) in paragraph at lines 8023--8023
+[]\TU/lmtt/m/n/12 ##  [1] 1e 63 52 f3 ea e2 85 f2 21 28 bd 94 bf 8c b9 83 6b 28
+ 00 ad 74 e6 da 88 5e[] 
+ []
+
+
+Overfull \hbox (36.93283pt too wide) in paragraph at lines 8023--8023
+[]\TU/lmtt/m/n/12 ## [26] 5b 11 ef 12 23 b4 29 6a a6 ef 2b 96 28 8d 70 0a 15 57
+ ca aa 0e 07 4a f3 20[] 
+ []
+
+[171]
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 8083--8083
+[]\TU/lmtt/m/n/12 ##   [1] 58 0a 00 00 00 03 00 04 01 00 00 03 05 00 00 00 00 0
+6 43 50 31 32 35 32 00[] 
+ []
+
+
+Overfull \hbox (43.16081pt too wide) in paragraph at lines 8083--8083
+[]\TU/lmtt/m/n/12 ##  [26] 00 02 13 00 00 00 03 00 00 00 10 00 00 00 01 00 04 0
+0 09 00 00 00 01 41 00[] 
+ []
+
+
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 8083--8083
+[]\TU/lmtt/m/n/12 ##  [51] 00 00 10 00 00 00 01 00 04 00 09 00 00 00 01 42 00 0
+0 00 10 00 00 00 01 00[] 
+ []
+
+
+Overfull \hbox (43.14882pt too wide) in paragraph at lines 8083--8083
+[]\TU/lmtt/m/n/12 ##  [76] 04 00 09 00 00 00 03 31 30 30 00 00 04 02 00 00 00 0
+1 00 04 00 09 00 00 00[] 
+ []
+
+
+Overfull \hbox (43.08885pt too wide) in paragraph at lines 8083--8083
+[]\TU/lmtt/m/n/12 ## [101] 05 6e 61 6d 65 73 00 00 00 10 00 00 00 03 00 04 00 0
+9 00 00 00 06 73 65 6e[] 
+ []
+
+
+Overfull \hbox (43.04086pt too wide) in paragraph at lines 8083--8083
+[]\TU/lmtt/m/n/12 ## [126] 64 65 72 00 04 00 09 00 00 00 08 72 65 63 65 69 76 6
+5 72 00 04 00 09 00 00[] 
+ []
+
+[172]
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ##   [1] 4e 1d 41 f4 24 5f 1a 8c e3 9f 81 87 b4 23 95 50 26 5
+1 ab 85 81 81 1d 65 ae[] 
+ []
+
+
+Overfull \hbox (43.06487pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ##  [26] 5a ab 44 04 b9 6b 7c a6 b1 97 90 33 c2 9f 64 0d dd b
+5 1e 61 82 d2 0a 59 eb[] 
+ []
+
+
+Overfull \hbox (43.12483pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ##  [51] 20 59 12 f4 03 24 27 98 43 c8 d3 fd 52 a7 53 2f 56 7
+d 11 ac 67 14 97 1d be[] 
+ []
+
+
+Overfull \hbox (43.14882pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ##  [76] 39 14 1d f1 31 fa 61 4c 5a e4 57 18 db 3c bf 0a 0e 0
+2 ba a2 31 c1 b0 fc 7d[] 
+ []
+
+
+Overfull \hbox (43.10083pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ## [101] ed ad 63 27 5e 02 2b 45 71 97 96 27 b6 2a 4d 74 16 c
+b e1 7f ca 48 7f 97 b3[] 
+ []
+
+
+Overfull \hbox (43.06485pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ## [126] 77 96 da 23 f1 68 bb cc 95 94 4c e7 79 cf cc 3d 83 3
+6 98 f3 20 36 fd cc 15[] 
+ []
+
+
+Overfull \hbox (43.08885pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ## [151] e2 cc 6a c8 88 60 45 36 84 0c 86 b9 ab 4c da bc 5d 4
+9 cc c0 e9 9b 52 ed 4c[] 
+ []
+
+
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ## [176] 67 fe f0 5b 4b cb a7 64 5d c8 2a 61 c2 13 80 dc df f
+b d1 88 2e 9e ac 6d 59[] 
+ []
+
+
+Overfull \hbox (43.12483pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ## [201] a6 15 f0 30 ce 2f d7 fa 7d 61 77 a2 41 bb 5d e7 70 4
+7 f9 e6 ae ee 7b 48 65[] 
+ []
+
+
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8112--8112
+[]\TU/lmtt/m/n/12 ## [226] 31 a2 3e 16 aa 5f c8 75 82 18 bc da 8b f7 60 d8 4b f
+3 b5 db 5c 5b 8e f3 b6[] 
+ []
+
+
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 8174--8174
+[]\TU/lmtt/m/n/12 ##   [1] 58 0a 00 00 00 03 00 04 01 00 00 03 05 00 00 00 00 0
+6 43 50 31 32 35 32 00[] 
+ []
+
+
+Overfull \hbox (43.16081pt too wide) in paragraph at lines 8174--8174
+[]\TU/lmtt/m/n/12 ##  [26] 00 02 13 00 00 00 03 00 00 00 10 00 00 00 01 00 04 0
+0 09 00 00 00 01 41 00[] 
+ []
+
+[173]
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 8174--8174
+[]\TU/lmtt/m/n/12 ##  [51] 00 00 10 00 00 00 01 00 04 00 09 00 00 00 01 42 00 0
+0 00 10 00 00 00 01 00[] 
+ []
+
+
+Overfull \hbox (43.14882pt too wide) in paragraph at lines 8174--8174
+[]\TU/lmtt/m/n/12 ##  [76] 04 00 09 00 00 00 03 31 30 30 00 00 04 02 00 00 00 0
+1 00 04 00 09 00 00 00[] 
+ []
+
+
+Overfull \hbox (43.08885pt too wide) in paragraph at lines 8174--8174
+[]\TU/lmtt/m/n/12 ## [101] 05 6e 61 6d 65 73 00 00 00 10 00 00 00 03 00 04 00 0
+9 00 00 00 06 73 65 6e[] 
+ []
+
+
+Overfull \hbox (43.04086pt too wide) in paragraph at lines 8174--8174
+[]\TU/lmtt/m/n/12 ## [126] 64 65 72 00 04 00 09 00 00 00 08 72 65 63 65 69 76 6
+5 72 00 04 00 09 00 00[] 
+ []
+
+
+Overfull \hbox (43.12483pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ##   [1] 92 ca 72 ca c3 4a bb a3 b3 0a 37 bb b7 e2 0a d3 b6 7
+7 34 c3 4d a3 9b 76 09[] 
+ []
+
+
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ##  [26] 5f cf 81 f3 c2 c7 83 68 4c d5 09 3e a9 9a 83 ce b9 c
+c 7b ef 8d 07 19 02 0f[] 
+ []
+
+
+Overfull \hbox (43.06485pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ##  [51] 60 51 59 2e 50 9d 05 a1 63 77 a3 03 37 99 6b 4b 51 9
+5 37 b9 b6 42 0f 74 0e[] 
+ []
+
+
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ##  [76] c3 4e 9e 78 9d 56 1a f6 f8 ca 5e b7 d0 c2 0d c2 6a 0
+0 d0 45 c3 cd 43 4b d6[] 
+ []
+
+
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ## [101] fc e7 fc fd e8 1d 0e bc 31 43 f2 d2 ff 2c 63 86 27 2
+a 7c b6 2d 22 ad 1d 97[] 
+ []
+
+
+Overfull \hbox (43.07683pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ## [126] d5 eb 33 99 2e 87 b9 7b ed e6 41 2c 7c 18 49 1b 2b 5
+7 a3 b2 82 23 69 b5 63[] 
+ []
+
+
+Overfull \hbox (43.10083pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ## [151] 4c d3 8e c6 cc 30 80 58 66 d6 9e d8 5b d0 7c 7e 30 7
+8 51 91 f1 1b 63 f4 ce[] 
+ []
+
+
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ## [176] 79 e7 7c a2 9c a1 14 72 a2 57 fa b2 8b 67 12 05 3c f
+9 6b 2c a9 23 ed 1f 7c[] 
+ []
+
+
+Overfull \hbox (43.11282pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ## [201] 96 ff 9a 18 59 7f 56 58 56 ec 1e da 1f a5 f3 1a 0b a
+8 2a e8 24 7f b3 42 ba[] 
+ []
+
+
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8199--8199
+[]\TU/lmtt/m/n/12 ## [226] 12 36 f8 93 8b 45 b0 8a bb 4c 87 22 ac 27 81 c3 a1 d
+e 50 90 27 1d 8a d3 22[] 
+ []
+
+
+Overfull \hbox (43.06487pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ##   [1] 91 9a 9d 19 22 39 dd 3d 59 9f 1d eb fc 90 93 d1 80 4
+1 a3 53 d9 ee 3a cd e5[] 
+ []
+
+
+Overfull \hbox (43.11284pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ##  [26] 08 37 f3 28 c3 be 46 b0 fa f0 49 f2 80 2b 4b 57 19 7
+8 16 37 8e 3c 8d e6 10[] 
+ []
+
+
+Overfull \hbox (43.14882pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ##  [51] c0 74 d3 a4 ab 07 5a 5e 88 95 bc c8 cd 06 d0 75 01 a
+c 42 85 b5 90 e4 0f 3c[] 
+ []
+
+
+Overfull \hbox (43.13681pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ##  [76] e1 b8 a3 03 27 21 0d 8c e1 d0 d3 30 72 cb a5 a4 69 4
+d 87 4e db 9d 2f 4a fd[] 
+ []
+
+
+Overfull \hbox (43.08885pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ## [101] 7a b8 0e a8 c3 97 0d 21 64 28 be 97 e9 95 77 ed c4 1
+d 6b 8c 3e c3 92 b0 86[] 
+ []
+
+
+Overfull \hbox (43.11284pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ## [126] ff 74 dc 21 cd 94 28 2a 78 6c 88 45 be 60 10 ef a2 0
+6 24 a3 59 8d 43 c5 88[] 
+ []
+
+
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ## [151] f6 54 81 3b a5 11 ef 17 b6 37 d1 2b 56 b3 b2 bd 9c 7
+e 08 71 0e 24 b4 71 2a[] 
+ []
+
+
+Overfull \hbox (43.08885pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ## [176] 4e 1c 90 4f 3a a7 7c 6d ef 46 e9 5a 8f 53 26 80 71 e
+6 e8 a0 5e de 0b 33 68[] 
+ []
+
+
+Overfull \hbox (43.08882pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ## [201] 96 b5 a0 86 48 81 28 da 1b 22 99 3d 60 0d fe 77 2c 6
+d b8 df ad 64 53 45 0a[] 
+ []
+
+[174]
+Overfull \hbox (43.04086pt too wide) in paragraph at lines 8237--8237
+[]\TU/lmtt/m/n/12 ## [226] 61 5c 83 99 9f ef 26 47 5a 92 94 b5 42 7d ef f1 82 6
+3 6e 0b d0 b7 ed 68 e6[] 
+ []
+
+[175] [176]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 17.28pt on input line 6820.
+(Font)              scaled to size 17.28pt on input line 8341.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 17.28183pt on input line 6820.
+(Font)              scaled to size 17.28183pt on input line 8341.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 17.27815pt on input line 6820.
-[151]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 6996.
-[152]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 6996.
+(Font)              scaled to size 17.27815pt on input line 8341.
+[177]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 8517.
+[178]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 8517.
 (Tectutorial.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 6996.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 6996.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 8517.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 8517.
  ) 
 Here is how much of TeX's memory you used:
- 28851 strings out of 427665
- 530512 string characters out of 3149131
- 752398 words of memory out of 3000000
- 32582 multiletter control sequences out of 15000+200000
+ 28873 strings out of 427665
+ 530891 string characters out of 3149131
+ 758450 words of memory out of 3000000
+ 32603 multiletter control sequences out of 15000+200000
  540686 words of font info for 93 fonts, out of 3000000 for 9000
  1348 hyphenation exceptions out of 8191
  59i,8n,115p,812b,460s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on Tectutorial.pdf (152 pages).
+Output written on Tectutorial.pdf (178 pages).
