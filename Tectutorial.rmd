@@ -1,5 +1,5 @@
 ---
-title: "Data, pricing, and portfolio analysis in R."
+title: "Financial modeling in R."
 author:
 - Dr. Martín Lozano.
 - sites.google.com/site/mlozanoqf/
@@ -16,7 +16,7 @@ toc: yes
 bibliography: mybibfile.bib
 fontsize: 12pt
 subtitle: An introductory approach of quantitative finance.
-abstract: This is an introductory applied tutorial suitable for undergraduate students interested in the area of quantitative finance. The main objective is to show how to analyze financial data and extract basic insights from asset pricing and asset allocation applications using the powerful R programming language. We extend examples and codes freely available in Internet, and some of my own. Here, we do not follow a formal approach as most mathematical background is skipped to emphasize the data analysis, model logic, discussion, graphical approach and R coding (literate programming). This is still a work in progress and it is under revision.
+abstract: This is an introductory applied tutorial suitable for undergraduate students interested in the area of quantitative finance modeling. The main objective is to show how to analyze financial data and extract basic insights from financial models using the powerful R programming language. We extend examples and codes freely available in Internet, and some of my own. As in the philosophy of Donald Knuth [@knuth1984literate], the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
 ---
 
 ------------------------------------------------------------------------
@@ -76,9 +76,6 @@ This document took `r as.numeric(a$toc-a$tic)` seconds to compile in Rmarkdown.
 \newpage
 
 # Internet resources.
-
-**Additional bibliography.** Learn R by reading these electronic books: R for Dummies [@de2015r]; R programming for Data Science [@peng2016r]; ggplot2: Elegant Graphics for Data Analysis [@wickham2016ggplot2]; R Markdown Cookbook [@xie2020r]; R for Data Science [@grolemund2018r]; R Markdown: The Definitive Guide [@xie2021r]; Authoring Books and Technical Documents with R Markdown [@xie2021bookdown]; Happy Git and GitHub for the useR [@bryan2018happy].
-
 
 ## YouTube instalation guides.
 
