@@ -31,9 +31,9 @@ Let's see how similar these two firms are by looking at their respective cumulat
 
 ```{r}
 # Download the price data.
-stock_prices_MA_V <- c("MA", "V") %>%
+stock_prices_MA_V <- c("MA", "V") |>
     tq_get(get  = "stock.prices", from = "2015-01-01",
-           to   = "2016-12-31") %>%
+           to   = "2016-12-31") |>
     group_by(symbol)
 ```
 
@@ -41,12 +41,12 @@ Then transform prices into cumulative returns and plot them.
 
 ```{r}
 # Transform prices into log returns.
-stock_cumret_MA_V <- stock_prices_MA_V %>%
+stock_cumret_MA_V <- stock_prices_MA_V |>
     tq_transmute(adjusted,
                  periodReturn,
                  period = "daily",
                  type = "log",
-                 col_rename = "returns") %>%
+                 col_rename = "returns") |>
 # Create the wealth index.
     mutate(wealth.index = 100 * cumprod(1 + returns))
 # Visualize the wealth index.
@@ -61,9 +61,9 @@ Apparently, these stock returns are indeed closely related. Ups and downs are ve
 
 ```{r}
 # Last values of the wealth index.
-stock_cumret_MA_V %>%
-  select(-returns) %>%
-  spread(symbol, wealth.index) %>%
+stock_cumret_MA_V |>
+  select(-returns) |>
+  spread(symbol, wealth.index) |>
   tail()
 ```
 
@@ -73,7 +73,7 @@ Let's see the daily returns of both stocks in a scatter plot now. This allows us
 
 ```{r}
 # Show the return relationship.
-stock_ret_MA_V <- stock_prices_MA_V %>%
+stock_ret_MA_V <- stock_prices_MA_V |>
     tq_transmute(select     = adjusted,
                  mutate_fun = periodReturn,
                  period     = "daily",
@@ -91,8 +91,8 @@ The line plot was not a good idea to show our main point. You cannot see anythin
 
 ```{r}
 # Show the return relationship.
-stock_ret_MA_V  %>%
-    spread(key = symbol, value = returns) %>%
+stock_ret_MA_V  |>
+    spread(key = symbol, value = returns) |>
     ggplot(aes(x = V, y = MA)) +
     geom_point(color = palette_light()[[1]], alpha = 0.5) +
     geom_smooth(method = "lm") +
@@ -107,10 +107,10 @@ In this case the general model is $MA_i = \alpha+\beta V_i$, where $i=1,...,504$
 
 ```{r}
 # Prepare the data.
-reg <- stock_ret_MA_V %>%
+reg <- stock_ret_MA_V |>
   spread(key = symbol, value = returns)
 # Estimate the model.
-lm(MA ~ V, data = reg) %>%
+lm(MA ~ V, data = reg) |>
 summary()
 ```
 
@@ -136,8 +136,8 @@ Let's visualize a 1:1 relationship just as a reference in the red line below.
 
 ```{r}
 # Add a reference red line representing beta=1.
-stock_ret_MA_V  %>%
-    spread(key = symbol, value = returns) %>%
+stock_ret_MA_V  |>
+    spread(key = symbol, value = returns) |>
     ggplot(aes(x = V, y = MA)) +
     geom_point(color = palette_light()[[1]], alpha = 0.5) +
     geom_smooth(method = "lm") + 
@@ -152,7 +152,7 @@ Our example assumed that $MA$ can be explained by $V$. We have not introduced a 
 
 ```{r}
 # Estimate the model.
-lm(V ~ MA, data = reg) %>%
+lm(V ~ MA, data = reg) |>
     summary()
 ```
 
@@ -160,19 +160,19 @@ Here, we estimate $V_i = \alpha+\beta MA_i$, and in particular we have $V_i = -1
 
 ```{r PMF E2 q1}
 # Create yearly returns.
-FANG_daily_returns <- FANG %>%
-    group_by(symbol) %>%
+FANG_daily_returns <- FANG |>
+    group_by(symbol) |>
     tq_transmute(select     = adjusted,
                  mutate_fun = periodReturn,
                  period     = "daily",
                  type       = "arithmetic")
 # Transform data.
 library(tbl2xts)
-f <- FANG_daily_returns %>% tbl_xts(., spread_by = "symbol")
+f <- FANG_daily_returns |> tbl_xts(spread_by = "symbol")
 # Correlation.
 cor(f)
 # Model.
-lm(AMZN ~ FB + GOOG + NFLX, data = f) %>%
+lm(AMZN ~ FB + GOOG + NFLX, data = f) |>
     summary()
 ```
 
@@ -206,10 +206,10 @@ First, we download the corresponding 10 stock returns.
 ```{r}
 # Download individual asset returns.
 R_stocks <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT", 
-              "KLAC", "TEF") %>%
+              "KLAC", "TEF") |>
   tq_get(get  = "stock.prices", from = "2010-01-01", 
-         to   = "2015-12-31") %>%
-  group_by(symbol) %>% 
+         to   = "2015-12-31") |>
+  group_by(symbol) |> 
   tq_transmute(select     = adjusted, 
                mutate_fun = periodReturn, 
                period     = "monthly", 
@@ -221,9 +221,9 @@ Then, we download the S&P500 monthly returns, the symbol is \^GSPC.
 
 ```{r}
 # Download the market index return.
-R_market <- "^GSPC" %>%
+R_market <- "^GSPC" |>
   tq_get(get  = "stock.prices", from = "2010-01-01",
-         to   = "2015-12-31") %>%
+         to   = "2015-12-31") |>
     tq_transmute(select     = adjusted, 
                  mutate_fun = periodReturn, 
                  period     = "monthly", 
@@ -243,10 +243,10 @@ We can use the *performance_fun* function to facilitate the regression analysis 
 
 ```{r}
 # 10 models estimated at once.
-R_capm <- R_stocks_market %>%
+R_capm <- R_stocks_market |>
   tq_performance(Ra = R_stocks, 
                  Rb = R_market, 
-                 performance_fun = table.CAPM) %>%
+                 performance_fun = table.CAPM) |>
 select(symbol, Alpha, Beta, `R-squared`)
 R_capm
 ```
@@ -264,7 +264,7 @@ R_stocks_market$symbol <-
   factor(R_stocks_market$symbol, levels =
            unique(R_stocks_market$symbol))
 # Plot all results.
-R_stocks_market %>% 
+R_stocks_market |> 
   ggplot(aes(x = R_market, y = R_stocks, color = symbol)) + 
   geom_point(alpha = 0.4) + 
   geom_smooth(method = "lm", se = FALSE) + 
@@ -288,9 +288,9 @@ We can extend our analysis further. Given our 10 set of assets, we can calculate
 
 ```{r}
 # Calculate annualized returns.
-R_stocks_market %>%
+R_stocks_market |>
     tq_performance(Ra = R_stocks, Rb = NULL, 
-                   performance_fun = table.AnnualizedReturns) %>%
+                   performance_fun = table.AnnualizedReturns) |>
 arrange(`AnnualizedSharpe(Rf=0%)`)
 ```
 
@@ -298,9 +298,9 @@ A stock beta is a measure of the individual asset return risk with respect to th
 
 ```{r}
 # Calculate annualized returns.
-R_stocks_market_stats <- R_stocks_market %>%
+R_stocks_market_stats <- R_stocks_market |>
     tq_performance(Ra = R_stocks, Rb = NULL, 
-                   performance_fun = table.AnnualizedReturns) %>%
+                   performance_fun = table.AnnualizedReturns) |>
 # Mean variance plot.
   ggplot(aes(x = AnnualizedStdDev, y = AnnualizedReturn, color = symbol)) +
   geom_point(size = 5) +
@@ -318,10 +318,10 @@ R_stocks_market_stats
 
 ```{r eval=FALSE, include=FALSE}
 # Examen final.
-R_stocks_market_stats <- R_stocks_market %>%
+R_stocks_market_stats <- R_stocks_market |>
     tq_performance(Ra = R_stocks, Rb = NULL, 
-                   performance_fun = table.AnnualizedReturns) %>%
-  rename("Sharpe" = `AnnualizedSharpe(Rf=0%)`) %>%
+                   performance_fun = table.AnnualizedReturns) |>
+  rename("Sharpe" = `AnnualizedSharpe(Rf=0%)`) |>
   ggplot(aes(x = symbol, y = Sharpe, fill = Sharpe)) +
   geom_bar(stat = "identity") +
   ggtitle("Annualized Sharpe ratio for 10 stocks.") +
@@ -334,26 +334,26 @@ I added a straight line of 45 degrees so any asset above the red line means a re
 ```{r PMF E2 q3}
 # Download individual asset returns.
 R_stocks_mkt <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT", 
-              "KLAC", "TEF", "^GSPC") %>%
+              "KLAC", "TEF", "^GSPC") |>
   tq_get(get  = "stock.prices", from = "2010-01-01", 
-         to   = "2015-12-31") %>%
-  group_by(symbol) %>% 
+         to   = "2015-12-31") |>
+  group_by(symbol) |> 
   tq_transmute(select     = adjusted, 
                mutate_fun = periodReturn, 
                period     = "monthly", 
                col_rename = "r")
 R_stocks_mkt
 
-R_stocks_mkt %>%
+R_stocks_mkt |>
     tq_performance(Ra = r, Rb = NULL, 
-                   performance_fun = table.AnnualizedReturns) %>%
+                   performance_fun = table.AnnualizedReturns) |>
 arrange(`AnnualizedSharpe(Rf=0%)`)
 
 
 # Calculate annualized returns.
-R_stocks_mkt_stats <- R_stocks_mkt %>%
+R_stocks_mkt_stats <- R_stocks_mkt |>
     tq_performance(Ra = r, Rb = NULL, 
-                   performance_fun = table.AnnualizedReturns) %>%
+                   performance_fun = table.AnnualizedReturns) |>
 # Mean variance plot.
   ggplot(aes(x = AnnualizedStdDev, y = AnnualizedReturn, color = symbol)) +
   geom_point(size = 5) +
@@ -377,12 +377,12 @@ What if we use the values of betas and Sharpe ratios to form investment portfoli
 # Weights.
 wts <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
 # Portfolio creation.
-portfolio_returns_monthly <- R_stocks_market %>%
+portfolio_returns_monthly <- R_stocks_market |>
     tq_portfolio(assets_col  = symbol, 
                  returns_col = R_stocks, 
                  weights     = wts, 
                  col_rename  = "Ra")
-portfolio_returns_monthly %>%
+portfolio_returns_monthly |>
   # Visualization.
     ggplot(aes(x = date, y = Ra)) +
     geom_bar(stat = "identity", fill = palette_light()[[1]]) +
@@ -399,14 +399,14 @@ A monthly returns plot is a good representation, but we normally show the evolut
 
 ```{r}
 # Cumulative returns.
-portfolio_growth_monthly <- R_stocks_market %>%
+portfolio_growth_monthly <- R_stocks_market |>
     tq_portfolio(assets_col   = symbol, 
                  returns_col  = R_stocks, 
                  weights      = wts, 
                  col_rename   = "investment.growth",
-                 wealth.index = TRUE) %>%
+                 wealth.index = TRUE) |>
     mutate(investment.growth = investment.growth * 10000)
-portfolio_growth_monthly %>%
+portfolio_growth_monthly |>
     ggplot(aes(x = date, y = investment.growth)) +
     geom_line(size = 2, color = palette_light()[[1]]) +
     labs(title = "Portfolio growth of $10,000.",
@@ -423,11 +423,11 @@ Looks OK. However, we are not sure if this is the best combination of assets. Th
 
 ```{r}
 # Calculate annualized returns.
-R_stocks_market %>%
+R_stocks_market |>
   tq_performance(Ra = R_stocks, Rb = NULL, 
-                   performance_fun = table.AnnualizedReturns) %>%
-  arrange(`AnnualizedSharpe(Rf=0%)`) %>%
-  left_join(R_capm,by = 'symbol')  %>%
+                   performance_fun = table.AnnualizedReturns) |>
+  arrange(`AnnualizedSharpe(Rf=0%)`) |>
+  left_join(R_capm,by = 'symbol')  |>
   select(symbol, `AnnualizedSharpe(Rf=0%)`, Beta) 
 ```
 
@@ -441,9 +441,9 @@ weights <- c(
 
 stocks <- c("NEM", "TEF", "F", "TXT", "AMCR", "PEAK", 
             "KLAC", "TXN", "CLX", "KR")
-weights_table <-  tibble(stocks) %>%
-    tq_repeat_df(n = 3) %>%
-    bind_cols(tibble(weights)) %>%
+weights_table <-  tibble(stocks) |>
+    tq_repeat_df(n = 3) |>
+    bind_cols(tibble(weights)) |>
     group_by(portfolio)
 ```
 
@@ -451,17 +451,17 @@ See the results.
 
 ```{r}
 # See the evolution of three portfolios.
-stock_returns_monthly_multi <- R_stocks_market %>%
+stock_returns_monthly_multi <- R_stocks_market |>
     tq_repeat_df(n = 3)
 
-portfolio_growth_monthly_multi <- stock_returns_monthly_multi %>%
+portfolio_growth_monthly_multi <- stock_returns_monthly_multi |>
     tq_portfolio(assets_col   = symbol, 
                  returns_col  = R_stocks, 
                  weights      = weights_table, 
                  col_rename   = "investment.growth",
-                 wealth.index = TRUE) %>%
+                 wealth.index = TRUE) |>
     mutate(investment.growth = investment.growth * 10000)
-portfolio_growth_monthly_multi %>%
+portfolio_growth_monthly_multi |>
   ggplot(aes(x = date, y = investment.growth, color = factor(portfolio))) +
     geom_line(size = 2) +
     labs(title = "Portfolio growth of 10,000.",
@@ -486,9 +486,9 @@ Let's download the data. In this case, the S&P500 index.
 
 ```{r}
 # Download the data.
-sp_500 <- "^GSPC" %>%
+sp_500 <- "^GSPC" |>
   tq_get(get  = "stock.prices", from = "1995-01-01",
-         to   = "2017-12-31") %>%
+         to   = "2017-12-31") |>
   tq_transmute(select     = adjusted, 
                mutate_fun = to.monthly,
                col_rename = "sp_500")
@@ -555,9 +555,9 @@ sp500_all.tsibble <- as_tsibble(sp500_all)
 
 sp500_training.tsibble <- as_tsibble(sp500_training)
 
-sp500_training.tsibble %>%
-model(AAN = ETS(sp500_training ~ error("A") + trend("A") + season("N"))) %>%
-  forecast(h = 36) %>%
+sp500_training.tsibble |>
+model(AAN = ETS(sp500_training ~ error("A") + trend("A") + season("N"))) |>
+  forecast(h = 36) |>
   autoplot(sp500_training.tsibble) +
   labs(title = "SP500",
        y = "Index") +
@@ -570,9 +570,9 @@ autolayer(sp500_all.tsibble)
 sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
 sp500_all.tsibble <- as_tsibble(sp500_all)
 
-sp500_training.tsibble %>%
-model(hw = ETS(sp500_training ~ error("A") + trend("A") + season("A")))%>%
-  forecast(h = 36) %>%
+sp500_training.tsibble |>
+model(hw = ETS(sp500_training ~ error("A") + trend("A") + season("A")))|>
+  forecast(h = 36) |>
   autoplot(sp500_training.tsibble) +
   labs(title = "SP500",
        y = "Index") +
@@ -585,11 +585,11 @@ library(fpp3)
 sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
 sp500_all.tsibble <- as_tsibble(sp500_all)
 
-sp500_all.tsibble %>%
+sp500_all.tsibble |>
   model(
     classical_decomposition(value, type = "additive")
-  ) %>%
-  components() %>%
+  ) |>
+  components() |>
   autoplot() +
   labs(title = "Classical additive decomposition of total
                   US retail employment")
