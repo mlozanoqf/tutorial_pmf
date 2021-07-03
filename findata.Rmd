@@ -59,11 +59,11 @@ Let's review how we can manipulate \texttt{BS\_FB} contents to get a more readab
 
 ```{r}
 # First make a copy.
-BS_2017 <- BS_FB %>%
+BS_2017 <- BS_FB |>
   # convert Amount from character to numeric.
-  mutate(Amount = as.numeric(Amount)) %>%
+  mutate(Amount = as.numeric(Amount)) |>
   # Let's extract only 2017.
-  filter(endDate == "2017-12-31") %>%
+  filter(endDate == "2017-12-31") |>
   # Let's show only two columns.
   select(Metric, Amount)
 # Show the value in the screen (in paper).
@@ -72,7 +72,7 @@ BS_2017
 
 This looks more like a familiar balance sheet.
 
-This is the first time we introduce the use of pipes (%\>%) in the code. Pipes are a powerful tool for clearly expressing a sequence of multiple operations mainly in the context of *tidyverse* packages. In the code above we first create a variable for the 2017 balance sheet \texttt{BS\_2017} as the same as the previously created variable \texttt{BS\_FB}, then we transform one column to numeric values so we can make further operations, then we filter the whole information to keep only 2017 values, and finally we select only two columns (the name and value of each account). There might be even more efficient ways to achieve the same result. Note that every sequence is linked with a pipe (%\>%). Pipes process a data-object using a sequence of operations by passing the result of one step as input for the next step.
+This is the first time we introduce the use of pipes |> in the code. Pipes are a powerful tool for clearly expressing a sequence of multiple operations mainly in the context of *tidyverse* packages. In the code above we first create a variable for the 2017 balance sheet \texttt{BS\_2017} as the same as the previously created variable \texttt{BS\_FB}, then we transform one column to numeric values so we can make further operations, then we filter the whole information to keep only 2017 values, and finally we select only two columns (the name and value of each account). There might be even more efficient ways to achieve the same result. Note that every sequence is linked with a pipe |>. Pipes process a data-object using a sequence of operations by passing the result of one step as input for the next step.
 
 A balance sheet is a financial statement that reports a company's assets, liabilities and shareholders' equity. The balance sheet is one of the three (income statement and statement of cash flows being the other two) core financial statements used to evaluate a business performance. The balance sheet allows us to verify the so-called accounting equation: $assets = liabilities + equity$. This is equivalent as saying that the firm has what the firm owes.
 
@@ -86,17 +86,17 @@ accounts <- c("Assets" , "Liabilities",
               "Stockholders' Equity Attributable to Parent", 
               "Liabilities and Equity")
 # At the beginning, the summary is a copy of the full statement.
-BS_2016_2017_summary <- BS_FB %>%
+BS_2016_2017_summary <- BS_FB |>
   # Convert Amount to numeric values (so we can do math operations).
-  mutate(Amount = as.numeric(Amount)) %>%
+  mutate(Amount = as.numeric(Amount)) |>
   # This is convenient but not strictly necessary.
-  mutate(Metric = factor(Metric, levels = unique(Metric))) %>% 
+  mutate(Metric = factor(Metric, levels = unique(Metric))) |> 
   # Here we spread rows into columns to have information per year.
-  spread(endDate, Amount) %>%
+  spread(endDate, Amount) |>
   # Select only three columns.
-  select(Metric, "2016-12-31", "2017-12-31") %>%
+  select(Metric, "2016-12-31", "2017-12-31") |>
   # Select only the relevant accounts we are interested in.
-  filter(Metric %in% accounts) %>%
+  filter(Metric %in% accounts) |>
   # Net income account is lengthy, let's rename it.
  mutate(Metric = recode_factor(Metric, 
         `Stockholders' Equity Attributable to Parent` = "Equity"))
@@ -112,7 +112,7 @@ Let's propose a different way to see the balance sheet statement.
 
 ```{r}
 # First we make a copy.
-BS_2016_2017_change <- BS_2016_2017_summary %>%
+BS_2016_2017_change <- BS_2016_2017_summary |>
   # Calculate the percentage change from 2016 to 2017.
   mutate(Year.Change = (`2017-12-31`-`2016-12-31`)/`2016-12-31`)
 # Show the results.
@@ -123,9 +123,9 @@ Liabilities increased more than twice compared with assets from 2016 to 2017. Sh
 
 ```{r}
 # Create a copy of the summary.
-BS_2016_2017_prop <- BS_2016_2017_summary %>%
+BS_2016_2017_prop <- BS_2016_2017_summary |>
   # Proportions with respect to the assets (2016).
-  mutate(prop2016 = `2016-12-31`/`2016-12-31`[1]) %>%
+  mutate(prop2016 = `2016-12-31`/`2016-12-31`[1]) |>
   # Proportions with respect to the assets (2017).
   mutate(prop2017 = `2017-12-31`/`2017-12-31`[1])
 # Show the results.
@@ -140,16 +140,16 @@ Let's plot.
 accounts_BS <- c("Assets" , "Liabilities", 
               "Stockholders' Equity Attributable to Parent")
 
-BS_2016_2017_plot <- BS_FB %>%
-  mutate(Amount = as.numeric(Amount)) %>%
-  mutate(Date = as.Date(endDate)) %>%
-  mutate(Metric = factor(Metric, levels = unique(Metric))) %>% 
-  select(Metric, Amount, Date) %>%
-    filter(Date == "2016-12-31" | Date == "2017-12-31") %>%
-  filter(Metric %in% accounts_BS) %>%
+BS_2016_2017_plot <- BS_FB |>
+  mutate(Amount = as.numeric(Amount)) |>
+  mutate(Date = as.Date(endDate)) |>
+  mutate(Metric = factor(Metric, levels = unique(Metric))) |> 
+  select(Metric, Amount, Date) |>
+    filter(Date == "2016-12-31" | Date == "2017-12-31") |>
+  filter(Metric %in% accounts_BS) |>
  mutate(Metric = recode_factor(Metric, 
-`Stockholders' Equity Attributable to Parent` = "Equity")) %>%
- mutate(., Metric = 
+`Stockholders' Equity Attributable to Parent` = "Equity")) |>
+ mutate(Metric = 
            factor(Metric, levels = c("Assets", 
                                      "Liabilities", "Equity")))
 BS_2016_2017_plot
@@ -189,19 +189,19 @@ accounts_IS <- c("Revenues" ,
 # Instead of GetBalanceSheet, we use GetIncome.
 IS_FB <- GetIncome("FB", 2018)
   # Make a copy (as before).
-IS_2016_2017_summary <- IS_FB %>%
+IS_2016_2017_summary <- IS_FB |>
   # Exactly the same as before.
-  mutate(Amount = as.numeric(Amount)) %>%
+  mutate(Amount = as.numeric(Amount)) |>
   # Exactly the same as before.
-  mutate(Metric = factor(Metric, levels = unique(Metric))) %>% 
+  mutate(Metric = factor(Metric, levels = unique(Metric))) |> 
   # Select the required columns.
-  select(Metric, Amount, endDate) %>%
+  select(Metric, Amount, endDate) |>
   # Exactly the same as before.
-  spread(endDate, Amount) %>%
+  spread(endDate, Amount) |>
   # Exactly the same as before.
-  select(Metric, "2016-12-31", "2017-12-31") %>%
+  select(Metric, "2016-12-31", "2017-12-31") |>
   # Similar as before.
-  filter(Metric %in% accounts_IS) %>%
+  filter(Metric %in% accounts_IS) |>
   # Similar as before.
   mutate(Metric = recode(Metric, 
   `Net Income (Loss) Available to Common Stockholders, Basic` 
@@ -236,9 +236,9 @@ Let's calculate the revenues with respect to profits.
 
 ```{r}
 # Make a copy.
-IS_2016_2017_prop <- IS_2016_2017_summary %>%
+IS_2016_2017_prop <- IS_2016_2017_summary |>
   # Calculate proportion (2016).
-  mutate(prop2016 = `2016-12-31`/`2016-12-31`[2]) %>%
+  mutate(prop2016 = `2016-12-31`/`2016-12-31`[2]) |>
   # Calculate proportion (2017).
   mutate(prop2017 = `2017-12-31`/`2017-12-31`[2])
 # Show results.
@@ -250,12 +250,12 @@ According to this ratio, in 2016 the firm transformed 2.7 USD of sales into 1 US
 Let's plot the income statement basics. First, some necessary changes.
 
 ```{r}
-IS_2016_2017_plot <- IS_FB %>%
-  mutate(Amount = as.numeric(Amount)) %>%
-  mutate(Date = as.Date(endDate)) %>%
-  mutate(Metric = factor(Metric, levels = unique(Metric))) %>% 
-  select(Metric, Amount, Date) %>%
-  filter(Metric %in% accounts_IS) %>%
+IS_2016_2017_plot <- IS_FB |>
+  mutate(Amount = as.numeric(Amount)) |>
+  mutate(Date = as.Date(endDate)) |>
+  mutate(Metric = factor(Metric, levels = unique(Metric))) |> 
+  select(Metric, Amount, Date) |>
+  filter(Metric %in% accounts_IS) |>
   mutate(Metric = recode(Metric, 
   `Net Income (Loss) Available to Common Stockholders, Basic` 
   = "Net Income"))
@@ -494,8 +494,8 @@ Let's aggregate data from daily to monthly frequency.
 # Here, we are using a pre-loaded dataset.
 data("FANG")
 # Transform from daily to monthly stock prices.
-FANG %>%
-    group_by(symbol) %>%
+FANG |>
+    group_by(symbol) |>
     tq_transmute(select = adjusted, mutate_fun = to.monthly, 
                  indexAt = "lastof")
 ```
@@ -577,7 +577,7 @@ Visualization is particularly important for time series analysis and forecasting
 
 ```{r}
 # Plot the data.
-beer_sales_tbl %>%
+beer_sales_tbl |>
   ggplot(aes(date, price)) + 
   geom_line(col = palette_light()[1]) +
   geom_point(col = palette_light()[1]) + theme_tq() +
@@ -590,14 +590,14 @@ A time series can be decomposed as shown below.
 ```{r}
 library(fpp3)
 
-stl_dcmp <- beer_sales_tbl %>% 
-  mutate(date = yearmonth(date)) %>%
+stl_dcmp <- beer_sales_tbl |> 
+  mutate(date = yearmonth(date)) |>
   as_tsibble(index = date)
 
-stl_dcmp %>%
+stl_dcmp |>
   model(STL(price ~ trend(window = 7) + 
-              season(window = "periodic"), robust = TRUE)) %>%
-  components() %>%
+              season(window = "periodic"), robust = TRUE)) |>
+  components() |>
   autoplot()
 ```
 
@@ -631,9 +631,9 @@ my_trans <- function(in.data,transform = "pctdiff3") {
         logdiff3 = c(rep(NA, 3), diff(log(in.data), 3)))
 }
 vlist <- c("PAYEMS")
-df2 <- df %>% group_by(symbol) %>%
+df2 <- df |> group_by(symbol) |>
   mutate(x = ifelse(symbol %in% vlist, my_trans(price), price))
-df2 %>% select(-price)  %>% spread(symbol, x) %>%
+df2 |> select(-price)  |> spread(symbol, x) |>
   mutate(REC12 = lead(USREC, 12)) -> df3              
 df41 <- filter(df3, year(date) > 1945)
 ```
@@ -682,7 +682,7 @@ Let's begin with one plot.
 
 ```{r}
 # Plot the data.
-AAPL %>%
+AAPL |>
     ggplot(aes(x = date, y = close)) + geom_line() +
     labs(title = "Apple Line Chart", 
          y = "Closing Price", x = "") +
@@ -693,7 +693,7 @@ The plot above is about closing prices. However, we also have open and close pri
 
 ```{r}
 # Plot the data.
-AAPL %>%
+AAPL |>
     ggplot(aes(x = date, y = close)) +
     geom_candlestick(aes(open = open, high = high, low = low, 
                          close = close)) +
@@ -707,7 +707,7 @@ These kinds of charts are difficult to read when we have many observations. Let'
 
 ```{r}
 # A candlestick plot.
-AAPL %>%
+AAPL |>
     ggplot(aes(x = date, y = close)) +
     geom_candlestick(aes(open = open, high = high, low = low, 
                          close = close)) +
@@ -729,7 +729,7 @@ If the black line crosses the blue from down to top, then we are supposed to ant
 
 ```{r}
 # The simple moving average (SMA) plot. 
-AAPL %>%
+AAPL |>
     ggplot(aes(x = date, y = close)) +
     geom_line(aes(open = open, high = high, low = low, 
                          close = close))  +
@@ -751,7 +751,7 @@ The Bollinger Bands are envelopes plotted at a standard deviation level above an
 
 ```{r}
 # Bollinger bands and simple moving average.
-AAPL %>%
+AAPL |>
     ggplot(aes(x = date, y = close, open = open,
                high = high, low = low, close = close)) +
     geom_line() +
@@ -772,8 +772,8 @@ We can show the simple moving average for Facebook.
 
 ```{r}
 # The simple moving average (SMA) plot. 
-FANG %>%
-  filter(symbol == "FB") %>%
+FANG |>
+  filter(symbol == "FB") |>
   ggplot(aes(x = date, y = close)) +
   geom_line(aes(open = open, high = high, low = low, 
                 close = close))  +
@@ -786,8 +786,8 @@ FANG %>%
 This suggests that the stock price will decrease in the near future. Let's see if the moving average signal is correct.
 
 ```{r}
-FANG %>%
-  filter(symbol == "FB") %>%
+FANG |>
+  filter(symbol == "FB") |>
   filter(date >= "2014-01-01" & date <= "2014-02-01")
 ```
 

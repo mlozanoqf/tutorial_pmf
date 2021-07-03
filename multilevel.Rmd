@@ -244,3 +244,5 @@ Conclusion. Data visualization help us to better understand the data relationshi
 ```{r}
 kable(t(ans), caption = "Model's AIC.", digits = 2)
 ```
+
+
