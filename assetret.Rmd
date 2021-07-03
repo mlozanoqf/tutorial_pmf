@@ -23,8 +23,8 @@ We need time series of asset prices to calculate time series of asset returns. L
 
 ```{r}
 # Plot the data.
-FANG_daily_all <- FANG %>%
-    group_by(symbol) %>%
+FANG_daily_all <- FANG |>
+    group_by(symbol) |>
     ggplot(aes(x = date, y = adjusted, color = symbol)) +
     geom_line(size = 1) +
     labs(title = "Daily stock prices - not so easy to read.",
@@ -40,8 +40,8 @@ Let's add one line of code to see the price time-series more clearly.
 
 ```{r}
 # Facet makes it easier to read.
-FANG_daily <- FANG %>%
-    group_by(symbol) %>%
+FANG_daily <- FANG |>
+    group_by(symbol) |>
     ggplot(aes(x = date, y = adjusted, color = symbol)) +
     geom_line(size = 1) +
     labs(title = "Daily Stock Prices - easier to read",
@@ -58,8 +58,8 @@ Here, we first select adjusted prices, then transform into yearly returns.
 
 ```{r}
 # Create yearly returns.
-FANG_annual_returns <- FANG %>%
-    group_by(symbol) %>%
+FANG_annual_returns <- FANG |>
+    group_by(symbol) |>
     tq_transmute(select     = adjusted,
                  mutate_fun = periodReturn,
                  period     = "yearly",
@@ -73,7 +73,7 @@ The next chunk of code shows how to visualize the annual returns in a nice plot.
 
 ```{r}
 # Plot the annual returns.
-FANG_annual_returns %>%
+FANG_annual_returns |>
     ggplot(aes(x = date-365, y = yearly.returns, fill = symbol)) +
     geom_col() +
     geom_hline(yintercept = 0, color = palette_light()[[1]]) +
@@ -157,15 +157,15 @@ For now, we will work with arithmetic returns. Let's see How 100 USD investment 
 
 ```{r}
 # Yearly returns.
-FANG_annual_returns <- FANG %>%
-    group_by(symbol) %>%
+FANG_annual_returns <- FANG |>
+    group_by(symbol) |>
     tq_transmute(select     = adjusted,
                  mutate_fun = periodReturn,
                  period     = "yearly",
                  type       = "arithmetic")
 # Cumulative returns.
-FANG_annual_cum_returns <- FANG_annual_returns %>%
-  mutate(cr = 100*cumprod(1 + yearly.returns)) %>%
+FANG_annual_cum_returns <- FANG_annual_returns |>
+  mutate(cr = 100*cumprod(1 + yearly.returns)) |>
 # Plot the results.
   ggplot(aes(x = date-365, y = cr, fill = symbol)) + geom_col() + 
   labs(title = "Yearly cumulative USD returns.",
@@ -183,8 +183,8 @@ We can also modify the code above to show monthly returns (in percentage) instea
 
 ```{r}
 # Monthly returns.
-FANG_monthly_returns <- FANG %>%
-    group_by(symbol) %>%
+FANG_monthly_returns <- FANG |>
+    group_by(symbol) |>
     tq_transmute(select     = adjusted,
                  mutate_fun = periodReturn,
                  period     = "monthly",
@@ -207,7 +207,7 @@ Let's see cumulative monthly returns per stock to extend our 100 USD investment 
 
 ```{r}
 # Calculate monthly cumulative returns.
-FANG_monthly_cum_returns <- FANG_monthly_returns %>%
+FANG_monthly_cum_returns <- FANG_monthly_returns |>
   mutate(cr = 100 * cumprod(1 + monthly.returns))
 # Plot results.
 ggplot(FANG_monthly_cum_returns, aes(x = date-12, y = cr, 
@@ -293,7 +293,7 @@ Now, let's propose some statistical indicators to complement our previous analys
 
 ```{r}
 # Calculate relevant statistics.
-FANG_stats <- FANG_monthly_returns %>%
+FANG_stats <- FANG_monthly_returns |>
 summarise(mean = mean(monthly.returns), sd = sd(monthly.returns), 
           sr = mean/sd, iqr = IQR(monthly.returns))
 FANG_stats
@@ -307,7 +307,7 @@ Let's see the risk and return in a plot.
 
 ```{r}
 # Mean variance plot.
-FANG_stats %>%
+FANG_stats |>
   ggplot(aes(x = sd, y = mean, color = symbol)) +
   geom_point(size = 5) +
   geom_text(aes(label = paste0(round(sr, 3))), 
