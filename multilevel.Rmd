@@ -19,6 +19,7 @@ library(merTools) # The database used in RISIS course is here.
 library(sjPlot) # Plot lmer and glmer mods
 library(MuMIn)
 library(knitr) # To show formatted tables (kable).
+library(ggplot2)
 ```
 
 The following is the description of the data taken from the \texttt{merTools} R package.

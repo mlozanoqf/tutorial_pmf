@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.7050 64-bit) (preloaded format=xelatex 2020.7.10)  5 JUL 2021 20:26
+This is XeTeX, Version 3.14159265-2.6-0.999991 (MiKTeX 2.9.7050 64-bit) (preloaded format=xelatex 2020.7.10)  5 JUL 2021 22:49
 entering extended mode
 **./Tectutorial.tex
 (Tectutorial.tex
@@ -1115,896 +1115,894 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 
 ] (Tectutorial.toc
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 8.4pt on input line 3.
+(Font)              scaled to size 8.4pt on input line 2.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 6.0pt on input line 3.
+(Font)              scaled to size 6.0pt on input line 2.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 12.00128pt on input line 3.
+(Font)              scaled to size 12.00128pt on input line 2.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 8.40088pt on input line 3.
+(Font)              scaled to size 8.40088pt on input line 2.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 6.00064pt on input line 3.
+(Font)              scaled to size 6.00064pt on input line 2.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 11.99872pt on input line 3.
+(Font)              scaled to size 11.99872pt on input line 2.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 8.3991pt on input line 3.
+(Font)              scaled to size 8.3991pt on input line 2.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 5.99936pt on input line 3.
+(Font)              scaled to size 5.99936pt on input line 2.
 [2])
 \tf@toc=\write4
 \openout4 = `Tectutorial.toc'.
 
-[3]
+[3] [4] [5]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 5.0pt on input line 215.
+(Font)              scaled to size 5.0pt on input line 307.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 5.00053pt on input line 215.
+(Font)              scaled to size 5.00053pt on input line 307.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 4.99947pt on input line 215.
-[4]
-Overfull \hbox (8.30849pt too wide) in paragraph at lines 225--227
-[]\TU/lmr/m/n/12 In case you are interested, my full academic CV is available a
-t sites.google.com/site/mlozanoqf/ 
+(Font)              scaled to size 4.99947pt on input line 307.
+[6] [7] [8] [9]
+Overfull \vbox (1.02873pt too high) detected at line 522
  []
 
-[5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16]
-Overfull \hbox (30.82452pt too wide) in paragraph at lines 934--934
+[10] [11] [12] [13]
+Overfull \hbox (30.82452pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ##                                                       Metr
 ic Units      Amount[] 
  []
 
 
-Overfull \hbox (30.8248pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8248pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 1               Cash and Cash Equivalents, at Carrying Val
 ue   usd  4315000000[] 
  []
 
 
-Overfull \hbox (30.81279pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81279pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 2               Cash and Cash Equivalents, at Carrying Val
 ue   usd  4907000000[] 
  []
 
 
-Overfull \hbox (30.81279pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81279pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 3               Cash and Cash Equivalents, at Carrying Val
 ue   usd  8903000000[] 
  []
 
 
-Overfull \hbox (30.81279pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81279pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 4               Cash and Cash Equivalents, at Carrying Val
 ue   usd  8079000000[] 
  []
 
 
-Overfull \hbox (30.81271pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81271pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 5                             Marketable Securities, Curre
 nt   usd 20546000000[] 
  []
 
 
-Overfull \hbox (30.80072pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.80072pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 6                             Marketable Securities, Curre
 nt   usd 33632000000[] 
  []
 
 
-Overfull \hbox (30.80072pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.80072pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 7                          Accounts Receivable, Net, Curre
 nt   usd  3993000000[] 
  []
 
 
-Overfull \hbox (30.82472pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82472pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 8                          Accounts Receivable, Net, Curre
 nt   usd  5832000000[] 
  []
 
 
-Overfull \hbox (30.78876pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.78876pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 9                  Prepaid Expense and Other Assets, Curre
 nt   usd   959000000[] 
  []
 
 
-Overfull \hbox (30.82477pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82477pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 10                 Prepaid Expense and Other Assets, Curre
 nt   usd  1020000000[] 
  []
 
 
-Overfull \hbox (30.82463pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82463pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 11                                           Assets, Curre
 nt   usd 34401000000[] 
  []
 
 
-Overfull \hbox (30.81262pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81262pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 12                                           Assets, Curre
 nt   usd 48563000000[] 
  []
 
 
-Overfull \hbox (30.81273pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81273pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 13                        Property, Plant and Equipment, N
 et   usd  8591000000[] 
  []
 
 
-Overfull \hbox (30.82475pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82475pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 14                        Property, Plant and Equipment, N
 et   usd 13721000000[] 
  []
 
 
-Overfull \hbox (30.82481pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82481pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 15               Intangible Assets, Net (Excluding Goodwil
 l)   usd  2535000000[] 
  []
 
 
-Overfull \hbox (30.81282pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81282pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 16               Intangible Assets, Net (Excluding Goodwil
 l)   usd  1884000000[] 
  []
 
 
-Overfull \hbox (30.81259pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81259pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 17                                                  Goodwi
 ll   usd 18026000000[] 
  []
 
 
-Overfull \hbox (30.8246pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8246pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 18                                                  Goodwi
 ll   usd 18122000000[] 
  []
 
 
-Overfull \hbox (30.8126pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8126pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 19                                                  Goodwi
 ll   usd 18221000000[] 
  []
 
 
-Overfull \hbox (30.82468pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82468pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 20                                  Other Assets, Noncurre
 nt   usd  1312000000[] 
  []
 
-[17]
-Overfull \hbox (30.82468pt too wide) in paragraph at lines 934--934
+[14]
+Overfull \hbox (30.82468pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 21                                  Other Assets, Noncurre
 nt   usd  2135000000[] 
  []
 
 
-Overfull \hbox (30.78857pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.78857pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 22                                                    Asse
 ts   usd 64961000000[] 
  []
 
 
-Overfull \hbox (30.82458pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82458pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 23                                                    Asse
 ts   usd 84524000000[] 
  []
 
 
-Overfull \hbox (30.82466pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82466pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 24                                 Accounts Payable, Curre
 nt   usd   302000000[] 
  []
 
 
-Overfull \hbox (30.82466pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82466pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 25                                 Accounts Payable, Curre
 nt   usd   380000000[] 
  []
 
 
-Overfull \hbox (30.8127pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8127pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 26                          Accounts Payable, Other, Curre
 nt   usd   280000000[] 
  []
 
 
-Overfull \hbox (30.8127pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8127pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 27                          Accounts Payable, Other, Curre
 nt   usd   390000000[] 
  []
 
 
-Overfull \hbox (30.8247pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8247pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 28                              Accrued Liabilities, Curre
 nt   usd  2203000000[] 
  []
 
 
-Overfull \hbox (30.8007pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8007pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 29                              Accrued Liabilities, Curre
 nt   usd  2892000000[] 
  []
 
 
-Overfull \hbox (30.81274pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81274pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 30                     Deferred Revenue and Credits, Curre
 nt   usd    90000000[] 
  []
 
 
-Overfull \hbox (30.81274pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81274pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 31                     Deferred Revenue and Credits, Curre
 nt   usd    98000000[] 
  []
 
 
-Overfull \hbox (30.82466pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82466pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 32                                      Liabilities, Curre
 nt   usd  2875000000[] 
  []
 
 
-Overfull \hbox (30.81265pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81265pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 33                                      Liabilities, Curre
 nt   usd  3760000000[] 
  []
 
 
-Overfull \hbox (30.81271pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81271pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 34                             Other Liabilities, Noncurre
 nt   usd  2892000000[] 
  []
 
 
-Overfull \hbox (30.81271pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81271pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 35                             Other Liabilities, Noncurre
 nt   usd  6417000000[] 
  []
 
 
-Overfull \hbox (30.80061pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.80061pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 36                                               Liabiliti
 es   usd  5767000000[] 
  []
 
 
-Overfull \hbox (30.82463pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82463pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 37                                               Liabiliti
 es   usd 10177000000[] 
  []
 
 
-Overfull \hbox (30.82469pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82469pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 38                             Commitments and Contingenci
 es   usd        <NA>[] 
  []
 
 
-Overfull \hbox (30.8127pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8127pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 39                             Commitments and Contingenci
 es   usd        <NA>[] 
  []
 
 
-Overfull \hbox (30.8246pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8246pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 40                               Common Stock, Value, Issu
 ed   usd           0[] 
  []
 
 
-Overfull \hbox (30.8246pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8246pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 41                               Common Stock, Value, Issu
 ed   usd           0[] 
  []
 
 
-Overfull \hbox (30.8247pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8247pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 42                                Additional Paid in Capit
 al   usd 38227000000[] 
  []
 
 
-Overfull \hbox (30.8247pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8247pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 43                                Additional Paid in Capit
 al   usd 40584000000[] 
  []
 
 
-Overfull \hbox (30.8249pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8249pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 44 Accumulated Other Comprehensive Income (Loss), Net of T
 ax   usd  -703000000[] 
  []
 
 
-Overfull \hbox (30.8249pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8249pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 45 Accumulated Other Comprehensive Income (Loss), Net of T
 ax   usd  -227000000[] 
  []
 
 
-Overfull \hbox (30.80081pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.80081pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 46                   Retained Earnings (Accumulated Defici
 t)   usd 21670000000[] 
  []
 
 
-Overfull \hbox (30.80081pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.80081pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 47                   Retained Earnings (Accumulated Defici
 t)   usd 33990000000[] 
  []
 
 
-Overfull \hbox (30.78882pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.78882pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 48               Stockholders[] Equity Attributable to Par
 ent   usd 36096000000[] 
  []
 
 
-Overfull \hbox (30.81284pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.81284pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 49               Stockholders[] Equity Attributable to Par
 ent   usd 44218000000[] 
  []
 
 
-Overfull \hbox (30.80083pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.80083pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 50               Stockholders[] Equity Attributable to Par
 ent   usd 59194000000[] 
  []
 
 
-Overfull \hbox (30.82483pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.82483pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 51               Stockholders[] Equity Attributable to Par
 ent   usd 74347000000[] 
  []
 
 
-Overfull \hbox (30.7887pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.7887pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 52                                    Liabilities and Equi
 ty   usd 64961000000[] 
  []
 
 
-Overfull \hbox (30.8247pt too wide) in paragraph at lines 934--934
+Overfull \hbox (30.8247pt too wide) in paragraph at lines 800--800
 []\TU/lmtt/m/n/12 ## 53                                    Liabilities and Equi
 ty   usd 84524000000[] 
  []
 
-[18] [19]
+[15] [16]
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 953.
-[20] [21] [22] [23] [24]
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 819.
+[17] [18] [19] [20] [21]
 File: Tectutorial_files/figure-latex/unnamed-chunk-14-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-14-1.pdf>
-[25]
-Underfull \vbox (badness 10000) detected at line 1229
+[22]
+Underfull \vbox (badness 10000) detected at line 1095
  []
 
-[26]
-Overfull \hbox (37.00491pt too wide) in paragraph at lines 1250--1251
+[23]
+Overfull \hbox (37.00491pt too wide) in paragraph at lines 1116--1117
 []\TU/lmtt/m/n/12 accounts_IS <- c("Revenues" , "Net Income (Loss) Available to
  Common Stockholders,
  []
 
-[27] [28]
+[24] [25]
 File: Tectutorial_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-20-1.pdf>
-[29] [30] [31] [32] [33] [34] [35]
-Overfull \hbox (6.06892pt too wide) in paragraph at lines 1719--1719
+[26] [27] [28] [29] [30] [31] [32]
+Overfull \hbox (6.06892pt too wide) in paragraph at lines 1585--1585
 []\TU/lmtt/m/n/12 ##  $ volume  : num [1:2643] 4.45e+08 3.09e+08 2.56e+08 3.00e
 +08 3.12e+08 ...[] 
  []
 
-[36] [37]
+[33] [34]
 File: Tectutorial_files/figure-latex/unnamed-chunk-29-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-29-1.pdf>
 File: Tectutorial_files/figure-latex/unnamed-chunk-30-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-30-1.pdf>
-[38] [39]
+[35] [36]
 File: Tectutorial_files/figure-latex/unnamed-chunk-32-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-32-1.pdf>
 File: Tectutorial_files/figure-latex/unnamed-chunk-33-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-33-1.pdf>
-[40]
-Underfull \vbox (badness 1939) detected at line 1895
+[37]
+Underfull \vbox (badness 1939) detected at line 1761
  []
 
-[41]
+[38]
 File: Tectutorial_files/figure-latex/unnamed-chunk-36-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-36-1.pdf>
-[42] [43] [44]
+[39] [40] [41]
 File: Tectutorial_files/figure-latex/unnamed-chunk-40-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-40-1.pdf>
-[45]
+[42]
 File: Tectutorial_files/figure-latex/unnamed-chunk-42-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-42-1.pdf>
-[46]
+[43]
 File: Tectutorial_files/figure-latex/unnamed-chunk-43-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-43-1.pdf>
-[47]
-Overfull \hbox (37.00491pt too wide) in paragraph at lines 2142--2142
+[44]
+Overfull \hbox (37.00491pt too wide) in paragraph at lines 2008--2008
 []\TU/lmtt/m/n/12 ## $ symbol <chr> "S4248SM144NCEN", "S4248SM144NCEN", "S4248S
 M144NCEN", "S4248SM1~[] 
  []
 
 
-Overfull \hbox (37.00494pt too wide) in paragraph at lines 2142--2142
+Overfull \hbox (37.00494pt too wide) in paragraph at lines 2008--2008
 []\TU/lmtt/m/n/12 ## $ date   <date> 2010-01-01, 2010-02-01, 2010-03-01, 2010-0
 4-01, 2010-05-01, 20~[] 
  []
 
 
-Overfull \hbox (36.89684pt too wide) in paragraph at lines 2142--2142
+Overfull \hbox (36.89684pt too wide) in paragraph at lines 2008--2008
 []\TU/lmtt/m/n/12 ## $ price  <int> 6558, 7481, 9475, 9424, 9351, 10552, 9077, 
 9273, 9420, 9413, 98~[] 
  []
 
-[48]
+[45]
 File: Tectutorial_files/figure-latex/unnamed-chunk-46-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-46-1.pdf>
 
-Overfull \vbox (0.39992pt too high) detected at line 2180
+Overfull \vbox (0.39992pt too high) detected at line 2046
  []
 
-[49]
+[46]
 File: Tectutorial_files/figure-latex/unnamed-chunk-47-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-47-1.pdf>
 
-Underfull \vbox (badness 1354) detected at line 2223
+Underfull \vbox (badness 1354) detected at line 2089
  []
 
-[50]
-Overfull \vbox (1.94365pt too high) detected at line 2247
+[47]
+Overfull \vbox (1.94365pt too high) detected at line 2113
  []
 
-[51]
+[48]
 File: Tectutorial_files/figure-latex/unnamed-chunk-49-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-49-1.pdf>
-[52]
+[49]
 File: Tectutorial_files/figure-latex/unnamed-chunk-51-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-51-1.pdf>
-[53]
+[50]
 File: Tectutorial_files/figure-latex/unnamed-chunk-52-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-52-1.pdf>
-[54]
+[51]
 File: Tectutorial_files/figure-latex/unnamed-chunk-53-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-53-1.pdf>
-[55] [56]
+[52] [53]
 File: Tectutorial_files/figure-latex/unnamed-chunk-54-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-54-1.pdf>
-[57] [58]
+[54] [55]
 File: Tectutorial_files/figure-latex/unnamed-chunk-56-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-56-1.pdf>
-[59] [60]
+[56] [57]
 File: Tectutorial_files/figure-latex/unnamed-chunk-57-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-57-1.pdf>
-[61] [62] [63]
+[58] [59] [60]
 File: Tectutorial_files/figure-latex/unnamed-chunk-59-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-59-1.pdf>
-[64]
+[61]
 File: Tectutorial_files/figure-latex/unnamed-chunk-60-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-60-1.pdf>
-[65] [66]
+[62] [63]
 File: Tectutorial_files/figure-latex/unnamed-chunk-62-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-62-1.pdf>
-[67] [68] [69]
-Overfull \vbox (2.72623pt too high) detected at line 2881
+[64] [65] [66]
+Overfull \vbox (2.72623pt too high) detected at line 2747
  []
 
-[70]
+[67]
 File: Tectutorial_files/figure-latex/unnamed-chunk-68-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-68-1.pdf>
-[71]
-Underfull \vbox (badness 5908) detected at line 2964
+[68]
+Underfull \vbox (badness 5908) detected at line 2830
  []
 
-[72]
+[69]
 File: Tectutorial_files/figure-latex/unnamed-chunk-69-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-69-1.pdf>
 
-Overfull \vbox (0.44792pt too high) detected at line 2994
+Overfull \vbox (0.44792pt too high) detected at line 2860
  []
 
-[73]
+[70]
 File: Tectutorial_files/figure-latex/unnamed-chunk-70-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-70-1.pdf>
 
-Underfull \vbox (badness 1377) detected at line 3015
+Underfull \vbox (badness 1377) detected at line 2881
  []
 
-[74]
+[71]
 File: Tectutorial_files/figure-latex/unnamed-chunk-71-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-71-1.pdf>
 File: Tectutorial_files/figure-latex/unnamed-chunk-72-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-72-1.pdf>
-[75] [76]
+[72] [73]
 File: Tectutorial_files/figure-latex/unnamed-chunk-73-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-73-1.pdf>
 
-Underfull \vbox (badness 1817) detected at line 3092
+Underfull \vbox (badness 1817) detected at line 2958
  []
 
-[77]
+[74]
 File: Tectutorial_files/figure-latex/unnamed-chunk-74-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-74-1.pdf>
-[78]
-Overfull \vbox (0.90872pt too high) detected at line 3179
+[75]
+Overfull \vbox (0.90872pt too high) detected at line 3045
  []
 
-[79]
+[76]
 File: Tectutorial_files/figure-latex/unnamed-chunk-76-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-76-1.pdf>
-[80]
+[77]
 File: Tectutorial_files/figure-latex/unnamed-chunk-77-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-77-1.pdf>
-[81] [82] [83] [84] [85]
+[78] [79] [80] [81] [82]
 File: Tectutorial_files/figure-latex/unnamed-chunk-79-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-79-1.pdf>
-[86]
+[83]
 File: Tectutorial_files/figure-latex/unnamed-chunk-81-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-81-1.pdf>
-[87]
+[84]
 File: Tectutorial_files/figure-latex/unnamed-chunk-82-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-82-1.pdf>
-[88] [89] [90] [91]
+[85] [86] [87] [88]
 File: Tectutorial_files/figure-latex/unnamed-chunk-86-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-86-1.pdf>
-[92] [93] [94]
-Overfull \hbox (12.28479pt too wide) in paragraph at lines 3841--3841
+[89] [90] [91]
+Overfull \hbox (12.28479pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##   [1] "MMM"   "ABT"   "ABBV"  "ABMD"  "ACN"   "ATVI"  "ADB
 E"  "AMD"   "AAP"[] 
  []
 
 
-Overfull \hbox (18.46475pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.46475pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [10] "AES"   "AFL"   "A"     "APD"   "AKAM"  "ALK"   "ALB
 "   "ARE"   "ALXN"[] 
  []
 
 
-Overfull \hbox (18.45282pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.45282pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [19] "ALGN"  "ALLE"  "LNT"   "ALL"   "GOOGL" "GOOG"  "MO"
     "AMZN"  "AMCR"[] 
  []
 
 
-Overfull \hbox (12.28473pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28473pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [28] "AEE"   "AAL"   "AEP"   "AXP"   "AIG"   "AMT"   "AWK
 "   "AMP"   "ABC"[] 
  []
 
 
-Overfull \hbox (12.28477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [37] "AME"   "AMGN"  "APH"   "ADI"   "ANSS"  "ANTM"  "AON
 "   "AOS"   "APA"[] 
  []
 
 
-Overfull \hbox (12.2728pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.2728pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [46] "AAPL"  "AMAT"  "APTV"  "ADM"   "ANET"  "AJG"   "AIZ
 "   "T"     "ATO"[] 
  []
 
 
-Overfull \hbox (6.10475pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (6.10475pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [55] "ADSK"  "ADP"   "AZO"   "AVB"   "AVY"   "BKR"   "BLL
 "   "BAC"   "BK"[] 
  []
 
 
-Overfull \hbox (18.45277pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.45277pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [64] "BAX"   "BDX"   "BRK.B" "BBY"   "BIO"   "BIIB"  "BLK
 "   "BA"    "BKNG"[] 
  []
 
 
-Overfull \hbox (12.28477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [73] "BWA"   "BXP"   "BSX"   "BMY"   "AVGO"  "BR"    "BF.
 B"  "CHRW"  "COG"[] 
  []
 
 
-Overfull \hbox (18.46477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.46477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [82] "CDNS"  "CZR"   "CPB"   "COF"   "CAH"   "KMX"   "CCL
 "   "CARR"  "CTLT"[] 
  []
 
 
-Overfull \hbox (6.09279pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (6.09279pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ##  [91] "CAT"   "CBOE"  "CBRE"  "CDW"   "CE"    "CNC"   "CNP
 "   "CERN"  "CF"[] 
  []
 
-[95]
-Overfull \hbox (18.46477pt too wide) in paragraph at lines 3841--3841
+[92]
+Overfull \hbox (18.46477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [100] "CRL"   "SCHW"  "CHTR"  "CVX"   "CMG"   "CB"    "CHD
 "   "CI"    "CINF"[] 
  []
 
 
-Overfull \hbox (6.09279pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (6.09279pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [109] "CTAS"  "CSCO"  "C"     "CFG"   "CTXS"  "CLX"   "CME
 "   "CMS"   "KO"[] 
  []
 
 
-Overfull \hbox (12.28476pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28476pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [118] "CTSH"  "CL"    "CMCSA" "CMA"   "CAG"   "COP"   "ED"
     "STZ"   "COO"[] 
  []
 
 
-Overfull \hbox (12.28477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [127] "CPRT"  "GLW"   "CTVA"  "COST"  "CCI"   "CSX"   "CMI
 "   "CVS"   "DHI"[] 
  []
 
 
-Overfull \hbox (18.45277pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.45277pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [136] "DHR"   "DRI"   "DVA"   "DE"    "DAL"   "XRAY"  "DVN
 "   "DXCM"  "FANG"[] 
  []
 
 
-Overfull \hbox (12.28479pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28479pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [145] "DLR"   "DFS"   "DISCA" "DISCK" "DISH"  "DG"    "DLT
 R"  "D"     "DPZ"[] 
  []
 
 
-Overfull \hbox (12.28473pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28473pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [154] "DOV"   "DOW"   "DTE"   "DUK"   "DRE"   "DD"    "DXC
 "   "EMN"   "ETN"[] 
  []
 
 
-Overfull \hbox (12.27277pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27277pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [163] "EBAY"  "ECL"   "EIX"   "EW"    "EA"    "EMR"   "ENP
 H"  "ETR"   "EOG"[] 
  []
 
 
-Overfull \hbox (6.10478pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (6.10478pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [172] "EFX"   "EQIX"  "EQR"   "ESS"   "EL"    "ETSY"  "EVR
 G"  "ES"    "RE"[] 
  []
 
 
-Overfull \hbox (12.28479pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28479pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [181] "EXC"   "EXPE"  "EXPD"  "EXR"   "XOM"   "FFIV"  "FB"
     "FAST"  "FRT"[] 
  []
 
 
-Overfull \hbox (18.4408pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.4408pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [199] "FTNT"  "FTV"   "FBHS"  "FOXA"  "FOX"   "BEN"   "FCX
 "   "GPS"   "GRMN"[] 
  []
 
 
-Overfull \hbox (6.10477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (6.10477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [208] "IT"    "GNRC"  "GD"    "GE"    "GIS"   "GM"    "GPC
 "   "GILD"  "GL"[] 
  []
 
 
-Overfull \hbox (18.46474pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.46474pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [217] "GPN"   "GS"    "GWW"   "HAL"   "HBI"   "HIG"   "HAS
 "   "HCA"   "PEAK"[] 
  []
 
 
-Overfull \hbox (12.27277pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27277pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [226] "HSIC"  "HSY"   "HES"   "HPE"   "HLT"   "HOLX"  "HD"
     "HON"   "HRL"[] 
  []
 
 
-Overfull \hbox (18.46477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.46477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [235] "HST"   "HWM"   "HPQ"   "HUM"   "HBAN"  "HII"   "IEX
 "   "IDXX"  "INFO"[] 
  []
 
 
-Overfull \hbox (12.28477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [244] "ITW"   "ILMN"  "INCY"  "IR"    "INTC"  "ICE"   "IBM
 "   "IP"    "IPG"[] 
  []
 
 
-Overfull \hbox (12.27277pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27277pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [262] "JBHT"  "SJM"   "JNJ"   "JCI"   "JPM"   "JNPR"  "KSU
 "   "K"     "KEY"[] 
  []
 
 
-Overfull \hbox (12.28476pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28476pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [271] "KEYS"  "KMB"   "KIM"   "KMI"   "KLAC"  "KHC"   "KR"
     "LB"    "LHX"[] 
  []
 
 
-Overfull \hbox (12.28476pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28476pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [280] "LH"    "LRCX"  "LW"    "LVS"   "LEG"   "LDOS"  "LEN
 "   "LLY"   "LNC"[] 
  []
 
 
-Overfull \hbox (12.27275pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27275pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [289] "LIN"   "LYV"   "LKQ"   "LMT"   "L"     "LOW"   "LUM
 N"  "LYB"   "MTB"[] 
  []
 
 
-Overfull \hbox (12.27275pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27275pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [298] "MRO"   "MPC"   "MKTX"  "MAR"   "MMC"   "MLM"   "MAS
 "   "MA"    "MKC"[] 
  []
 
 
-Overfull \hbox (18.46475pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.46475pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [307] "MXIM"  "MCD"   "MCK"   "MDT"   "MRK"   "MET"   "MTD
 "   "MGM"   "MCHP"[] 
  []
 
 
-Overfull \hbox (12.2728pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.2728pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [316] "MU"    "MSFT"  "MAA"   "MHK"   "TAP"   "MDLZ"  "MPW
 R"  "MNST"  "MCO"[] 
  []
 
 
-Overfull \hbox (12.28479pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28479pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [325] "MS"    "MOS"   "MSI"   "MSCI"  "NDAQ"  "NTAP"  "NFL
 X"  "NWL"   "NEM"[] 
  []
 
 
-Overfull \hbox (12.28477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [334] "NWSA"  "NWS"   "NEE"   "NLSN"  "NKE"   "NI"    "NSC
 "   "NTRS"  "NOC"[] 
  []
 
 
-Overfull \hbox (18.4648pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.4648pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [343] "NLOK"  "NCLH"  "NOV"   "NRG"   "NUE"   "NVDA"  "NVR
 "   "NXPI"  "ORLY"[] 
  []
 
 
-Overfull \hbox (12.28479pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28479pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [352] "OXY"   "ODFL"  "OMC"   "OKE"   "ORCL"  "OGN"   "OTI
 S"  "PCAR"  "PKG"[] 
  []
 
 
-Overfull \hbox (12.27281pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27281pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [361] "PH"    "PAYX"  "PAYC"  "PYPL"  "PENN"  "PNR"   "PBC
 T"  "PEP"   "PKI"[] 
  []
 
 
-Overfull \hbox (12.28476pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28476pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [370] "PRGO"  "PFE"   "PM"    "PSX"   "PNW"   "PXD"   "PNC
 "   "POOL"  "PPG"[] 
  []
 
 
-Overfull \hbox (12.27274pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27274pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [379] "PPL"   "PFG"   "PG"    "PGR"   "PLD"   "PRU"   "PTC
 "   "PEG"   "PSA"[] 
  []
 
 
-Overfull \hbox (12.28476pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28476pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [388] "PHM"   "PVH"   "QRVO"  "PWR"   "QCOM"  "DGX"   "RL"
     "RJF"   "RTX"[] 
  []
 
 
-Overfull \hbox (12.27275pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27275pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [397] "O"     "REG"   "REGN"  "RF"    "RSG"   "RMD"   "RHI
 "   "ROK"   "ROL"[] 
  []
 
 
-Overfull \hbox (12.27278pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27278pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [406] "ROP"   "ROST"  "RCL"   "SPGI"  "CRM"   "SBAC"  "SLB
 "   "STX"   "SEE"[] 
  []
 
 
-Overfull \hbox (12.28474pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28474pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [415] "SRE"   "NOW"   "SHW"   "SPG"   "SWKS"  "SNA"   "SO"
     "LUV"   "SWK"[] 
  []
 
-[96]
-Overfull \hbox (18.46478pt too wide) in paragraph at lines 3841--3841
+[93]
+Overfull \hbox (18.46478pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [424] "SBUX"  "STT"   "STE"   "SYK"   "SIVB"  "SYF"   "SNP
 S"  "SYY"   "TMUS"[] 
  []
 
 
-Overfull \hbox (18.46477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.46477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [433] "TROW"  "TTWO"  "TPR"   "TGT"   "TEL"   "TDY"   "TFX
 "   "TER"   "TSLA"[] 
  []
 
 
-Overfull \hbox (18.46475pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.46475pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [442] "TXN"   "TXT"   "TMO"   "TJX"   "TSCO"  "TT"    "TDG
 "   "TRV"   "TRMB"[] 
  []
 
 
-Overfull \hbox (6.10477pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (6.10477pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [451] "TFC"   "TWTR"  "TYL"   "TSN"   "UDR"   "ULTA"  "USB
 "   "UAA"   "UA"[] 
  []
 
 
-Overfull \hbox (12.27274pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.27274pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [460] "UNP"   "UAL"   "UNH"   "UPS"   "URI"   "UHS"   "UNM
 "   "VLO"   "VTR"[] 
  []
 
 
-Overfull \hbox (12.26082pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.26082pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [469] "VRSN"  "VRSK"  "VZ"    "VRTX"  "VFC"   "VIAC"  "VTR
 S"  "V"     "VNO"[] 
  []
 
 
-Overfull \hbox (12.28473pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28473pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [478] "VMC"   "WRB"   "WAB"   "WMT"   "WBA"   "DIS"   "WM"
     "WAT"   "WEC"[] 
  []
 
 
-Overfull \hbox (12.28474pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (12.28474pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [487] "WFC"   "WELL"  "WST"   "WDC"   "WU"    "WRK"   "WY"
     "WHR"   "WMB"[] 
  []
 
 
-Overfull \hbox (18.44081pt too wide) in paragraph at lines 3841--3841
+Overfull \hbox (18.44081pt too wide) in paragraph at lines 3707--3707
 []\TU/lmtt/m/n/12 ## [496] "WLTW"  "WYNN"  "XEL"   "XLNX"  "XYL"   "YUM"   "ZBR
 A"  "ZBH"   "ZION"[] 
  []
@@ -2013,171 +2011,171 @@ Missing character: There is no ， in font [lmroman12-regular]:mapping=tex-text;
 Missing character: There is no ， in font [lmroman12-regular]:mapping=tex-text;!
 Missing character: There is no ， in font [lmroman12-regular]:mapping=tex-text;!
 Missing character: There is no ， in font [lmroman12-regular]:mapping=tex-text;!
-[97] [98] [99] [100]
+[94] [95] [96] [97]
 File: Tectutorial_files/figure-latex/unnamed-chunk-93-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-93-1.pdf>
-[101] [102] [103]
+[98] [99] [100]
 File: Tectutorial_files/figure-latex/unnamed-chunk-95-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-95-1.pdf>
-[104] [105]
-Overfull \vbox (1.83565pt too high) detected at line 4248
+[101] [102]
+Overfull \vbox (1.83565pt too high) detected at line 4114
  []
 
-[106]
+[103]
 
 LaTeX Warning: File `Tectutorial_files/figure-latex/PMF E2 q3-1.pdf' not found 
-on input line 4250.
+on input line 4116.
 
 File: Tectutorial_files/figure-latex/PMF E2 q3-1.pdf Graphic file (type pdf)
 <use Tectutorial_files/figure-latex/PMF E2 q3-1.pdf>
 
-Overfull \hbox (117.75244pt too wide) in paragraph at lines 4250--4251
+Overfull \hbox (117.75244pt too wide) in paragraph at lines 4116--4117
 []\TU/lmr/m/n/12 E2 q3-1.pdf E2 q3-1.bb [] 
  []
 
-[107]
+[104]
 File: Tectutorial_files/figure-latex/unnamed-chunk-97-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-97-1.pdf>
-[108]
-Underfull \vbox (badness 1371) detected at line 4312
+[105]
+Underfull \vbox (badness 1371) detected at line 4178
  []
 
-[109]
+[106]
 File: Tectutorial_files/figure-latex/unnamed-chunk-98-1.pdf Graphic file (type 
 pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-98-1.pdf>
 
-Underfull \vbox (badness 1320) detected at line 4334
+Underfull \vbox (badness 1320) detected at line 4200
  []
 
-[110]
-Overfull \vbox (1.31519pt too high) detected at line 4398
+[107]
+Overfull \vbox (1.31519pt too high) detected at line 4264
  []
 
-[111]
+[108]
 File: Tectutorial_files/figure-latex/unnamed-chunk-101-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-101-1.pdf>
-[112] [113]
+[109] [110]
 File: Tectutorial_files/figure-latex/unnamed-chunk-103-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-103-1.pdf>
-[114] [115] [116]
+[111] [112] [113]
 File: Tectutorial_files/figure-latex/unnamed-chunk-106-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-106-1.pdf>
-[117]
+[114]
 File: Tectutorial_files/figure-latex/unnamed-chunk-107-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-107-1.pdf>
 
-Underfull \vbox (badness 10000) detected at line 4626
+Underfull \vbox (badness 10000) detected at line 4492
  []
 
-[118]
+[115]
 File: Tectutorial_files/figure-latex/unnamed-chunk-108-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-108-1.pdf>
 
-Underfull \vbox (badness 10000) detected at line 4645
+Underfull \vbox (badness 10000) detected at line 4511
  []
 
-[119]
+[116]
 File: Tectutorial_files/figure-latex/unnamed-chunk-109-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-109-1.pdf>
-[120] [121]
+[117] [118]
 File: Tectutorial_files/figure-latex/unnamed-chunk-111-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-111-1.pdf>
-[122] [123] [124] [125] [126] [127] [128]
-Overfull \hbox (37.00487pt too wide) in paragraph at lines 5031--5031
+[119] [120] [121] [122] [123] [124] [125]
+Overfull \hbox (37.00487pt too wide) in paragraph at lines 4897--4897
 []\TU/lmtt/m/n/12 ## optimize.portfolio(R = fang, portfolio = port_spec, optimi
 ze_method = "random",[] 
  []
 
 
-Overfull \hbox (18.46486pt too wide) in paragraph at lines 5059--5059
+Overfull \hbox (18.46486pt too wide) in paragraph at lines 4925--4925
 []\TU/lmtt/m/n/12 ## optimize.portfolio(R = fang, portfolio = port_spec, optimi
 ze_method = "ROI",[] 
  []
 
-[129]
+[126]
 File: Tectutorial_files/figure-latex/unnamed-chunk-117-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-117-1.pdf>
 File: Tectutorial_files/figure-latex/unnamed-chunk-118-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-118-1.pdf>
-[130]
+[127]
 File: Tectutorial_files/figure-latex/unnamed-chunk-118-2.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-118-2.pdf>
-[131] [132]
+[128] [129]
 File: Tectutorial_files/figure-latex/unnamed-chunk-120-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-120-1.pdf>
-[133] [134] [135]
+[130] [131] [132]
 File: Tectutorial_files/figure-latex/unnamed-chunk-123-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-123-1.pdf>
-[136] [137] [138] [139]
+[133] [134] [135] [136]
 File: Tectutorial_files/figure-latex/unnamed-chunk-128-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-128-1.pdf>
-[140] [141]
+[137] [138]
 File: Tectutorial_files/figure-latex/unnamed-chunk-131-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-131-1.pdf>
-[142]
+[139]
 File: Tectutorial_files/figure-latex/unnamed-chunk-132-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-132-1.pdf>
-[143]
+[140]
 File: Tectutorial_files/figure-latex/unnamed-chunk-133-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-133-1.pdf>
-[144] [145]
-Overfull \hbox (12.28453pt too wide) in paragraph at lines 5687--5687
+[141] [142]
+Overfull \hbox (12.28453pt too wide) in paragraph at lines 5553--5553
 []\TU/lmtt/m/n/12 ##               FB        AMZN        NFLX       GOOG       
     X           Y[] 
  []
 
 
-Overfull \hbox (12.18887pt too wide) in paragraph at lines 5687--5687
+Overfull \hbox (12.18887pt too wide) in paragraph at lines 5553--5553
 []\TU/lmtt/m/n/12 ## FB    1.00000000  0.18461970  0.21820791  0.2468989  0.037
 79375 -0.04276241[] 
  []
 
 
-Overfull \hbox (12.20091pt too wide) in paragraph at lines 5687--5687
+Overfull \hbox (12.20091pt too wide) in paragraph at lines 5553--5553
 []\TU/lmtt/m/n/12 ## AMZN  0.18461970  1.00000000  0.31180203  0.6171376  0.048
 77402 -0.05611269[] 
  []
 
 
-Overfull \hbox (12.2129pt too wide) in paragraph at lines 5687--5687
+Overfull \hbox (12.2129pt too wide) in paragraph at lines 5553--5553
 []\TU/lmtt/m/n/12 ## NFLX  0.21820791  0.31180203  1.00000000  0.3586214  0.067
 72682 -0.05943567[] 
  []
 
 
-Overfull \hbox (12.18889pt too wide) in paragraph at lines 5687--5687
+Overfull \hbox (12.18889pt too wide) in paragraph at lines 5553--5553
 []\TU/lmtt/m/n/12 ## GOOG  0.24689886  0.61713764  0.35862138  1.0000000  0.206
 82201 -0.19110508[] 
  []
 
-[146]
-Overfull \hbox (12.17686pt too wide) in paragraph at lines 5687--5687
+[143]
+Overfull \hbox (12.17686pt too wide) in paragraph at lines 5553--5553
 []\TU/lmtt/m/n/12 ## X     0.03779375  0.04877402  0.06772682  0.2068220  1.000
 00000 -0.98994949[] 
  []
 
 
-Overfull \hbox (12.1409pt too wide) in paragraph at lines 5687--5687
+Overfull \hbox (12.1409pt too wide) in paragraph at lines 5553--5553
 []\TU/lmtt/m/n/12 ## Y    -0.04276241 -0.05611269 -0.05943567 -0.1911051 -0.989
 94949  1.00000000[] 
  []
@@ -2185,439 +2183,439 @@ Overfull \hbox (12.1409pt too wide) in paragraph at lines 5687--5687
 File: Tectutorial_files/figure-latex/unnamed-chunk-137-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-137-1.pdf>
-[147] [148]
+[144] [145]
 File: Tectutorial_files/figure-latex/unnamed-chunk-139-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-139-1.pdf>
-[149] [150] [151] [152] [153]
+[146] [147] [148] [149] [150]
 File: Tectutorial_files/figure-latex/unnamed-chunk-146-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-146-1.pdf>
-[154] [155]
+[151] [152]
 File: Tectutorial_files/figure-latex/unnamed-chunk-149-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-149-1.pdf>
-[156] [157]
+[153] [154]
 File: Tectutorial_files/figure-latex/unnamed-chunk-151-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-151-1.pdf>
-[158] [159]
-Overfull \hbox (111.16487pt too wide) in paragraph at lines 6214--6214
+[155] [156]
+Overfull \hbox (111.16487pt too wide) in paragraph at lines 6080--6080
 []\TU/lmtt/m/n/12 ##  $ meanses : num  -0.428 -0.428 -0.428 -0.428 -0.428 -0.42
 8 -0.428 -0.428 -0.428 -0.428 ...[] 
  []
 
 
-Overfull \hbox (12.27274pt too wide) in paragraph at lines 6240--6240
+Overfull \hbox (12.27274pt too wide) in paragraph at lines 6106--6106
 []\TU/lmtt/m/n/12 ##  $ schid   : Factor w/ 160 levels "1224","1288",..: 1 1 1 
 1 1 1 1 1 1 1 ...[] 
  []
 
 
-Overfull \hbox (111.16487pt too wide) in paragraph at lines 6240--6240
+Overfull \hbox (111.16487pt too wide) in paragraph at lines 6106--6106
 []\TU/lmtt/m/n/12 ##  $ meanses : num  -0.428 -0.428 -0.428 -0.428 -0.428 -0.42
 8 -0.428 -0.428 -0.428 -0.428 ...[] 
  []
 
-[160]
+[157]
 File: Tectutorial_files/figure-latex/unnamed-chunk-156-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-156-1.pdf>
 File: Tectutorial_files/figure-latex/unnamed-chunk-157-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-157-1.pdf>
-[161]
+[158]
 File: Tectutorial_files/figure-latex/unnamed-chunk-158-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-158-1.pdf>
-[162]
+[159]
 File: Tectutorial_files/figure-latex/unnamed-chunk-159-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-159-1.pdf>
-[163]
+[160]
 File: Tectutorial_files/figure-latex/unnamed-chunk-160-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-160-1.pdf>
-[164]
+[161]
 File: Tectutorial_files/figure-latex/unnamed-chunk-161-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-161-1.pdf>
-[165]
+[162]
 File: Tectutorial_files/figure-latex/unnamed-chunk-162-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-162-1.pdf>
-[166]
+[163]
 File: Tectutorial_files/figure-latex/unnamed-chunk-163-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-163-1.pdf>
-[167]
-Overfull \hbox (6.10487pt too wide) in paragraph at lines 6433--6433
+[164]
+Overfull \hbox (6.10487pt too wide) in paragraph at lines 6299--6299
 []\TU/lmtt/m/n/12 ## Linear mixed model fit by maximum likelihood . t-tests use
  Satterthwaite[]s[] 
  []
 
-[168] [169] [170] [171]
-Overfull \hbox (37.00482pt too wide) in paragraph at lines 6637--6637
+[165] [166] [167] [168]
+Overfull \hbox (37.00482pt too wide) in paragraph at lines 6503--6503
 []\TU/lmtt/m/n/12 ## Global model call: lmer(formula = mathach ~ minority * fem
 ale * ses * schtype +[] 
  []
 
-[172]
-Overfull \hbox (24.64484pt too wide) in paragraph at lines 6637--6637
+[169]
+Overfull \hbox (24.64484pt too wide) in paragraph at lines 6503--6503
 []\TU/lmtt/m/n/12 ##       (Int) fml mnr sch   ses fml:mnr fml:sch fml:ses mnr:
 sch mnr:ses sch:ses[] 
  []
 
 
-Overfull \hbox (24.6205pt too wide) in paragraph at lines 6637--6637
+Overfull \hbox (24.6205pt too wide) in paragraph at lines 6503--6503
 []\TU/lmtt/m/n/12 ## 9168  13.34   +   +   + 2.712                       +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.59653pt too wide) in paragraph at lines 6637--6637
+Overfull \hbox (24.59653pt too wide) in paragraph at lines 6503--6503
 []\TU/lmtt/m/n/12 ## 9184  13.39   +   +   + 2.676       +               +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.62051pt too wide) in paragraph at lines 6637--6637
+Overfull \hbox (24.62051pt too wide) in paragraph at lines 6503--6503
 []\TU/lmtt/m/n/12 ## 9200  13.31   +   +   + 2.706               +       +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.57251pt too wide) in paragraph at lines 6637--6637
+Overfull \hbox (24.57251pt too wide) in paragraph at lines 6503--6503
 []\TU/lmtt/m/n/12 ## 9216  13.36   +   +   + 2.669       +       +       +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.62051pt too wide) in paragraph at lines 6637--6637
+Overfull \hbox (24.62051pt too wide) in paragraph at lines 6503--6503
 []\TU/lmtt/m/n/12 ## 9104  13.33   +   +   + 2.912                             
   +       +       +[] 
  []
 
 
-Overfull \hbox (24.62051pt too wide) in paragraph at lines 6637--6637
+Overfull \hbox (24.62051pt too wide) in paragraph at lines 6503--6503
 []\TU/lmtt/m/n/12 ## 11232 13.39   +   +   + 2.683       +               +     
   +       +       +[] 
  []
 
 
-Overfull \hbox (6.10487pt too wide) in paragraph at lines 6682--6682
+Overfull \hbox (6.10487pt too wide) in paragraph at lines 6548--6548
 []\TU/lmtt/m/n/12 ## Linear mixed model fit by maximum likelihood . t-tests use
  Satterthwaite[]s[] 
  []
 
-[173] [174]
-Overfull \hbox (6.10487pt too wide) in paragraph at lines 6768--6768
+[170] [171]
+Overfull \hbox (6.10487pt too wide) in paragraph at lines 6634--6634
 []\TU/lmtt/m/n/12 ## Linear mixed model fit by maximum likelihood . t-tests use
  Satterthwaite[]s[] 
  []
 
 
-Overfull \hbox (6.10477pt too wide) in paragraph at lines 6768--6768
+Overfull \hbox (6.10477pt too wide) in paragraph at lines 6634--6634
 []\TU/lmtt/m/n/12 ##     minority * schtype + minority * ses + schtype * ses + 
 (1 |      schid)[] 
  []
 
-[175] [176] [177] [178] [179] [180] [181] [182] [183] [184] [185] [186] [187] [
-188] [189] [190] [191] [192]
+[172] [173] [174] [175] [176] [177] [178] [179] [180] [181] [182] [183] [184] [
+185] [186] [187] [188] [189]
 File: Tectutorial_files/figure-latex/unnamed-chunk-187-1.pdf Graphic file (type
  pdf)
 <use Tectutorial_files/figure-latex/unnamed-chunk-187-1.pdf>
-[193]
-Underfull \vbox (badness 1424) detected at line 7631
+[190]
+Underfull \vbox (badness 1424) detected at line 7497
  []
 
-[194] [195] [196] [197] [198]
-Underfull \vbox (badness 10000) detected at line 7819
- []
-
-
-Overfull \vbox (1.37212pt too high) detected at line 7819
- []
-
-[199] [200] [201] [202] [203]
-Overfull \hbox (36.96883pt too wide) in paragraph at lines 8063--8063
-[]\TU/lmtt/m/n/12 ##  [1] 0b 0b 26 4c 0d f8 a4 14 a5 8d a1 7c 93 70 70 f4 7b 15
- df cc f6 e7 57 a2 8f[] 
+[191] [192] [193] [194] [195]
+Underfull \vbox (badness 10000) detected at line 7685
  []
 
 
-Overfull \hbox (36.93283pt too wide) in paragraph at lines 8063--8063
-[]\TU/lmtt/m/n/12 ## [26] a2 18 2f 07 a2 a6 54 c3 a5 1d e2 b7 51 16 94 ce f4 69
- 5d cb 5a b4 3a 43 f5[] 
+Overfull \vbox (1.37212pt too high) detected at line 7685
+ []
+
+[196] [197] [198] [199] [200]
+Overfull \hbox (36.90886pt too wide) in paragraph at lines 7929--7929
+[]\TU/lmtt/m/n/12 ##  [1] 26 44 45 57 37 80 d0 57 25 e1 0a 6f 74 fd e5 a7 9c c9
+ 41 f9 a2 46 79 e3 b9[] 
+ []
+
+
+Overfull \hbox (36.89685pt too wide) in paragraph at lines 7929--7929
+[]\TU/lmtt/m/n/12 ## [26] 66 48 38 b0 bc 79 6d 76 1a 00 20 09 47 ec de b2 f5 7f
+ 09 5d 25 89 c2 40 f0[] 
+ []
+
+[201]
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 7989--7989
+[]\TU/lmtt/m/n/12 ##   [1] 58 0a 00 00 00 03 00 04 01 00 00 03 05 00 00 00 00 0
+6 43 50 31 32 35 32 00[] 
+ []
+
+
+Overfull \hbox (43.16081pt too wide) in paragraph at lines 7989--7989
+[]\TU/lmtt/m/n/12 ##  [26] 00 02 13 00 00 00 03 00 00 00 10 00 00 00 01 00 04 0
+0 09 00 00 00 01 41 00[] 
+ []
+
+
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 7989--7989
+[]\TU/lmtt/m/n/12 ##  [51] 00 00 10 00 00 00 01 00 04 00 09 00 00 00 01 42 00 0
+0 00 10 00 00 00 01 00[] 
+ []
+
+
+Overfull \hbox (43.14882pt too wide) in paragraph at lines 7989--7989
+[]\TU/lmtt/m/n/12 ##  [76] 04 00 09 00 00 00 03 31 30 30 00 00 04 02 00 00 00 0
+1 00 04 00 09 00 00 00[] 
+ []
+
+
+Overfull \hbox (43.08885pt too wide) in paragraph at lines 7989--7989
+[]\TU/lmtt/m/n/12 ## [101] 05 6e 61 6d 65 73 00 00 00 10 00 00 00 03 00 04 00 0
+9 00 00 00 06 73 65 6e[] 
+ []
+
+
+Overfull \hbox (43.04086pt too wide) in paragraph at lines 7989--7989
+[]\TU/lmtt/m/n/12 ## [126] 64 65 72 00 04 00 09 00 00 00 08 72 65 63 65 69 76 6
+5 72 00 04 00 09 00 00[] 
+ []
+
+[202]
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ##   [1] 0a ef eb 0b a5 f0 be d3 a7 55 09 da 20 ef 5f ca 41 5
+2 e5 3b 84 02 0a 3b c7[] 
+ []
+
+
+Overfull \hbox (43.05286pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ##  [26] be 53 f6 96 e6 58 00 92 82 0b fc d9 be d4 15 dd 97 c
+e bc 16 1f 09 2c 94 5a[] 
+ []
+
+
+Overfull \hbox (43.10083pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ##  [51] 78 fc 5b 71 93 b0 33 54 ef 1c 22 c5 be 95 b9 d9 4e 4
+2 35 5b 51 ec 0e 69 e6[] 
+ []
+
+
+Overfull \hbox (43.04086pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ##  [76] 67 9c 9d 62 69 75 e0 f5 5e fd 22 a7 5a 60 d9 dc 32 d
+5 a6 97 1a 7e 05 f6 58[] 
+ []
+
+
+Overfull \hbox (43.11284pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ## [101] 01 11 8e 76 db 83 56 e1 e3 0c d3 db 79 df 03 f5 33 0
+b 73 00 63 f3 f7 92 86[] 
+ []
+
+
+Overfull \hbox (43.08884pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ## [126] 38 03 cb de 4e 4f f2 f8 f7 c8 28 9a 99 ab 46 29 da 4
+f 1e 8b e0 18 79 a6 1a[] 
+ []
+
+
+Overfull \hbox (43.10083pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ## [151] 3b fd 9e 88 30 ca 5a 66 90 9d 38 21 11 b6 d8 b5 ed e
+b cf d2 a3 cb 64 7f 3f[] 
+ []
+
+
+Overfull \hbox (43.11284pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ## [176] eb d0 c2 03 fc 4f 36 be fb 81 59 8d c5 ec 8f c2 e3 4
+6 e8 64 fa 23 e8 85 95[] 
+ []
+
+
+Overfull \hbox (43.11282pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ## [201] e6 38 83 8c 41 d6 96 2c 08 2f ff 8a 90 fb 74 c0 0f 1
+c 13 7a ce 46 aa db 3c[] 
+ []
+
+
+Overfull \hbox (43.08885pt too wide) in paragraph at lines 8018--8018
+[]\TU/lmtt/m/n/12 ## [226] 4f ee 3c 38 5f 04 85 04 4f a0 f4 98 6f 09 26 49 b1 1
+b c5 90 37 e3 cc 94 8f[] 
+ []
+
+[203]
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 8080--8080
+[]\TU/lmtt/m/n/12 ##   [1] 58 0a 00 00 00 03 00 04 01 00 00 03 05 00 00 00 00 0
+6 43 50 31 32 35 32 00[] 
+ []
+
+
+Overfull \hbox (43.16081pt too wide) in paragraph at lines 8080--8080
+[]\TU/lmtt/m/n/12 ##  [26] 00 02 13 00 00 00 03 00 00 00 10 00 00 00 01 00 04 0
+0 09 00 00 00 01 41 00[] 
+ []
+
+
+Overfull \hbox (43.1728pt too wide) in paragraph at lines 8080--8080
+[]\TU/lmtt/m/n/12 ##  [51] 00 00 10 00 00 00 01 00 04 00 09 00 00 00 01 42 00 0
+0 00 10 00 00 00 01 00[] 
+ []
+
+
+Overfull \hbox (43.14882pt too wide) in paragraph at lines 8080--8080
+[]\TU/lmtt/m/n/12 ##  [76] 04 00 09 00 00 00 03 31 30 30 00 00 04 02 00 00 00 0
+1 00 04 00 09 00 00 00[] 
+ []
+
+
+Overfull \hbox (43.08885pt too wide) in paragraph at lines 8080--8080
+[]\TU/lmtt/m/n/12 ## [101] 05 6e 61 6d 65 73 00 00 00 10 00 00 00 03 00 04 00 0
+9 00 00 00 06 73 65 6e[] 
+ []
+
+
+Overfull \hbox (43.04086pt too wide) in paragraph at lines 8080--8080
+[]\TU/lmtt/m/n/12 ## [126] 64 65 72 00 04 00 09 00 00 00 08 72 65 63 65 69 76 6
+5 72 00 04 00 09 00 00[] 
+ []
+
+
+Overfull \hbox (43.06485pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ##   [1] 19 13 3b eb 2f 9b 4d 07 f9 49 d8 65 66 09 f2 b2 07 e
+a ac 09 fc 31 2c 48 9d[] 
+ []
+
+
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ##  [26] 2f 74 22 4c 85 d6 11 a7 9b 35 28 d4 e3 0d 6e 57 0b 9
+0 37 89 f7 cc e1 92 2e[] 
+ []
+
+
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ##  [51] 50 f1 1a 12 3e 23 e8 a2 53 d6 ba a8 78 19 8a 8f 41 4
+0 f5 6d d5 85 d4 95 02[] 
+ []
+
+
+Overfull \hbox (43.08884pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ##  [76] 7a 33 e5 69 00 fb 01 f2 ae 60 77 d0 15 a3 16 d0 47 5
+7 b7 e7 9b 3d 89 46 d5[] 
+ []
+
+
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ## [101] b0 c8 cf 5a 6e b2 86 b7 21 3a b0 55 46 91 1e 6d 7f e
+2 ad ad 7b e1 04 09 89[] 
+ []
+
+
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ## [126] 37 5c e2 1f 0c a3 b6 b0 47 54 2d de 5e 97 44 18 6a 5
+0 dc 37 6d f4 6c 97 8c[] 
+ []
+
+
+Overfull \hbox (43.07686pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ## [151] 38 d7 12 57 9b 90 f8 94 64 b8 49 92 20 5f 05 c8 48 c
+3 de e0 e5 e6 8f 29 6d[] 
+ []
+
+
+Overfull \hbox (43.05287pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ## [176] 17 f9 23 fa c0 b6 c4 da 77 9d e0 be 2e 5a 5b 19 f6 4
+9 df 19 c8 49 b2 c9 b9[] 
+ []
+
+
+Overfull \hbox (43.10083pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ## [201] 6c b3 96 61 38 a0 a5 0d c3 fc 72 02 a9 92 72 5d bf 5
+8 a4 ee c5 28 c3 8e d9[] 
+ []
+
+
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8105--8105
+[]\TU/lmtt/m/n/12 ## [226] c6 1d a4 a1 cf db b8 cd e1 40 f5 63 ff 00 29 02 5b 8
+9 f6 25 4c 4a 7f 97 41[] 
  []
 
 [204]
-Overfull \hbox (43.1728pt too wide) in paragraph at lines 8123--8123
-[]\TU/lmtt/m/n/12 ##   [1] 58 0a 00 00 00 03 00 04 01 00 00 03 05 00 00 00 00 0
-6 43 50 31 32 35 32 00[] 
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ##   [1] 8b 2b 81 34 b3 0c c8 38 35 8d 46 63 8a 4a 1b 3e 35 6
+4 20 b2 2a af 26 2c 77[] 
  []
 
 
-Overfull \hbox (43.16081pt too wide) in paragraph at lines 8123--8123
-[]\TU/lmtt/m/n/12 ##  [26] 00 02 13 00 00 00 03 00 00 00 10 00 00 00 01 00 04 0
-0 09 00 00 00 01 41 00[] 
+Overfull \hbox (43.04086pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ##  [26] 50 67 6f 37 23 bc a4 f6 f6 96 6e 31 43 f4 5b 44 14 9
+1 31 c9 a6 cf 04 c6 88[] 
  []
 
 
-Overfull \hbox (43.1728pt too wide) in paragraph at lines 8123--8123
-[]\TU/lmtt/m/n/12 ##  [51] 00 00 10 00 00 00 01 00 04 00 09 00 00 00 01 42 00 0
-0 00 10 00 00 00 01 00[] 
+Overfull \hbox (43.11284pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ##  [51] 4f ef fa 6f 67 3e 7e f4 8b ef 87 16 11 cb 33 7b 8f b
+9 c2 56 34 20 70 c0 a9[] 
  []
 
 
-Overfull \hbox (43.14882pt too wide) in paragraph at lines 8123--8123
-[]\TU/lmtt/m/n/12 ##  [76] 04 00 09 00 00 00 03 31 30 30 00 00 04 02 00 00 00 0
-1 00 04 00 09 00 00 00[] 
+Overfull \hbox (43.05287pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ##  [76] 06 8d 46 a9 93 02 d2 b7 80 5d 5d a7 8e c0 26 6f 29 7
+a 2c 63 e9 90 b7 d1 0c[] 
  []
 
 
-Overfull \hbox (43.08885pt too wide) in paragraph at lines 8123--8123
-[]\TU/lmtt/m/n/12 ## [101] 05 6e 61 6d 65 73 00 00 00 10 00 00 00 03 00 04 00 0
-9 00 00 00 06 73 65 6e[] 
+Overfull \hbox (43.12482pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ## [101] e0 c1 b3 d4 5e a1 65 de df 51 17 96 9f 47 b3 b3 b8 a
+7 0c 8f f9 04 1f 80 2d[] 
  []
 
 
-Overfull \hbox (43.04086pt too wide) in paragraph at lines 8123--8123
-[]\TU/lmtt/m/n/12 ## [126] 64 65 72 00 04 00 09 00 00 00 08 72 65 63 65 69 76 6
-5 72 00 04 00 09 00 00[] 
- []
-
-[205]
-Overfull \hbox (43.12483pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ##   [1] 86 61 da 70 92 ac 72 b1 1b 03 fe 43 b3 c9 a4 b9 0f e
-b 3c 84 17 4d e3 cd 17[] 
+Overfull \hbox (43.11284pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ## [126] 64 5c f8 f9 00 0a 95 3b c2 24 4f 59 5d 41 af 82 81 3
+b fd 6b cf 8c 7c 8e 25[] 
  []
 
 
-Overfull \hbox (43.08884pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ##  [26] 02 b0 b2 70 e4 0b 8d 6b 34 bd e2 90 5b 80 75 8b 8f 6
-c be 9e 7d 99 c8 e4 61[] 
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ## [151] 5b 52 e3 cd 34 16 2f ae 0e 4f a0 4c f3 51 87 59 04 9
+f 1b fd 46 e0 1c b3 31[] 
  []
 
 
-Overfull \hbox (43.07683pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ##  [51] 27 cc 94 74 96 0a ec 58 93 96 94 d5 84 a9 4a 8c cf 8
-1 88 5a 77 06 78 33 54[] 
+Overfull \hbox (43.12482pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ## [176] 23 88 2e 41 f4 e0 ac f3 56 37 42 66 20 57 3c 16 28 b
+4 e4 32 7d cd 80 53 81[] 
  []
 
 
-Overfull \hbox (43.07686pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ##  [76] f4 b6 f0 0d 4e 29 7c 30 4b f8 fc c6 a3 c3 04 86 9b 4
-d f8 b6 c6 15 f4 c9 17[] 
+Overfull \hbox (43.13683pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ## [201] a9 d0 57 44 ac 2f e6 19 ee 00 71 65 82 c2 be bc dd 7
+5 33 fe ec 52 b7 15 37[] 
  []
 
 
-Overfull \hbox (43.12483pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ## [101] 11 07 d7 de c3 05 8a 86 4c 85 08 43 81 dd 6b 34 13 0
-0 dc 86 f3 da c6 5b 46[] 
+Overfull \hbox (43.10085pt too wide) in paragraph at lines 8143--8143
+[]\TU/lmtt/m/n/12 ## [226] 8d d1 30 07 98 a2 70 59 83 84 05 e6 2b de bf b9 a4 9
+e 63 b3 7e d7 a4 83 f1[] 
  []
 
-
-Overfull \hbox (43.08884pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ## [126] 3b be 76 91 fe 05 93 f4 bd 3b fe 30 4f 9e f7 fc 69 b
-5 87 34 ad 5e 92 0b 82[] 
- []
-
-
-Overfull \hbox (43.06483pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ## [151] c5 ee 72 d1 a9 2b 06 f0 7a 66 91 48 08 ba 68 89 4d b
-c c1 99 76 52 dd 44 31[] 
- []
-
-
-Overfull \hbox (43.12482pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ## [176] 4e 99 5a 80 cf a1 37 b0 cd 39 72 18 ac 9a c1 ce cb f
-8 b0 5d ab 24 c7 c1 f5[] 
- []
-
-
-Overfull \hbox (43.13683pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ## [201] 04 10 09 e4 38 f9 da aa ac 9a 0d d7 6c 7c db 4f 0d 1
-5 5e 58 50 ee 8d 82 0b[] 
- []
-
-
-Overfull \hbox (43.07686pt too wide) in paragraph at lines 8152--8152
-[]\TU/lmtt/m/n/12 ## [226] 40 65 9f 6c b5 72 40 ec 3f 61 9d ff 20 1c ca 25 91 3
-a c1 6c 65 e1 78 cd db[] 
- []
-
-[206]
-Overfull \hbox (43.1728pt too wide) in paragraph at lines 8214--8214
-[]\TU/lmtt/m/n/12 ##   [1] 58 0a 00 00 00 03 00 04 01 00 00 03 05 00 00 00 00 0
-6 43 50 31 32 35 32 00[] 
- []
-
-
-Overfull \hbox (43.16081pt too wide) in paragraph at lines 8214--8214
-[]\TU/lmtt/m/n/12 ##  [26] 00 02 13 00 00 00 03 00 00 00 10 00 00 00 01 00 04 0
-0 09 00 00 00 01 41 00[] 
- []
-
-
-Overfull \hbox (43.1728pt too wide) in paragraph at lines 8214--8214
-[]\TU/lmtt/m/n/12 ##  [51] 00 00 10 00 00 00 01 00 04 00 09 00 00 00 01 42 00 0
-0 00 10 00 00 00 01 00[] 
- []
-
-
-Overfull \hbox (43.14882pt too wide) in paragraph at lines 8214--8214
-[]\TU/lmtt/m/n/12 ##  [76] 04 00 09 00 00 00 03 31 30 30 00 00 04 02 00 00 00 0
-1 00 04 00 09 00 00 00[] 
- []
-
-
-Overfull \hbox (43.08885pt too wide) in paragraph at lines 8214--8214
-[]\TU/lmtt/m/n/12 ## [101] 05 6e 61 6d 65 73 00 00 00 10 00 00 00 03 00 04 00 0
-9 00 00 00 06 73 65 6e[] 
- []
-
-
-Overfull \hbox (43.04086pt too wide) in paragraph at lines 8214--8214
-[]\TU/lmtt/m/n/12 ## [126] 64 65 72 00 04 00 09 00 00 00 08 72 65 63 65 69 76 6
-5 72 00 04 00 09 00 00[] 
- []
-
-
-Overfull \hbox (43.10085pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ##   [1] 7f c0 79 37 5c b4 03 bb 04 e8 14 e9 5c b7 92 14 ff d
-c fc 62 67 c3 36 fe 92[] 
- []
-
-
-Overfull \hbox (43.13683pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ##  [26] bd d2 8b 47 12 f6 0b 5a e5 8f fa 13 1e 8b 8e 1f 89 3
-2 38 2d 35 74 74 c5 64[] 
- []
-
-
-Overfull \hbox (43.14882pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ##  [51] b2 8b 32 57 13 c0 b2 7f 91 31 cb a0 b4 02 e6 0c ab d
-2 c1 b9 14 c3 05 ff 7c[] 
- []
-
-
-Overfull \hbox (43.11282pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ##  [76] 69 d5 e7 34 c3 a3 fc e6 ef e5 fb c3 8a 36 b5 0a 00 1
-0 1e bc ce b1 9e f8 8d[] 
- []
-
-
-Overfull \hbox (43.10081pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ## [101] b4 cd dd f4 18 99 a1 48 66 ba 15 7a 15 97 17 06 5a d
-8 b1 c8 ee 5e 92 ff 20[] 
- []
-
-
-Overfull \hbox (43.14882pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ## [126] 54 bc 8b d2 b0 f5 c8 a8 89 a7 c1 44 0b 2b 48 0f 00 6
-1 f3 ef 1d 5e ad 0d 84[] 
- []
-
-
-Overfull \hbox (43.08885pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ## [151] 7d 59 a4 97 4e cb b2 ce e7 4e 80 32 a4 61 00 d5 9a f
-9 6b 6c 4a 63 84 2f af[] 
- []
-
-
-Overfull \hbox (43.06485pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ## [176] 7d 74 f2 a8 61 3c bd 62 39 f7 1a 98 05 86 83 85 37 9
-a 3f 0e 9d bc 69 a3 25[] 
- []
-
-
-Overfull \hbox (43.10083pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ## [201] 4c 86 9e 95 e4 b1 66 80 d3 29 cb b8 90 cf f4 b0 32 c
-e ec b7 7d 3e c5 c1 31[] 
- []
-
-
-Overfull \hbox (43.10085pt too wide) in paragraph at lines 8239--8239
-[]\TU/lmtt/m/n/12 ## [226] 63 16 b4 f0 db bd 54 7d 38 91 d4 03 1d 44 be 82 d9 a
-a 9c 0f 41 6d 3d 50 5a[] 
- []
-
-[207]
-Overfull \hbox (43.16081pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ##   [1] a2 60 38 cf 0e 0e af c0 90 f2 d0 8e 54 11 5d 42 2f 5
-4 eb f4 fe 31 3a 58 2f[] 
- []
-
-
-Overfull \hbox (43.11284pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ##  [26] eb 4e 7c ea b6 09 4c 2b a1 19 17 e9 a8 57 8c 6f e0 c
-f 0e d7 d2 de 08 b7 c5[] 
- []
-
-
-Overfull \hbox (43.11284pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ##  [51] 7f 7c 89 13 ce 67 5e 15 e1 ef 05 3f db d5 2d 4b 97 7
-0 39 7a a1 08 6f 05 b6[] 
- []
-
-
-Overfull \hbox (43.02885pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ##  [76] 4e 90 51 74 82 8d c9 79 e6 69 43 9d 01 24 b3 36 5b 8
-3 e6 96 15 ea 2f f9 d7[] 
- []
-
-
-Overfull \hbox (43.13683pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ## [101] 45 ae a2 04 a9 59 fd 1b ae d1 90 5f 2c de 84 8e c9 f
-7 5d fd 58 bd eb 37 aa[] 
- []
-
-
-Overfull \hbox (43.10085pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ## [126] 64 16 c3 ca d0 60 d3 a4 74 7f 7d 29 1b da f0 90 73 5
-3 a3 85 4f d1 65 32 df[] 
- []
-
-
-Overfull \hbox (43.08884pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ## [151] c8 00 30 30 33 99 34 2d 89 fe 06 b3 7c 19 30 ab 57 f
-6 92 04 d8 16 a1 25 fe[] 
- []
-
-
-Overfull \hbox (43.08885pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ## [176] 97 3f 0b ba 12 97 f4 b7 f1 dc c0 a6 28 a8 e9 d9 d6 4
-b b8 e8 c4 7f 58 6a 5e[] 
- []
-
-
-Overfull \hbox (43.16081pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ## [201] 15 e6 21 ec af 8e 44 e1 71 a7 cf 29 e8 e0 d7 14 35 8
-e 31 27 1a 47 77 2e 30[] 
- []
-
-
-Overfull \hbox (43.08885pt too wide) in paragraph at lines 8277--8277
-[]\TU/lmtt/m/n/12 ## [226] 26 f6 d1 f8 73 f8 6d 93 94 34 84 ee 14 9b f4 ba e8 6
-8 3f a0 eb b3 4a d1 c2[] 
- []
-
-[208] [209] [210] (Tectutorial.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 8382.
-[211]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 8382.
+[205] [206] [207] (Tectutorial.bbl)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 8248.
+[208]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 8248.
 (Tectutorial.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 8382.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 8382.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 8248.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 8248.
  ) 
 Here is how much of TeX's memory you used:
- 30801 strings out of 427665
- 553961 string characters out of 3149131
- 783891 words of memory out of 3000000
- 34488 multiletter control sequences out of 15000+200000
+ 30775 strings out of 427665
+ 553474 string characters out of 3149131
+ 783566 words of memory out of 3000000
+ 34462 multiletter control sequences out of 15000+200000
  539781 words of font info for 94 fonts, out of 3000000 for 9000
  1348 hyphenation exceptions out of 8191
- 59i,8n,115p,812b,497s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 59i,8n,115p,812b,464s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on Tectutorial.pdf (211 pages).
+Output written on Tectutorial.pdf (208 pages).

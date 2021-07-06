@@ -39,10 +39,6 @@ abstract: This is an introductory applied tutorial suitable for undergraduate st
 \tableofcontents
 ```
 
-\newpage
-
-```{r Preface, child = 'preface.Rmd'}
-```
 
 \newpage
 
