@@ -18,8 +18,8 @@ The single-period problem is the simplest framework to implement asset allocatio
 We need data to start. For convenience, we use the monthly returns of the FANG database.
 
 ```{r}
-FANG_monthly_returns <- FANG %>%
-    group_by(symbol) %>%
+FANG_monthly_returns <- FANG |>
+    group_by(symbol) |>
     tq_transmute(select     = adjusted,
                  mutate_fun = periodReturn,
                  period     = "monthly",
@@ -39,7 +39,7 @@ library(dplyr)
 library(tbl2xts)
 
 fang <- 
-  FANG_monthly_returns %>% tbl_xts(., spread_by = "symbol")
+  FANG_monthly_returns |> tbl_xts(spread_by = "symbol")
 head(fang)
 ```
 
@@ -117,7 +117,7 @@ Remember these are the return per unit of risk of the individual assets.
 
 ```{r}
 # List of sr, individual assets.
-FANG_monthly_sr <- FANG_stats %>%
+FANG_monthly_sr <- FANG_stats |>
   select(symbol, sr)
 FANG_monthly_sr
 ```
@@ -154,7 +154,7 @@ According to the opt_rand portfolio, we have to invest 29.8% in FB, 18.2% in AMZ
 # Add the new portfolio sr to the list.
 FANG_monthly_sr <- 
   add_row(FANG_monthly_sr, symbol = "opt_rand", 
-          sr = opt_rand$opt_values$mean / opt_rand$opt_values$StdDev) %>%
+          sr = opt_rand$opt_values$mean / opt_rand$opt_values$StdDev) |>
   arrange(sr)
 FANG_monthly_sr
 ```
@@ -190,7 +190,7 @@ The ROI criterion recommends investing 38.3% in FB and 61.7% in NFLX. This led t
 # Add the new portfolio sr to the list.
 FANG_monthly_sr <- 
   add_row(FANG_monthly_sr, symbol = "opt_roi", 
-          sr = opt_roi$opt_values$mean / opt_roi$opt_values$StdDev) %>%
+          sr = opt_roi$opt_values$mean / opt_roi$opt_values$StdDev) |>
 arrange(sr)
 FANG_monthly_sr
 ```
@@ -202,10 +202,10 @@ The expected return in $t=0$ of your opt_rand portfolio is 0.02606294. The value
 In this case we invest in $t=0$ or 2016-12-30 and the future is $t=1$ or 2017-01-31. There are many ways to conduct the simulation. Let's keep it simple and use the historical mean and standard deviation information we have.
 
 ```{r}
-FANG_stats_all <- FANG_stats %>%
-  select(symbol,mean, sd) %>%
+FANG_stats_all <- FANG_stats |>
+  select(symbol,mean, sd) |>
   add_row(symbol = "opt_rand", 
-          mean = opt_rand$opt_values$mean, sd = opt_rand$opt_values$StdDev) %>%
+          mean = opt_rand$opt_values$mean, sd = opt_rand$opt_values$StdDev) |>
   add_row(symbol = "opt_roi", 
           mean = opt_roi$opt_values$mean, sd = opt_roi$opt_values$StdDev)
 FANG_stats_all
@@ -241,15 +241,15 @@ First, we need the 2017-01-31 actual or realized returns. We need to download th
 
 ```{r}
 # Download the 2017-01-31 individual asset returns.
-r_stocks <- c("FB", "AMZN", "NFLX", "GOOG") %>%
+r_stocks <- c("FB", "AMZN", "NFLX", "GOOG") |>
   tq_get(get  = "stock.prices", from = "2016-12-31", 
-         to   = "2017-01-31") %>%
-  group_by(symbol) %>% 
+         to   = "2017-01-31") |>
+  group_by(symbol) |> 
   tq_transmute(select     = adjusted, 
                mutate_fun = periodReturn, 
                period     = "monthly", 
-               col_rename = "R_stocks") %>%
-  tbl_xts(., spread_by = "symbol")
+               col_rename = "R_stocks") |>
+  tbl_xts(spread_by = "symbol")
 r_stocks
 ```
 
@@ -287,7 +287,7 @@ It is tempting to calculate an optimal portfolio based on our previous CAPM exam
 
 ```{r}
 capm_stocks <- 
-  R_stocks %>% tbl_xts(., spread_by = "symbol") %>%
+  R_stocks |> tbl_xts(spread_by = "symbol") |>
   na.fill(fill = 0.00)
 port_spec <- portfolio.spec(colnames(capm_stocks))
 port_spec <- add.constraint(portfolio = 
@@ -328,14 +328,14 @@ abline(0, opt_roi$objective_measures$mean /
 
 ```{r PMF E2 q4, eval=FALSE, include=FALSE}
 # Create yearly returns.
-FANG_daily_returns <- FANG %>%
-    group_by(symbol) %>%
+FANG_daily_returns <- FANG |>
+    group_by(symbol) |>
     tq_transmute(select     = adjusted,
                  mutate_fun = periodReturn,
                  period     = "daily",
                  type       = "arithmetic")
 library(tbl2xts)
-f <- FANG_daily_returns %>% tbl_xts(., spread_by = "symbol")
+f <- FANG_daily_returns |> tbl_xts(spread_by = "symbol")
 cor(f)
 set.seed(13)
 opt_rand_daily <- optimize.portfolio(f, portfolio = port_spec,
@@ -460,7 +460,7 @@ Let's compare the return per unit of risk.
 # Add the new portfolio sr to the list.
 FANG_monthly_sr <- 
   add_row(FANG_monthly_sr, symbol = "opt_xy", 
-          sr = opt_xy$opt_values$mean / opt_xy$opt_values$StdDev) %>%
+          sr = opt_xy$opt_values$mean / opt_xy$opt_values$StdDev) |>
   arrange(sr)
 FANG_monthly_sr
 ```
