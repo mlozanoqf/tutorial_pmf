@@ -2,7 +2,7 @@
 title: "**\\Huge Financial modeling in R. \\vspace{20 mm}   \n \\fontsize{100}{100}\\faLaptopCode  \\vspace{20 mm}  \n\\Huge Dr. Martín Lozano.**"
 
 author:
-- \faEnvelope \hspace{1 mm} \texttt{<martin.lozano@udem.edu>}
+- \faEnvelope \hspace{1 mm} \texttt{<mlozanoqf@gmail.com>}
 - \faAddressCard \hspace{1 mm} \texttt{https://sites.google.com/site/mlozanoqf/}
 - \faGithub \hspace{1 mm} \texttt{https://github.com/mlozanoqf/}
 date: "\\faClock \\hspace{1 mm} `r format(Sys.time(), '%B %d, %Y. %H:%M:%S')`"

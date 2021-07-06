@@ -7,13 +7,13 @@ output: pdf_document
 
 Original example by Massimo Franceschet.
 
-* https://youtu.be/J-ab9was1p0
-* https://youtu.be/SSo_EIwHSd4
-* https://youtu.be/AQDCe585Lnc
-* https://youtu.be/XCo6yyutYAM
-* https://youtu.be/M3EFi_POhps
-* https://youtu.be/5I3wYAwbKMM
-* https://youtu.be/OcmvMs4AMbM
+-   [Blockchain Explanation](https://youtu.be/J-ab9was1p0)
+-   [How does a blockchain work - Simply Explained](https://youtu.be/SSo_EIwHSd4)
+-   [Asymmetric Encryption - Simply explained](https://youtu.be/AQDCe585Lnc)
+-   [What is a Bitcoin hard fork? Simply Explained!](https://youtu.be/XCo6yyutYAM)
+-   [Proof-of-Stake (vs proof-of-work)](https://youtu.be/M3EFi_POhps)
+-   [Will GDPR kill blockchains?](https://youtu.be/5I3wYAwbKMM)
+-   [Zero Knowledge Proof - ZKP](https://youtu.be/OcmvMs4AMbM)
 
 A blockchain is a distributed system using cryptography to secure an evolving consensus about an economically valuable token. Cryptography is a method of protecting information and communications through the use of codes, so that only those for whom the information is intended can read and process it. The prefix *crypt-* means hidden or vault, and the suffix *-graphy* stands for writing.
 
@@ -40,9 +40,7 @@ This was a single unchained block. Now, let's introduce the concept of chain.
 
 Blocks are concatenated into a chain. The first block of the chain is called the *genesis block* and has no parent block. The last block of a chain is the *current block* and is not parent of any other block (yet). 
 
-Here is the genesis block of the Ethereum blockchain. 
-https://etherscan.io/block/0
-https://www.ethereum.org/
+Here is the genesis block of the Ethereum blockchain: https://etherscan.io/block/0
 
 Let’s chain some blocks.
 
@@ -96,7 +94,9 @@ Our blockchain is valid. At the moment the validation criterion is quite simple.
 
 The linking structure of the chain is more complex than one described above: each block in a blockchain is identified by a hash value of its content and references to the hash of the parent block, or 0 if the block is the genesis one.
 
-Hashes of blocks are created using cryptographic hash functions, that are mathematical algorithms that maps data of arbitrary size to a bit string of a fixed size (called hash or digest). The hash is used to certify the information content of the block: by modifying even a single bit of the content, the hash completely changes. Furthermore, notice that the digest of the current block is computed in terms of the previous block digest. This means if you alter one block you need to modify not only the hash of it but that of all following block for the chain to be valid. As a result, a hash function for three blocks looks like this: $hash_3 = f_3(f_2(f_1(block_1), block_2), block_3)$.
+Hashes of blocks are created using cryptographic hash functions, that are mathematical algorithms that maps data of arbitrary size to a bit string of a fixed size (called hash or digest). The hash is used to certify the information content of the block: by modifying even a single bit of the content, the hash completely changes. Furthermore, notice that the digest of the current block is computed in terms of the previous block digest. This means if you alter one block you need to modify not only the hash of it but that of all following block for the chain to be valid. 
+
+As a result, a hash function for three blocks looks like this: $hash_3 = f_3(f_2(f_1(block_1), block_2), block_3)$.
 
 The hash algorithm used here (SHA-256) is part of SHA-2 (Secure Hash Algorithm 2), a set of cryptographic hash functions designed by the United States National Security Agency (NSA). In particular, it uses digests of 256 bits (or 32 hexadecimal figures). See for example:
 
@@ -117,6 +117,14 @@ The hash 256 has a length of 64 characters.
 nchar("A blockchain is a chain of blocks")
 nchar("5c2005976411a1628fabcdde3ac04be563d18943e710b7446afa2a8a5fab9abc")
 ```
+
+If you are interested in comparing passwordsgenerator.net with \texttt{digest} in R, you should add \texttt{serialize=FALSE}.
+
+```{r}
+digest("A blockchain is a chain of blocks", "sha256", serialize=FALSE)
+```
+
+Let's implement the hash in the blockchain construction.
 
 ```{r}
 # Hash blocks.
@@ -144,6 +152,8 @@ block3$hash = digest(block3, "sha256")
 blockchain = list(block1, block2, block3)
 blockchain
 ```
+
+The hash of block 3 depends not only on the block 3 information, but also on the block 2 hash, which at the same time depends not only on the block 2 information, but also on the block 1 hash. The blocks are chained.
 
 Let’s update the validation function. Now, we check that the parent field of a non-genesis block references to the correct hash of the following block.
 
@@ -261,8 +271,7 @@ iterations
 See how difficult the problem gets as we look for more leading zeros in the hash.
 
 ```{r}
-plot(1:n, iterations, type = "b", xlab = "difficulty", 
-     ylab = "iterations")
+plot(1:n, iterations, type = "b", xlab = "difficulty",  ylab = "iterations")
 ```
 
 Now let’s build a blockchain using the PoW method:
