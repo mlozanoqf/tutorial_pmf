@@ -127,13 +127,13 @@ ggplot(hsb, aes(x = ses, y = mathach,
        socio-economic status of students improves.")
 ```
 
-```{r PMF_EF}
+```{r PMFnmn_EF}
 ggplot(hsb, aes(x=schtype, y=mathach, fill=female)) +
   geom_boxplot() +
     labs(title = "Math scores by gender and school type.") +
   scale_fill_manual(values=c("blue", "pink"))
 ```
-```{r PMF_EF}
+```{r mmPMF_EF}
 hsb %>%
   group_by(female, schtype) %>%
   summarise(observations=n(), average_math_score = mean(mathach))

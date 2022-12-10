@@ -1,23 +1,7 @@
 ---
 title: ''
-#output: bookdown::gitbook:
-  html_document:
-    df_print: paged
+output: pdf_document
 ---
------------------------
-```{=tex}
-\newpage 
-\hypersetup{linkcolor=black}
-\renewcommand*\contentsname{Index.}
-\tableofcontents
-```
-
-```{r echo=FALSE}
-# This removes all items in environment. 
-rm(list=ls())
-```
-
-\newpage
 
 # Financial data.
 
@@ -38,15 +22,258 @@ In case you are not familiar with R packages, you should know you need to downlo
 If you are interested in working with financial statements, you should look for the *finreportr* package documentation online or users' examples available in Internet. Perhaps the main drawback of this package is that it may be slow, you normally need to wait for R to download the financial reports. Let's start with some examples here. First, we load the previously downloaded packages.
 
 ```{r}
+# Load the finreportr package to download financial reports.
+library(finreportr)
 # Load the tidyquant package to manipulate the data and more.
 library(tidyquant)
 library(dplyr)
 library(tidyr)
 ```
 
+Let's analyze Facebook.
 
+```{r}
+FB.Info <- CompanyInfo("FB")
+print(FB.Info)
+```
 
+This is the physical address of the firm. Now some information about Facebook's annual reports.
 
+```{r}
+FB.reports <- AnnualReports("FB")
+FB.reports$accession.no
+```
+
+These are keys to name specific financial reports. You can Google one of those keys above and see the kind of information available at SEC website. Now, let's download a balance sheet.
+
+```{r}
+# Store the balance sheet of Facebook (FB) in BS_FB.
+BS_FB <- GetBalanceSheet("FB", 2018)
+# Show the value in the screen (in paper).
+BS_FB
+```
+
+We are done. We have the balance sheet information of Facebook in \texttt{BS\_FB} in basically two lines of code without even visiting the firm's website. However, it does not look the same as we are used to seeing in a typical format like PDF or Excel. To be honest, it is difficult to read to say the least. R takes the information from the annual report, so if we ask for 2018, we retrieve information for the previous years.
+
+Let's review how we can manipulate \texttt{BS\_FB} contents to get a more readable result. Balance sheets are annual, so we do not need the *startDate* column, and we know it is expressed in US dollars, so we do not need the *Units* column as well. Imagine we are interested in a clear version of the 2017 balance sheet.
+
+```{r}
+# First make a copy.
+BS_2017 <- BS_FB |>
+  # convert Amount from character to numeric.
+  mutate(Amount = as.numeric(Amount)) |>
+  # Let's extract only 2017.
+  filter(endDate == "2017-12-31") |>
+  # Let's show only two columns.
+  select(Metric, Amount)
+# Show the value in the screen (in paper).
+BS_2017
+```
+
+This looks more like a familiar balance sheet.
+
+This is the first time we introduce the use of pipes |> in the code. Pipes are a powerful tool for clearly expressing a sequence of multiple operations mainly in the context of *tidyverse* packages. In the code above we first create a variable for the 2017 balance sheet \texttt{BS\_2017} as the same as the previously created variable \texttt{BS\_FB}, then we transform one column to numeric values so we can make further operations, then we filter the whole information to keep only 2017 values, and finally we select only two columns (the name and value of each account). There might be even more efficient ways to achieve the same result. Note that every sequence is linked with a pipe |>. Pipes process a data-object using a sequence of operations by passing the result of one step as input for the next step.
+
+A balance sheet is a financial statement that reports a company's assets, liabilities and shareholders' equity. The balance sheet is one of the three (income statement and statement of cash flows being the other two) core financial statements used to evaluate a business performance. The balance sheet allows us to verify the so-called accounting equation: $assets = liabilities + equity$. This is equivalent as saying that the firm has what the firm owes.
+
+In plain English the balance sheet shows the value of what the firm has to produce (assets), and where did the money come from (banks in the form of liabilities and/or owners in the form of equity). The balance sheet is used to measure the firm size, the evolution of the firm's debt, and the participation of the owners to finance the firm. It is also useful to measure firm's liquidity and credit risk, among many other things.
+
+Let's extract the 2016 and 2017 balance sheets and show the most relevant rows to verify how the accounting equation holds.
+
+```{r}
+# Define the accounts we need in our balance sheet summary.
+accounts <- c("Assets" , "Liabilities", 
+              "Stockholders' Equity Attributable to Parent", 
+              "Liabilities and Equity")
+# At the beginning, the summary is a copy of the full statement.
+BS_2016_2017_summary <- BS_FB |>
+  # Convert Amount to numeric values (so we can do math operations).
+  mutate(Amount = as.numeric(Amount)) |>
+  # This is convenient but not strictly necessary.
+  mutate(Metric = factor(Metric, levels = unique(Metric))) |> 
+  # Here we spread rows into columns to have information per year.
+  spread(endDate, Amount) |>
+  # Select only three columns.
+  select(Metric, "2016-12-31", "2017-12-31") |>
+  # Select only the relevant accounts we are interested in.
+  filter(Metric %in% accounts) |>
+  # Net income account is lengthy, let's rename it.
+ mutate(Metric = recode_factor(Metric, 
+        `Stockholders' Equity Attributable to Parent` = "Equity"))
+# Now, show the results.
+BS_2016_2017_summary
+```
+
+As expected, the accounting equation holds in both 2016 and 2017. We were not expecting a different result. The purpose of this example is to show how we can download and manipulate financial statements of firms. As shown above, the only thing we need is the ticker symbol of the firm and voilà. A ticker symbol or stock symbol is an abbreviation used to uniquely identify publicly traded firm shares. A stock symbol may consist of letters, numbers or a combination of both.
+
+Looking at the USD values is difficult to have a gasp about which balance sheet account increased more or increased less in this period of time. This is, looking at absolute values (USD) makes it difficult to clearly see which account increased more than others, so we normally transform the data to relative terms (ratios, percentage changes, or proportions given a total).
+
+Let's propose a different way to see the balance sheet statement.
+
+```{r}
+# First we make a copy.
+BS_2016_2017_change <- BS_2016_2017_summary |>
+  # Calculate the percentage change from 2016 to 2017.
+  mutate(Year.Change = (`2017-12-31`-`2016-12-31`)/`2016-12-31`)
+# Show the results.
+BS_2016_2017_change
+```
+
+Liabilities increased more than twice compared with assets from 2016 to 2017. Should we be worried about Facebook financial health? One simple way to dig deeper into this issue is to show an alternative balance sheet showing the accounts as relative proportions with respect to the assets.
+
+```{r}
+# Create a copy of the summary.
+BS_2016_2017_prop <- BS_2016_2017_summary |>
+  # Proportions with respect to the assets (2016).
+  mutate(prop2016 = `2016-12-31`/`2016-12-31`[1]) |>
+  # Proportions with respect to the assets (2017).
+  mutate(prop2017 = `2017-12-31`/`2017-12-31`[1])
+# Show the results.
+BS_2016_2017_prop
+```
+
+We are now less worried about the financial health of Facebook. Even though the liabilities increased about 76% from 2016 to 2017, these values are still low with respect to the firm's assets. In 2016 their liabilities were about 9% of their assets and 12% in 2017.
+
+Let's plot.
+
+```{r}
+accounts_BS <- c("Assets" , "Liabilities", 
+              "Stockholders' Equity Attributable to Parent")
+
+BS_2016_2017_plot <- BS_FB |>
+  mutate(Amount = as.numeric(Amount)) |>
+  mutate(Date = as.Date(endDate)) |>
+  mutate(Metric = factor(Metric, levels = unique(Metric))) |> 
+  select(Metric, Amount, Date) |>
+    filter(Date == "2016-12-31" | Date == "2017-12-31") |>
+  filter(Metric %in% accounts_BS) |>
+ mutate(Metric = recode_factor(Metric, 
+`Stockholders' Equity Attributable to Parent` = "Equity")) |>
+ mutate(Metric = 
+           factor(Metric, levels = c("Assets", 
+                                     "Liabilities", "Equity")))
+BS_2016_2017_plot
+```
+
+Having the data as in \texttt{BS\_2016\_2017\_plot} makes it easier to use \texttt{ggplot}.
+
+```{r}
+library(ggplot2)
+g <- ggplot(BS_2016_2017_plot, 
+            aes(Metric, Amount, fill = Amount)) +
+  ggtitle("Facebook - Balance sheet in USD") +
+  geom_bar(stat = "identity") + 
+  scale_fill_gradient(low = "red", high = "blue") +
+  facet_wrap(~ Date)
+g 
+```
+
+```{r eval=FALSE, include=FALSE}
+# Para examen final.
+g <- ggplot(BS_2016_2017_plot, aes(Amount/1000000, Metric)) +
+  ggtitle("Facebook - Balance sheet in million USD") +
+  geom_bar(col = "red", fill =  "white", stat = "identity") + 
+  scale_x_continuous(labels=scales::dollar_format()) +
+  facet_wrap(~ Date)
+g 
+```
+
+Imagine all balance sheet accounts increased as in the case of Facebook, but the firm is losing money according to the income statement. In this case, we could say there is something wrong with Facebook. On the other hand, if these increases in the balance sheet accounts are supported by an increase in profits for the same period, then things are going well in the firm. Thus, we need Facebook income statement to verify the firm's profits and evaluate whether we should be worried about the increase in the liabilities.
+
+Let's download the income statement and show only the revenues and profit for 2016 and 2017. Note that the process in R is basically the same as in the case of the balance sheet before. This is important as coding allows us to replicate or reproduce the analysis easily. As the process was recorded in the balance sheet, it is only a matter of adapting the same instructions to perform a similar manipulation for the income statement. You might see several lines of code but in reality, it is almost a copy-paste from the previous code. In fact, we are using the comments to emphasize that this code is not new, and is basically a copy of our previous procedure.
+
+```{r}
+# Define accounts just as we did before for the balance sheet.
+accounts_IS <- c("Revenues" , 
+  "Net Income (Loss) Available to Common Stockholders, Basic")
+# Instead of GetBalanceSheet, we use GetIncome.
+IS_FB <- GetIncome("FB", 2018)
+  # Make a copy (as before).
+IS_2016_2017_summary <- IS_FB |>
+  # Exactly the same as before.
+  mutate(Amount = as.numeric(Amount)) |>
+  # Exactly the same as before.
+  mutate(Metric = factor(Metric, levels = unique(Metric))) |> 
+  # Select the required columns.
+  select(Metric, Amount, endDate) |>
+  # Exactly the same as before.
+  spread(endDate, Amount) |>
+  # Exactly the same as before.
+  select(Metric, "2016-12-31", "2017-12-31") |>
+  # Similar as before.
+  filter(Metric %in% accounts_IS) |>
+  # Similar as before.
+  mutate(Metric = recode(Metric, 
+  `Net Income (Loss) Available to Common Stockholders, Basic` 
+  = "Net Income"))
+# Similar as before.
+IS_2016_2017_summary
+```
+
+In this code above we explicitly repeat how many times we reproduce the same or very similar code as we did in the case of the balance sheet. This is because it is important to highlight that coding allows us to reproduce our analysis easily. Imagine you are interested to compare balance sheet and income statements for 5 companies using a software that requires using the mouse to click on pre-defined menus. In that case you will have to repeat the procedure step by step and hope to remember so you do not skip anything. In R we code so our procedure is recorded in a series of instructions. Now consider that you need to add two accounts to your analysis. In that case you will only have to change this line:
+
+```{=tex}
+\texttt{accounts\_IS <- c("Revenues" , 
+"Net Income (Loss) Available to Common Stockholders, Basic")}
+```
+and add a third or fourth account name and that's it.
+
+Now we have the relevant information we need. The profits increased more than 50% from 2016 to 2017, so apparently the firm knows how to make money. The new asset investments allow the firm to increase the profits. We can calculate a simple financial ratio to find out the relationship between assets (in the balance sheet, representing the firm investment) and profits (in the income statement, shows the ability of the firm to make money). A financial ratio or accounting ratio is a relative magnitude of two selected numerical values taken from an enterprise's financial statements. There are many standard ratios used to try to evaluate the overall financial condition of a corporation.
+
+-   $AP_{2016} = 6.4961/1.0188 = 6.376227$
+-   $AP_{2017} = 8.4524/1.5920 = 5.309296$
+
+We normally are interested in making these calculations automatically, without copying the values and taking them directly from the correspondent variables:
+
+```{r}
+BS_2016_2017_summary[1,2] / IS_2016_2017_summary[2,2]
+BS_2016_2017_summary[1,3] / IS_2016_2017_summary[2,3]
+```
+
+$AP_{2016}$ and $AP_{2017}$ represent the ratio of assets and profits for 2016 and 2017. Then, the firm requires 6.38 USD asset investment to make 1 USD in profits in 2016 and only 5.31 USD in 2017. We can also view the same thing the other way around, this is profits over assets. If we do this, then the firm makes 0.1568326 USD for every dollar invested in the asset in 2016 and 0.1883489 USD in 2017. This is clearly good news as the firm's assets are more productive according to this simple analysis.
+
+Let's calculate the revenues with respect to profits.
+
+```{r}
+# Make a copy.
+IS_2016_2017_prop <- IS_2016_2017_summary |>
+  # Calculate proportion (2016).
+  mutate(prop2016 = `2016-12-31`/`2016-12-31`[2]) |>
+  # Calculate proportion (2017).
+  mutate(prop2017 = `2017-12-31`/`2017-12-31`[2])
+# Show results.
+IS_2016_2017_prop
+```
+
+According to this ratio, in 2016 the firm transformed 2.7 USD of sales into 1 USD profit, and in 2017 the firm required only 2.5 USD. Accounting ratios like this one can be used for financial managers as corporate targets or firm's objectives. Imagine most of the rest of the firms in the same industry only need 2 USD to generate 1 USD profit. In that case, the financial manager might propose an objective for next year to reduce costs so they can transform 2 USD sales into 1 USD profits for the next year.
+
+Let's plot the income statement basics. First, some necessary changes.
+
+```{r}
+IS_2016_2017_plot <- IS_FB |>
+  mutate(Amount = as.numeric(Amount)) |>
+  mutate(Date = as.Date(endDate)) |>
+  mutate(Metric = factor(Metric, levels = unique(Metric))) |> 
+  select(Metric, Amount, Date) |>
+  filter(Metric %in% accounts_IS) |>
+  mutate(Metric = recode(Metric, 
+  `Net Income (Loss) Available to Common Stockholders, Basic` 
+  = "Net Income"))
+IS_2016_2017_plot
+```
+
+Now, a nice plot.
+
+```{r}
+library(ggplot2)
+g <- ggplot(IS_2016_2017_plot, 
+            aes(Metric, Amount, fill = Amount)) +
+  ggtitle("Facebook - Income statements in USD") +
+  geom_bar(stat = "identity") + 
+  scale_fill_gradient(low = "red", high = "blue")+
+  facet_wrap(~ Date)
+g
+```
 
 This is why we are interested firms to perform well in the economy. If firms are well managed, they are expected to take good strategic decisions to increase the value of the firm. In particular, the firm looks for funds from banks or owners, then invests in assets to produce or provide a service to the market. If things go well, sales increase and if revenues are greater than costs, the firm makes profits. When the firm increases their assets, they might also need more people to produce or manage those assets, then employment increases. More jobs mean more families with available income, and families will spend their income and stimulate the whole economy further. Even government may increase their tax revenues to (hopefully) spend them into high-quality public goods to increase society's welfare. Not only that, as a firm performs well, the whole value chain straightens as the firm requires inputs and services from other firms to operate. We are interested firms to perform well in the economy because that is good for the population in general and to other firms as well. Private investment stimulates the whole economy.
 
@@ -349,7 +576,7 @@ exchange_rate <- getSymbols("USD/MXN", src = "oanda",
 plot(exchange_rate)
 ```
 
-```{r PMF_EFcc}
+```{r PMF_EF}
 exchange_rate <- as.data.frame(exchange_rate)
 plot(lag(exchange_rate$USD.MXN), exchange_rate$USD.MXN)
 ex <- lm(exchange_rate$USD.MXN ~ lag(exchange_rate$USD.MXN))
@@ -364,7 +591,7 @@ ex_new <- data.frame(ch_ex, exchange_rate$USD.MXN)
 ex_new[ex_new$USD.MXN>0.01 | ex_new$USD.MXN < -0.01,]
 ```
 
-```{r eval=FALSE, include=FALSE}
+```{r}
 exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
 exchange <- data.frame(exchange_rate)
 R_USDMXN <- exchange |> 

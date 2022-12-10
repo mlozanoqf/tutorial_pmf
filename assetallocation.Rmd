@@ -241,7 +241,7 @@ First, we need the 2017-01-31 actual or realized returns. We need to download th
 
 ```{r}
 # Download the 2017-01-31 individual asset returns.
-r_stocks <- c("FB", "AMZN", "NFLX", "GOOG") |>
+r_stocks <- c("META", "AMZN", "NFLX", "GOOG") |>
   tq_get(get  = "stock.prices", from = "2016-12-31", 
          to   = "2017-01-31") |>
   group_by(symbol) |> 

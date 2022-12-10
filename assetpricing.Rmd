@@ -114,7 +114,7 @@ lm(MA ~ V, data = reg) |>
 summary()
 ```
 
-```{r e2 eval=FALSE, include=FALSE}
+```{r eval=FALSE, include=FALSE}
 # Prepare the data.
 reg <- stock_ret_MA_V |>
   spread(key = symbol, value = returns)
@@ -123,7 +123,7 @@ lm(MA ~ lag(MA), data = reg) |>
 summary()
 ```
 
-```{r e2}
+```{r exx2}
 # Prepare the data.
 reg <- stock_ret_MA_V |>
   spread(key = symbol, value = returns)
@@ -145,14 +145,14 @@ stock_ret_MA_V  |>
 ```
 
 
-```{r PMF_EF}
+```{r PMF_sEmmF}
 FANG |>
   select(date, symbol, volume) |>
   mutate(day = weekdays(date)) |>
   group_by(day) |>
   summarize(sum_volume = sum(volume), mean_volume = mean(volume))
 ```
-```{r PMF_EF}
+```{r PMF_EbbF}
 FANG_daily_returns <- FANG |>
   group_by(symbol) |>
   tq_transmute(select = adjusted,
@@ -167,7 +167,7 @@ FANG_daily_returns |>
 ```
 
 
-```{r PMF_EF}
+```{r PMFbxb_EF}
 FANG_daily <- FANG
 FANG_weekly <- weekdays(FANG_daily$date)
 FANG_weekly
@@ -276,7 +276,7 @@ lm(V ~ MA, data = reg) |>
 
 Here, we estimate $V_i = \alpha+\beta MA_i$, and in particular we have $V_i = -1.104 \times 10^{6}+0.8852 MA_i$.
 
-```{r PMF E2 q1}
+```{r PMF E2 sssq1}
 # Create yearly returns.
 FANG_daily_returns <- FANG |>
     group_by(symbol) |>
@@ -459,7 +459,7 @@ R_stocks_market_stats
 
 I added a straight line of 45 degrees so any asset above the red line means a return per unit of risk above 1. By the same token, any asset below the red line means a return per unit of risk below 1.
 
-```{r PMF E2 q3}
+```{r PMF E2 qssss3}
 # Download individual asset returns.
 R_stocks_mkt <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT", 
               "KLAC", "TEF", "^GSPC") |>
@@ -499,7 +499,7 @@ R_stocks_mkt_stats
 
 ```
 
-```{r e2}
+```{r e22222}
 freq <- c("weekly", "monthly")
 freq <- sample(freq, 1)
 freq
@@ -511,7 +511,7 @@ Sys.info()["nodename"]
 ```
 
 
-```{r e2}
+```{r e2111}
 R_names <- c("TXT", "TXN")
 # Download individual asset returns.
 R_stocks <- R_names |>
@@ -567,7 +567,7 @@ R_stocks_mkt <- c("TXT", "TXN", "^GSPC") |>
                col_rename = "r")
 
 
-R_capm <- R_stocks_mkt |>
+R_capm_plot <- R_stocks_mkt |>
   spread(key = symbol, value = r) |>
   gather(TXN:TXT, key = symbol, value = R_stocks) |>
   rename(R_market = `^GSPC`) |>
@@ -582,7 +582,7 @@ R_capm <- R_stocks_mkt |>
        title = "Relationship between asset returns and market") +
   theme(legend.position = "none", legend.title = element_blank())
 
-R_capm
+R_capm_plot
 ```
 
 
@@ -642,7 +642,7 @@ R_stocks_market |>
   tq_performance(Ra = R_stocks, Rb = NULL, 
                    performance_fun = table.AnnualizedReturns) |>
   arrange(`AnnualizedSharpe(Rf=0%)`) |>
-  left_join(R_capm,by = 'symbol')  |>
+  left_join(R_capm, by = 'symbol')  |>
   select(symbol, `AnnualizedSharpe(Rf=0%)`, Beta) 
 ```
 
@@ -764,7 +764,7 @@ abline(v = 2015, lty = 2, col = "red")
 
 The ARIMA model overestimate the S&P500 at the first months, and then underestimate it. As a rule of thumb, long term forecasts are hard, they are usually not very accurate. This makes sense as it is easier to forecast tomorrow weather compared to 3 month forecast weather.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 library(fpp3)
 sp500_all.tsibble <- as_tsibble(sp500_all)
 
@@ -781,7 +781,7 @@ autolayer(sp500_all.tsibble)
 
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
 sp500_all.tsibble <- as_tsibble(sp500_all)
 
@@ -795,7 +795,7 @@ model(hw = ETS(sp500_training ~ error("A") + trend("A") + season("A")))|>
 autolayer(sp500_all.tsibble)
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 library(fpp3)
 sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
 sp500_all.tsibble <- as_tsibble(sp500_all)
@@ -820,7 +820,7 @@ We can compare ARIMA forecast with TBATS forecast. The TBATS model combines seve
 
 This is the implementation in R.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 # 36-month forecast.
 for_tbats <- forecast::forecast(sp500_training, h = 36)
 df_tbats = as.data.frame(for_tbats)
@@ -836,7 +836,7 @@ After 36 months (Dec 2017), ARIMA error is −16.33%, while TBATS is −11.6%. T
 
 We can see all results together.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 # Plot all previous results.
 plot(sp500_all, main = "ARIMA forecast in blue, TBATS in green.
 Training set in black, test set in red.")

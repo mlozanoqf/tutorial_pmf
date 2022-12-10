@@ -17,7 +17,7 @@ output:
     theme: readable #darkly 
     includes:
       after_body: analytics_pmf.html
-abstract: This material relies on @hull2020machine, @hyndman2021forecasting, and on Matt Dancho's Business Science IO freely available codes in R that explains how to implement machine learning workflow using H2O. Some mathematical background is skipped to emphasize the data analysis, model logic, discussion, graphical approach and R coding [@Rref]. As in the philosophy of Donald Knuth [@knuth1984literate], the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
+abstract: This is an introductory applied tutorial suitable for undergraduate students interested in the area of quantitative finance modeling. The main objective is to show how to analyze financial data and extract basic insights from financial models using the powerful R programming language. We extend examples and codes freely available in Internet, and some of my own. As in the philosophy of Donald Knuth [@knuth1984literate], the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
 bibliography: mybibfile.bib
 ---
 -----------------------
@@ -53,10 +53,50 @@ htmltools::tagList(
 )
 ```
 
+
 \newpage
 
 ```{r Introduction, child = 'intro.Rmd'}
 ```
+
+\newpage
+
+```{r FinancialData, child = 'findata.Rmd'}
+```
+
+\newpage
+
+```{r AssetReturns, child = 'assetret.Rmd'}
+```
+
+\newpage
+
+```{r AssetPricing, child = 'assetpricing.Rmd'}
+```
+
+\newpage
+
+```{r AssetAllocation, child = 'assetallocation.Rmd'}
+```
+
+
+\newpage
+
+```{r DatavizMultilevel, child = 'multilevel.Rmd'}
+```
+
+\newpage
+
+```{r Blockchain, child = 'blockchain.Rmd'}
+```
+
+# Conclusion.
+
+Finance is not about how to make money; it is about much more than that. Finance is about how to find and use resources, and how to assign them into projects. This is not an easy task as resources are limited and projects are risky. Moreover, sometimes the financial markets do not work well: bad projects are financed and good projects are not. However, if we rely on finance theory, quantitative models, and data analysis, we increase the chances to make good and informed decisions. Making money is a necessary step that allows us to pursue superior objectives like making firms growth, create better jobs, stimulate innovation, economic growth, and hopefully improve the standard of living of the population.
+
+We have made some progress at implementing financial and economic models to achieve these superior objectives but we cannot say we have succeeded. Poverty levels in some countries are high, and income inequality leads not only to economic but also social problems. Fortunately, there is an increasing and genuine interest in learning finance principles by good people around the world.
+
+
 
 
 ```{r include=FALSE}
