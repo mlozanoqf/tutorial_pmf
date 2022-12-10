@@ -1,7 +1,24 @@
 ---
 title: ''
-output: pdf_document
+#output: bookdown::gitbook:
+  html_document:
+    df_print: paged
 ---
+-----------------------
+```{=tex}
+\newpage 
+\hypersetup{linkcolor=black}
+\renewcommand*\contentsname{Index.}
+\tableofcontents
+```
+
+```{r echo=FALSE}
+# This removes all items in environment. 
+rm(list=ls())
+```
+
+\newpage
+
 
 # Introduction.
 
@@ -53,13 +70,7 @@ R is a language and environment for statistical computing and graphics. R is a p
 
 Many users think of R as a statistics system. We prefer to think of it as an environment within which statistical techniques are implemented. This is why R is a popular choice for finance and economic modeling. R can be extended (easily) via packages as we will show in this tutorial. There are about eight default packages supplied with the R distribution and many more are available through the CRAN family of Internet sites covering a very wide range of modern statistics, data science and finance applications.
 
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE)
-# This removes all items in environment. 
-rm(list=ls())
-library(tictoc)
-tic()
-```
+
 
 Let's see how many packages are there as today using R code.
 

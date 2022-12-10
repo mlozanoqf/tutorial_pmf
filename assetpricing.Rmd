@@ -114,6 +114,124 @@ lm(MA ~ V, data = reg) |>
 summary()
 ```
 
+```{r e2 eval=FALSE, include=FALSE}
+# Prepare the data.
+reg <- stock_ret_MA_V |>
+  spread(key = symbol, value = returns)
+# Estimate the model.
+lm(MA ~ lag(MA), data = reg) |>
+summary()
+```
+
+```{r e2}
+# Prepare the data.
+reg <- stock_ret_MA_V |>
+  spread(key = symbol, value = returns)
+# Estimate the model.
+mav <- lm(MA ~ V, data = reg)
+mav$coefficients
+
+0.0001129858+0.8133651942*mean(reg$V)
+mean(reg$MA)
+
+stock_ret_MA_V  |>
+    spread(key = symbol, value = returns) |>
+    ggplot(aes(x = V, y = MA)) +
+    geom_point(color = palette_light()[[1]], alpha = 0.5) +
+    geom_smooth(method = "lm") +
+    geom_point(aes(x=mean(V), y=mean(MA)), colour="red", size=3)
+    labs(title = "Visualizing relationship of stocks returns") + theme_tq()
+
+```
+
+
+```{r PMF_EF}
+FANG |>
+  select(date, symbol, volume) |>
+  mutate(day = weekdays(date)) |>
+  group_by(day) |>
+  summarize(sum_volume = sum(volume), mean_volume = mean(volume))
+```
+```{r PMF_EF}
+FANG_daily_returns <- FANG |>
+  group_by(symbol) |>
+  tq_transmute(select = adjusted,
+               mutate_fun = periodReturn,
+               period = "daily",
+               type = "arithmetic")
+
+FANG_daily_returns |>
+  mutate(day = weekdays(date)) |>
+  group_by(day) |>
+  summarize(mean_ret = mean(daily.returns), num =n())
+```
+
+
+```{r PMF_EF}
+FANG_daily <- FANG
+FANG_weekly <- weekdays(FANG_daily$date)
+FANG_weekly
+FANG_daily$weekdays <- c(FANG_weekly)
+FANG_daily_returns <- FANG_daily |>
+  group_by(symbol) |>
+tq_transmute(select=adjusted, 
+             mutate_fun = periodReturn, 
+             period ="daily",
+             type="arithmetic")
+
+ 
+
+FANG_daily_returns |>
+mutate (day = as.factor (weekdays(date))) |>
+    group_by(day) |>
+summarize (man_ret = mean (daily.returns), num =n())
+
+
+```
+
+```{r}
+
+FANG_daily <- FANG
+FANG_Weekly <- weekdays(FANG_daily$date)              
+FANG_Weekly
+FANG_daily$Weekdays <- c(FANG_Weekly)
+
+FANG_daily_returns <- FANG_daily |>
+  group_by(Weekdays)  |>
+  tq_transmute(select     = adjusted, 
+                 mutate_fun = periodReturn, 
+                 period     = "daily",
+                  type = "arithmetic")
+
+FANG_daily_returns  |>
+ # mutate(day = as.factor(day(date))) |>
+summarize(mean_ret = mean(daily.returns))
+```
+
+
+```{r}
+FANG_daily_returns <- FANG |>
+  group_by(symbol) |>
+  tq_transmute(select = adjusted,
+               mutate_fun = periodReturn,
+               period = "daily",
+               type = "arithmetic")
+
+FANG_daily_returns |>
+  mutate(month = as.factor(month(date))) |>
+  filter(month == 3 | month == 7) |>
+  group_by(month) |>
+  summarize(mean_ret = mean(daily.returns))
+```
+
+```{r}
+FANG |>
+  select(date, symbol, volume) |>
+  mutate(year = as.factor(year(date))) |>
+  group_by(year) |>
+  summarize(mean_volume = mean(volume))
+```
+
 In general our model is $MA_i = \alpha+\beta V_i$, and in particular we have our model estimation result as $MA_i = 0.0001130+0.8133658 V_i$. Without going into details, our linear regression analysis suggests that a 1% return on $V$ is associated with a 0.8133658% return in $MA$. This is a good fit of the observations.
 
 Let's evaluate one example.
@@ -175,6 +293,16 @@ cor(f)
 lm(AMZN ~ FB + GOOG + NFLX, data = f) |>
     summary()
 ```
+
+```{r}
+lm(AMZN ~ GOOG, data = f) |>
+    summary()
+```
+```{r}
+lm(GOOG ~ AMZN, data = f) |>
+    summary()
+```
+
 
 ## Single-index model.
 
@@ -370,6 +498,93 @@ subtitle = "Numerical values represent return per unit of risk.",
 R_stocks_mkt_stats
 
 ```
+
+```{r e2}
+freq <- c("weekly", "monthly")
+freq <- sample(freq, 1)
+freq
+stocks <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT", "KLAC", "TEF")
+stocks <- sample(stocks, 2)
+stocks
+Sys.time()
+Sys.info()["nodename"]
+```
+
+
+```{r e2}
+R_names <- c("TXT", "TXN")
+# Download individual asset returns.
+R_stocks <- R_names |>
+  tq_get(get  = "stock.prices", from = "2010-01-01", to = "2015-12-31") |>
+  group_by(symbol) |> 
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "weekly", 
+               col_rename = "ret")
+# Three portfolios.
+weights <- c(
+  1, 0,
+  0, 1,
+  0.5, 0.5)
+
+weights_table <-  tibble(R_names) |>
+    tq_repeat_df(n = 3) |>
+    bind_cols(tibble(weights)) |>
+    group_by(portfolio)
+
+# See the evolution of three portfolios.
+port_data <- R_stocks |>
+  tq_repeat_df(n = 3)
+
+three_port <- port_data |>
+    tq_portfolio(assets_col   = symbol, 
+                 returns_col  = ret, 
+                 weights      = weights_table, 
+                 col_rename   = "investment.growth",
+                 wealth.index = TRUE) |>
+  mutate(investment.growth = investment.growth * 10000) |>
+  ggplot(aes(x = date, y = investment.growth, color = factor(portfolio))) +
+  geom_line(size = 2) +
+  labs(title = "Portfolio growth of 10,000.",
+       subtitle = "1: TXT; 2: TXN; 3: 50% in each",
+       x = "", y = "Portfolio Value",
+       color = "Portfolio") +
+  theme_tq() + scale_color_tq() +
+  scale_y_continuous(labels = scales::dollar)
+
+three_port
+```
+
+```{r}
+# Download individual asset returns.
+R_stocks_mkt <- c("TXT", "TXN", "^GSPC") |>
+  tq_get(get  = "stock.prices", from = "2010-01-01", 
+         to   = "2015-12-31") |>
+  group_by(symbol) |> 
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "weekly", 
+               col_rename = "r")
+
+
+R_capm <- R_stocks_mkt |>
+  spread(key = symbol, value = r) |>
+  gather(TXN:TXT, key = symbol, value = R_stocks) |>
+  rename(R_market = `^GSPC`) |>
+  group_by(symbol)|>
+  ggplot(aes(x = R_market, y = R_stocks, color = symbol)) + 
+  geom_point(alpha = 0.4) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  facet_wrap(~symbol, ncol = 5) +
+  geom_abline(intercept = 0, color = "black", linetype = 1) +
+  theme_minimal() + 
+  labs(x = "SP500 Return", y = "Asset Return", 
+       title = "Relationship between asset returns and market") +
+  theme(legend.position = "none", legend.title = element_blank())
+
+R_capm
+```
+
 
 What if we use the values of betas and Sharpe ratios to form investment portfolios with these 10 assets? We call a portfolio to the new asset formed by several (smaller) investments in single assets. Let's start with a visualization of monthly return of a naive portfolio. A naive portfolio is basically formed by a 10% investment in each of the 10 assets. Here, we do not invest more in higher stock betas or in higher Sharpe ratio stocks. It is simply an equally weighted portfolio.
 

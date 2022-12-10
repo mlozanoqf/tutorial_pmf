@@ -280,6 +280,29 @@ ggplot(FANG_monthly_returns, aes(x = monthly.returns,
   theme_tq() + scale_fill_tq() + facet_wrap(~ symbol, ncol = 2)
 ```
 
+```{r PMF_E1 5}
+FANG_monthly_returns |>
+  mutate(year = as.factor(year(date))) |>
+  ggplot(aes(x = monthly.returns, fill = symbol)) +
+  geom_density(alpha = 0.5) +
+  geom_hline(yintercept = 0) +
+  labs(title = "FANG: Monthly return distribution per year.",
+       x = "Monthly returns", y = "Density") + xlim(-0.3, 0.6) +
+  theme_tq() + scale_fill_tq() + facet_wrap(~ year, ncol = 2)
+```
+
+```{r PMF_E1 6}
+FANG_monthly_returns |>
+  mutate(year = as.factor(year(date))) |>
+  filter(symbol == "NFLX") |>
+  ggplot(aes(x = monthly.returns, fill = year)) +
+  geom_density(alpha = 0.5) +
+  geom_hline(yintercept = 0) +
+  labs(title = "Netflix: Monthly returns per year.",
+       x = "Monthly returns", y = "Density") + xlim(-0.4, 0.9) +
+    theme_tq() + scale_fill_tq()
+```
+
 Now, we have one density plot for each stock. Let's analyze each plot.
 
 -   AMZN. Note the highest value is zero, this suggests that the most frequent return value is around zero. The majority of observations are within −25% and 25%, and there are only a very few returns higher than 25%.

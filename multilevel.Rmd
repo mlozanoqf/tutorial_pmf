@@ -127,6 +127,37 @@ ggplot(hsb, aes(x = ses, y = mathach,
        socio-economic status of students improves.")
 ```
 
+```{r PMF_EF}
+ggplot(hsb, aes(x=schtype, y=mathach, fill=female)) +
+  geom_boxplot() +
+    labs(title = "Math scores by gender and school type.") +
+  scale_fill_manual(values=c("blue", "pink"))
+```
+```{r PMF_EF}
+hsb %>%
+  group_by(female, schtype) %>%
+  summarise(observations=n(), average_math_score = mean(mathach))
+```
+```{r}
+#data(hsb) # Load the database.
+#head(hsb) # Look at the first values for inspection.
+
+summary <- hsb %>%
+ # select(female, schtype, mathach) %>%
+  group_by(female, schtype)%>%
+  summarize(average_math_score = mean(mathach))
+
+observations1 <- hsb%>%
+  count(female, schtype)
+
+tabla <- full_join(observations1, summary)%>%
+rename(observations = n)
+
+
+
+```
+
+ 
 According to this plot, socio-economic status play an important role at making these school differences indistinguishable. Students at private and public schools do equally well as long as they belong to a high socio-economic status. The plot also reveals that differences in math achievement are greater as the socio-economic status decrease.
 
 Let's see what happens with minorities. Apparently, white students show a better performance on the standardized math assessments.
@@ -147,6 +178,9 @@ ggplot(hsb, aes(x = ses, y = mathach,
   labs(title = "White versus non-white students.", 
   subtitle = "The gap tend to increase as socio-economic status improves.")
 ```
+
+
+
 
 Minority differences increases as socio-economic status of the students improves. In other words, here the socio-economic status increases the gap between these two groups.
 

@@ -397,6 +397,37 @@ plot(aapl_stock_prices$date, aapl_stock_prices$adjusted,
      type = "l")
 ```
 
+```{r PMF_E1 1}
+library(tidyquant)
+library(ggplot2)
+library(dplyr)
+library(quantmod) 
+
+aapl_stock_prices <- tq_get("AAPL")
+
+aapl_voladj <- aapl_stock_prices |>
+  ggplot(aes(volume, adjusted)) +
+  geom_point(color = "firebrick") +
+  labs(title = "Apple (2011 - to date): volume versus stock price.", 
+       x = "Volume", y = "Adjusted prices") +
+  scale_y_continuous(labels = scales::dollar) +
+  theme_tq() + scale_color_tq()
+aapl_voladj
+```
+
+```{r PMF_E1 2}
+aapl_stock_prices |>
+  mutate(year = as.factor(year(date))) |>
+  filter(year == 2012 | year == 2014) |>
+  ggplot(aes(volume, adjusted, col = year)) +
+  geom_point() +
+  facet_wrap(~year, ncol = 2, scales = "fixed") +
+  labs(title = "Apple: volume versus stock price.", 
+       x = "Volume", y = "Adjusted prices") +
+  scale_y_continuous(labels = scales::dollar) +
+  theme_tq() + scale_color_tq()
+```
+
 We can add a few instructions to improve the format of our plot.
 
 ```{r}
@@ -528,6 +559,7 @@ It is easy to find out the exact day when the oil price was negative.
 subset(wti_price_usd, price < 0)
 ```
 
+
 Without going into technical arguments, we can interpret negative prices as the following. Imagine (as it actually happened) that storing oil is expensive, not only that, imagine oil producers have no further physical space to store oil, so they are desperate to get rid of the oil production. On the other hand, oil buyers realize that the economic perspectives in the world look bad. If the economic activity suddenly stops, then we expect a lower demand for fuel including oil as firms are producing less. Then, producers want to sell and buyers are not interested to buy as they do not need as countries have more than enough inventories. This could go to the extreme in which producers are (sadly) willing to pay people in exchange of taking the oil out of their hands. This is why commodity prices can be negative.
 
 There are other explanations, for example one related to the maturity of oil futures contracts. The price that went negative on Monday 2020-04-20 was for futures contracts to be delivered in May. Those contracts expired on Tuesday 2020-04-21. Upon expiration of the futures contract, the clearinghouse matches the holder of a long contract against the holder of a short position. The short position delivers the underlying asset to the long position. So, on Monday, traders --- who were not equipped to take physical deliveries --- were rushing to sell them to buyers who have booked storage.
@@ -542,6 +574,42 @@ exchange_rate <- getSymbols("USD/MXN", src = "oanda",
                             auto.assign = FALSE)
 # Plot the results.
 plot(exchange_rate)
+```
+
+```{r PMF_EF}
+exchange_rate <- as.data.frame(exchange_rate)
+plot(lag(exchange_rate$USD.MXN), exchange_rate$USD.MXN)
+ex <- lm(exchange_rate$USD.MXN ~ lag(exchange_rate$USD.MXN))
+summary(ex)
+```
+
+
+```{r PMF_EF}
+exchange_rate <- as.data.frame(exchange_rate)
+ch_ex <- (exchange_rate - lag(exchange_rate))/lag(exchange_rate)
+ex_new <- data.frame(ch_ex, exchange_rate$USD.MXN)
+ex_new[ex_new$USD.MXN>0.01 | ex_new$USD.MXN < -0.01,]
+```
+
+```{r}
+exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
+exchange <- data.frame(exchange_rate)
+R_USDMXN <- exchange |> 
+  tq_transmute(select=USD.MXN, mutate_fun=periodReturn,
+               period="daily", type="arithmetic")
+subset(R_USDMXN, USD.MXN_returns > 0.01 | USD.MXN_returns < -0.01)
+```
+
+
+```{r PMF_E1 3}
+exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
+sum(exchange_rate > 20.6) / length(exchange_rate)
+```
+
+```{r PMF_E1 4}
+exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
+exchange_rate[which.max(exchange_rate)]
+exchange_rate[which.min(exchange_rate)]
 ```
 
 Here, 1 USD equals `r last(exchange_rate)` MXN as `r Sys.Date()`. We can show the time series information into a density plot.
