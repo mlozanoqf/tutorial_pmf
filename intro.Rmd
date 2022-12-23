@@ -1,16 +1,8 @@
 ---
 title: ''
-#output: bookdown::gitbook:
   html_document:
     df_print: paged
 ---
------------------------
-```{=tex}
-\newpage 
-\hypersetup{linkcolor=black}
-\renewcommand*\contentsname{Index.}
-\tableofcontents
-```
 
 ```{r echo=FALSE}
 # This removes all items in environment. 

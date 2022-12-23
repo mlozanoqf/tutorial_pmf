@@ -170,7 +170,7 @@ FANG_daily_returns |>
 ```{r PMFbxb_EF}
 FANG_daily <- FANG
 FANG_weekly <- weekdays(FANG_daily$date)
-FANG_weekly
+#FANG_weekly
 FANG_daily$weekdays <- c(FANG_weekly)
 FANG_daily_returns <- FANG_daily |>
   group_by(symbol) |>

@@ -1,11 +1,9 @@
 ---
-title: Financial modeling with R.
+title: Financial modeling with `r fontawesome::fa("r-project")` <span style="color:white">R</span>
+
 subtitle: Dr. Martín Lozano.
 author:
-- name: Back to main [`r fontawesome::fa("home")`](https://mlozanoqf.github.io/)
-#  affiliation: Academic website. [Web.](https://sites.google.com/site/mlozanoqf/)
-date: "\\faClock \\hspace{1 mm} Current commit: `r format(Sys.time(), '%d/%m/%Y, %H:%M:%S.')`"
-#  bookdown::gitbook: default
+date: Current `r fontawesome::fa("code-commit") ` `r format(Sys.time(), '%d %b %Y, %H:%M:%S.')`
 output: 
   bookdown::html_document2:
     toc: yes
@@ -20,7 +18,6 @@ output:
 abstract: This is an introductory applied tutorial suitable for undergraduate students interested in the area of quantitative finance modeling. The main objective is to show how to analyze financial data and extract basic insights from financial models using the powerful R programming language. We extend examples and codes freely available in Internet, and some of my own. As in the philosophy of Donald Knuth [@knuth1984literate], the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
 bibliography: mybibfile.bib
 ---
------------------------
 
 ```{=tex}
 \newpage 
@@ -33,6 +30,7 @@ bibliography: mybibfile.bib
 # This removes all items in environment. 
 # It is a good practice to start your code this way.
 rm(list=ls())
+library(fontawesome)
 library(tictoc)
 tic("full")
 ```
@@ -52,6 +50,14 @@ htmltools::tagList(
   rmarkdown::html_dependency_font_awesome()
 )
 ```
+
+````{=html}
+```{r, echo=FALSE, results='asis'}
+xfun::file_string('contact.html')
+```
+````
+
+# [`r fa("arrow-circle-left", fill = "black")`](https://mlozanoqf.github.io/) [<span style="color: black">Back to main.</span>](https://mlozanoqf.github.io/) {-}
 
 
 \newpage
