@@ -48,7 +48,7 @@ Finance is an area within economics. The Journal of Economic Literature (JEL) cl
 
 In this document we focus on only a few areas of finance: asset pricing, portfolio choice, financial forecasting, financial risk and risk management.
 
-## Commercial software.
+## Commercial software and R.
 
 Every area of knowledge requires computers to conduct interesting analysis and applications. Traditionally, people use good commercials (and sometimes expensive) software such as Microsoft Excel, SPSS, STATA, E-Views, and many others. These commercial software are good alternatives. However, given that these programs are fully controlled by private firms who genuinely seek to create value for their shareholders, there is no guarantee that their associated file formats could be readable in the future, or even exist in the future, which negatively impacts reproducibility. Reproducibility is desirable as it helps to verify that results in a paper or report can be attained by a different research team, using the same methods. Learning and use R (or Python) for data analysis is a good way to attain repeatability and reproducibility. These computer languages are user-oriented and are created and constantly improved by a growing scientific community with an immense online presence to assist users.
 
@@ -56,7 +56,6 @@ Every area of knowledge requires computers to conduct interesting analysis and a
 
 <!-- Other commercial products in which you do not have to code like Microsoft Excel, SPSS, STATA, E-Views and many others, have high licensing fees and also rely on mysterious black boxes to produce a battery of results. These black boxes are problematic because the data comes in and the result comes out as magic, showing no details about the procedure followed to produce the final results, and the user could sadly get the wrong illusion that he or she understands data analysis. This might be convenient in some specific and limited cases but in others you miss the fun that represents having access to all the details of the computation and limit the extent to which you can customize or extend to innovative and create new improved applications. The general alternative to using a point-and-click program is to familiarize with languages like R which allows writing scripts to program algorithms for economic and financial analysis and visualizations. -->
 
-## R and RStudio.
 
 R is a language and environment for statistical computing and graphics. R is a powerful integrated suite of software facilities for data manipulation, calculation and graphical display. R is available as Free Software under the terms of the Free Software Foundation's GNU General Public License in source code form. It compiles and runs on a wide variety of UNIX platforms and similar systems (including FreeBSD and Linux), Windows and MacOS. Given its popularity and flexibility, R is currently implemented in virtually all areas of knowledge including finance by students, practitioners, researchers, universities, institutions, firms, think tanks, and policy makers around the world.
 

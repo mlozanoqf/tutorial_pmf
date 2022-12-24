@@ -1,147 +1,147 @@
 ---
 title: ''
-#output: bookdown::gitbook:
   html_document:
     df_print: paged
 ---
------------------------
-```{=tex}
-\newpage 
-\hypersetup{linkcolor=black}
-\renewcommand*\contentsname{Index.}
-\tableofcontents
-```
 
 ```{r echo=FALSE}
 # This removes all items in environment. 
 rm(list=ls())
+library(vembedr)
+library(tidyquant)
+library(dplyr)
+library(tidyr)
 ```
 
 \newpage
 
 # Financial data.
 
-Data is everywhere and finance has always been about data.[^3] Industries perceive data as an essential commodity and fuel to take decisions under uncertainty. As a matter of fact, data science and finance go hand in hand. Even before the term data science was coined, finance was using it. Data Science is widely used in areas like risk analytics, credit risk, fraud detection, risk management, pricing, and algorithmic trading. Financial institutions were among the earliest users and pioneers of data analytics. We need data to perform financial analysis, estimate financial models, forecast financial variables, take financing and investment decisions, and more. The alternative of data is to listen to your guts, your intuition, or experience. This alternative is not bad by itself, but it would not be our main approach here.
+Data is everywhere and finance has always been about data.[^3] Industries perceive data as an essential commodity and fuel to take decisions under uncertainty. As a matter of fact, data science and finance go hand in hand. Even before the term data science was coined, finance was using it. Data Science is widely used in areas like risk analytics, credit risk, fraud detection, risk management, pricing, and algorithmic trading. Financial institutions were among the earliest users and presumably pioneers of data analytics. We need data to perform financial analysis, estimate financial models, forecast financial variables, take financing and investment decisions, and more. The alternative of data is to listen to your guts, your intuition, or experience. This alternative is not bad by itself, but it would not be our main approach here.
 
 [^3]: According to market intelligence company IDC, the 'Global Datasphere' in 2018 reached 18 zettabytes. The vast majority of the world's data has been created in the last few years and this astonishing growth of data shows no sign of slowing down. In fact, IDC predicts the world's data will grow to 175 zettabytes in 2025. One zettabyte is 1000000000000000000000 bytes. In scientific notation this is 1e+21 or 1 with 21 zeros at the right, we call it one sextillion.
 
 Financial data is usually free and available in electronic sources for downloading. There are exemptions as private firms are not obligated to make their financial information public. Also, there are some kind of financial information that public firms are not obligated to make public given the international regulations. Sometimes, financial data is not fully available but we have summary statistics that can be quite useful to simulate the data by ourselves. Financial markets are a great source of financial information like exchange rates, commodities, financial instruments, etc. Public institutions and international organizations are useful sources of financial information as well. In any case, we have more financial data than time and resources to analyze it, and the gap is getting bigger and bigger.
 
-## Financial statements.
+<!-- ## Financial statements. -->
 
-Financial data comes in a wide variety of formats, and is reported and stored in numerous electronic sources. Financial statements represent a great source to analyze and understand the financial health of a firm, individuals and even governments. Financial statements are standard and well-organized reports that summarize important financial accounting information of a business. The traditional approach to analyze financial statements is looking at those in the firm's annual reports, or downloading them in PDF or Excel format in the firm's investor website site.
+<!-- Financial data comes in a wide variety of formats, and is reported and stored in numerous electronic sources. Financial statements represent a great source to analyze and understand the financial health of a firm, individuals and even governments. Financial statements are standard and well-organized reports that summarize important financial accounting information of a business. The traditional approach to analyze financial statements is looking at those in the firm's annual reports, or downloading them in PDF or Excel format in the firm's investor website site. -->
 
-In R, we can download public firm's financial statements from the US Securities and Exchange Commission using the *finreportr* package (there are others like *finstr*). This is useful to evaluate a firm performance and conduct financial analysis as we do not need to visit the firm site. In fact, we could replicate or extend the full analysis by running the code instead of downloading newer financial statements.
+<!-- In R, we can download public firm's financial statements from the US Securities and Exchange Commission using the *finreportr* package (there are others like *finstr*). This is useful to evaluate a firm performance and conduct financial analysis as we do not need to visit the firm site. In fact, we could replicate or extend the full analysis by running the code instead of downloading newer financial statements. -->
 
-In case you are not familiar with R packages, you should know you need to download the packages you need before using them. This is an easy process in RStudio. First, select the "Tools" menu, and then "Install Packages..." option. Now, type the name of the package you need, in this case type *finreportr* for accessing financial statements (later we will need *tidyquant* as well and others), leave the default options as they are, and click "Install". You will see a typical bar progress of this download process and R will let you know when this is done. You only need to download packages once, but you have to load the package (using the function *library*) every time you will use the package in your script. There are plenty of YouTube tutorials showing this installation process step by step, for example <https://youtu.be/JBcVi-fAT_k>
+<!-- In case you are not familiar with R packages, you should know you need to download the packages you need before using them. This is an easy process in RStudio. First, select the "Tools" menu, and then "Install Packages..." option. Now, type the name of the package you need, in this case type *finreportr* for accessing financial statements (later we will need *tidyquant* as well and others), leave the default options as they are, and click "Install". You will see a typical bar progress of this download process and R will let you know when this is done. You only need to download packages once, but you have to load the package (using the function *library*) every time you will use the package in your script. There are plenty of YouTube tutorials showing this installation process step by step, for example <> -->
 
-If you are interested in working with financial statements, you should look for the *finreportr* package documentation online or users' examples available in Internet. Perhaps the main drawback of this package is that it may be slow, you normally need to wait for R to download the financial reports. Let's start with some examples here. First, we load the previously downloaded packages.
+<!-- ```{r} -->
+<!-- embed_url("https://youtu.be/JBcVi-fAT_k") -->
+<!-- ``` -->
 
-```{r}
-# Load the tidyquant package to manipulate the data and more.
-library(tidyquant)
-library(dplyr)
-library(tidyr)
-```
+<!-- If you are interested in working with financial statements, you should look for the *finreportr* package documentation online or users' examples available in Internet. Perhaps the main drawback of this package is that it may be slow, you normally need to wait for R to download the financial reports. Let's start with some examples here. First, we load the previously downloaded packages. -->
+
+<!-- ```{r} -->
+<!-- # Load the tidyquant package to manipulate the data and more. -->
+<!-- library(tidyquant) -->
+<!-- library(dplyr) -->
+<!-- library(tidyr) -->
+<!-- ``` -->
 
 
 
 
 
-This is why we are interested firms to perform well in the economy. If firms are well managed, they are expected to take good strategic decisions to increase the value of the firm. In particular, the firm looks for funds from banks or owners, then invests in assets to produce or provide a service to the market. If things go well, sales increase and if revenues are greater than costs, the firm makes profits. When the firm increases their assets, they might also need more people to produce or manage those assets, then employment increases. More jobs mean more families with available income, and families will spend their income and stimulate the whole economy further. Even government may increase their tax revenues to (hopefully) spend them into high-quality public goods to increase society's welfare. Not only that, as a firm performs well, the whole value chain straightens as the firm requires inputs and services from other firms to operate. We are interested firms to perform well in the economy because that is good for the population in general and to other firms as well. Private investment stimulates the whole economy.
+<!-- This is why we are interested firms to perform well in the economy. If firms are well managed, they are expected to take good strategic decisions to increase the value of the firm. In particular, the firm looks for funds from banks or owners, then invests in assets to produce or provide a service to the market. If things go well, sales increase and if revenues are greater than costs, the firm makes profits. When the firm increases their assets, they might also need more people to produce or manage those assets, then employment increases. More jobs mean more families with available income, and families will spend their income and stimulate the whole economy further. Even government may increase their tax revenues to (hopefully) spend them into high-quality public goods to increase society's welfare. Not only that, as a firm performs well, the whole value chain straightens as the firm requires inputs and services from other firms to operate. We are interested firms to perform well in the economy because that is good for the population in general and to other firms as well. Private investment stimulates the whole economy. -->
 
-Strictly speaking, firms (regardless of their size) do not own what they have. Firm's assets were originally bought or financed using others' money (liabilities) and/or owners' money (equity). In simple terms, people are interested to finance the firm activities because the firm is supposed to know how to invest those funds in productive assets to make profits as in the case of Facebook. When the financial statements show that firms take bad decisions, their assets do not produce profits and people will not be very interested in financing a non-profitable firm. In good times, people who finance productive firms receive interests, returns, or dividends as a compensation for putting their money at risk.
+<!-- Strictly speaking, firms (regardless of their size) do not own what they have. Firm's assets were originally bought or financed using others' money (liabilities) and/or owners' money (equity). In simple terms, people are interested to finance the firm activities because the firm is supposed to know how to invest those funds in productive assets to make profits as in the case of Facebook. When the financial statements show that firms take bad decisions, their assets do not produce profits and people will not be very interested in financing a non-profitable firm. In good times, people who finance productive firms receive interests, returns, or dividends as a compensation for putting their money at risk. -->
 
-Firms have incentives to be and keep being financially healthy in the future to attract financing more easily. Public firms (as those participating in the stock market) are subject to strict regulations and public scrutiny so everybody can constantly evaluate the firm performance. Regulations do not prevent all frauds or bankruptcies, but they are intended to minimize irregular and illegal practices. We were able to freely download financial statements because regulators ask public firms to do so given some deadlines and specific guidelines. Yearly and quarterly financial statements are analyzed in detail to evaluate firms as projects, and the main interest is the relationship between risk and return, so people can make better investment decisions. The decision of financing a firm operation is risky, but the reward is supposed to be attractive enough to compensate that risk. In finance we are interested to measure how risky are the investment opportunities in the form of firms, projects, and financial assets in general. When we do a financial analysis, we also compare the performance of one company not only with respect to previous years, but also with respect to other firms, and also with respect to their own industry or sector. This is not difficult as the regulators ask public firms to publish their financial statements in a similar manner, so comparisons among different firms are valid.
+<!-- Firms have incentives to be and keep being financially healthy in the future to attract financing more easily. Public firms (as those participating in the stock market) are subject to strict regulations and public scrutiny so everybody can constantly evaluate the firm performance. Regulations do not prevent all frauds or bankruptcies, but they are intended to minimize irregular and illegal practices. We were able to freely download financial statements because regulators ask public firms to do so given some deadlines and specific guidelines. Yearly and quarterly financial statements are analyzed in detail to evaluate firms as projects, and the main interest is the relationship between risk and return, so people can make better investment decisions. The decision of financing a firm operation is risky, but the reward is supposed to be attractive enough to compensate that risk. In finance we are interested to measure how risky are the investment opportunities in the form of firms, projects, and financial assets in general. When we do a financial analysis, we also compare the performance of one company not only with respect to previous years, but also with respect to other firms, and also with respect to their own industry or sector. This is not difficult as the regulators ask public firms to publish their financial statements in a similar manner, so comparisons among different firms are valid. -->
 
-Finance is about people taking decisions under uncertainty with the help of data analysis. Think in two kind of people in the world: those who have money but no ideas (investors), and those who have ideas but no money (firms or entrepreneurs). We refer to ideas as business ideas, innovations, business projects that require funds to get started. Those with ideas and money are rare in this world, and those without ideas and without money are in trouble. When the financial system works well, productive projects will succeed at attracting funds, firms will invest in productive assets, private investment grows, and we should expect economic growth, and hopefully economic development improves. When the financial system fails, good projects might fail to get funding and probably bad projects get financing. This could be frustrating.
+<!-- Finance is about people taking decisions under uncertainty with the help of data analysis. Think in two kind of people in the world: those who have money but no ideas (investors), and those who have ideas but no money (firms or entrepreneurs). We refer to ideas as business ideas, innovations, business projects that require funds to get started. Those with ideas and money are rare in this world, and those without ideas and without money are in trouble. When the financial system works well, productive projects will succeed at attracting funds, firms will invest in productive assets, private investment grows, and we should expect economic growth, and hopefully economic development improves. When the financial system fails, good projects might fail to get funding and probably bad projects get financing. This could be frustrating. -->
 
-People with money and no ideas are looking for opportunities for their money to grow. They basically face two alternatives: to save their money (put it in the bank and receive a small but certain return), or invest their money in risky projects offered by firms or entrepreneurs. The final decision is taken based on a risk-return analysis, with the help of data analysis and financial models. Imagine the bank offers a secure 4%, and the firm offers a risky 3.5% return (assume it could be as low as −1% or as high as 4%). In that case, most of us might agree (if you are risk averse as me) that the funds are better in a bank. Now assume a different situation. The bank offers a secure 4%, and the firm offers a risky 6% return (it could be as low as 3.5% and as high as 8%). In that case, there might be some investors that after doing some analysis finally decides to put their money at risk. Things become interesting and complex because the same project can be attractive for some investors and bad for others as they might have different tools to analyze risky projects and they might also have different risk appetite levels.
+<!-- People with money and no ideas are looking for opportunities for their money to grow. They basically face two alternatives: to save their money (put it in the bank and receive a small but certain return), or invest their money in risky projects offered by firms or entrepreneurs. The final decision is taken based on a risk-return analysis, with the help of data analysis and financial models. Imagine the bank offers a secure 4%, and the firm offers a risky 3.5% return (assume it could be as low as −1% or as high as 4%). In that case, most of us might agree (if you are risk averse as me) that the funds are better in a bank. Now assume a different situation. The bank offers a secure 4%, and the firm offers a risky 6% return (it could be as low as 3.5% and as high as 8%). In that case, there might be some investors that after doing some analysis finally decides to put their money at risk. Things become interesting and complex because the same project can be attractive for some investors and bad for others as they might have different tools to analyze risky projects and they might also have different risk appetite levels. -->
 
-People with ideas but no money are looking for funds to run their projects. If the project is impressively good, then the firm could ask for funds in exchange of a reduced return. The project is then not too risky and the return is also low. On the other hand, if the project looks OK but entails a high risk, the firm or entrepreneur should be willing to pay high returns to investors to compensate for the associated risk. This is why risk and return move together, the higher the risk the higher the return and vice-versa. If this rule fails, then we are in trouble.
+<!-- People with ideas but no money are looking for funds to run their projects. If the project is impressively good, then the firm could ask for funds in exchange of a reduced return. The project is then not too risky and the return is also low. On the other hand, if the project looks OK but entails a high risk, the firm or entrepreneur should be willing to pay high returns to investors to compensate for the associated risk. This is why risk and return move together, the higher the risk the higher the return and vice-versa. If this rule fails, then we are in trouble. -->
 
-Interestingly, an excess of private investment is not always good for the economy. Imagine the interest rate (return of savings, and the cost of asking for a loan) is low and the economic perspectives look good. In that case, we have good conditions for the private investment to grow as it is cheap to ask for financing. In the extreme, families now have more money and they start spending a lot. Aggregate demand for all goods and services increase and consequently the prices of all goods and services increase as well. The country is experiencing an increase in the inflation levels. Then, even though people have money in their pockets, they are not able to buy as prices increase faster than families' income. In order to reduce inflation levels, the monetary authority increases the interest rates, making savings more attractive and investment less attractive. If they succeed, people will spend less and save more. This decreases the aggregate demand for goods and services and prices could decrease again to desired levels. To add more drama, imagine that this increase in interest rates is so high that now economic growth is slowing down and the risk of falling into a recession increase. If that happens, then the monetary authority should decrease the interest rates again to incentive people to stop saving and start investing again. This is why you see that interest rates go up and down, although we have had low interest rates for a while.
+<!-- Interestingly, an excess of private investment is not always good for the economy. Imagine the interest rate (return of savings, and the cost of asking for a loan) is low and the economic perspectives look good. In that case, we have good conditions for the private investment to grow as it is cheap to ask for financing. In the extreme, families now have more money and they start spending a lot. Aggregate demand for all goods and services increase and consequently the prices of all goods and services increase as well. The country is experiencing an increase in the inflation levels. Then, even though people have money in their pockets, they are not able to buy as prices increase faster than families' income. In order to reduce inflation levels, the monetary authority increases the interest rates, making savings more attractive and investment less attractive. If they succeed, people will spend less and save more. This decreases the aggregate demand for goods and services and prices could decrease again to desired levels. To add more drama, imagine that this increase in interest rates is so high that now economic growth is slowing down and the risk of falling into a recession increase. If that happens, then the monetary authority should decrease the interest rates again to incentive people to stop saving and start investing again. This is why you see that interest rates go up and down, although we have had low interest rates for a while. -->
 
-Let's go back to finance and illustrate the process of a firm looking for funds, the difference between private and public firms, and see how a firm can grow or go bankrupt in a simple but illustrative example.
+<!-- Let's go back to finance and illustrate the process of a firm looking for funds, the difference between private and public firms, and see how a firm can grow or go bankrupt in a simple but illustrative example. -->
 
-Firms can sell bonds or stocks as a way to get funds. Let's focus on the stocks. By selling stocks, the firm can increase their equity and consequently increase their assets. People who buy stocks expect the firm to make wise investment decisions to get a return in the future. Initially, in time zero $t=0$, assume the firm is private and has the following balance sheet:
+<!-- Firms can sell bonds or stocks as a way to get funds. Let's focus on the stocks. By selling stocks, the firm can increase their equity and consequently increase their assets. People who buy stocks expect the firm to make wise investment decisions to get a return in the future. Initially, in time zero $t=0$, assume the firm is private and has the following balance sheet: -->
 
-```{r}
-# The firm is private now. 
-private_firm_bs <- c(assets = 100, liabilities = 40, equity = 60)
-# Print results.
-private_firm_bs
-```
+<!-- ```{r} -->
+<!-- # The firm is private now.  -->
+<!-- private_firm_bs <- c(assets = 100, liabilities = 40, equity = 60) -->
+<!-- # Print results. -->
+<!-- private_firm_bs -->
+<!-- ``` -->
 
-Private firms cannot sell stocks in the stock market, only public firms can. Selling stocks in the stock market is attractive for some firms because it is a way for them to grow. Stock markets allow more participant firms as long as they fulfill some strict requirements. Given the balance sheet above, the owner of this private firm invested 60 USD. When the firm goes 100% public, then the owner will sell the 60 USD investment to others.
+<!-- Private firms cannot sell stocks in the stock market, only public firms can. Selling stocks in the stock market is attractive for some firms because it is a way for them to grow. Stock markets allow more participant firms as long as they fulfill some strict requirements. Given the balance sheet above, the owner of this private firm invested 60 USD. When the firm goes 100% public, then the owner will sell the 60 USD investment to others. -->
 
-In $t=1$, with the objective of getting fresh funds, the firm decides to go 100% public and sell 60 stocks at 1 USD each. Imagine that the firm succeeded at selling all 60 stocks at 1 USD. This is because investors who participate in the stock market consider that this is a fair value for the firm. These investors become new owners; this is why we say the firm is now public. So, by the end of $t=1$ we have:
+<!-- In $t=1$, with the objective of getting fresh funds, the firm decides to go 100% public and sell 60 stocks at 1 USD each. Imagine that the firm succeeded at selling all 60 stocks at 1 USD. This is because investors who participate in the stock market consider that this is a fair value for the firm. These investors become new owners; this is why we say the firm is now public. So, by the end of $t=1$ we have: -->
 
-```{r}
-# The firm is public now. 
-public_firm_bs <- c(assets = 100, liabilities = 40, 
-                    equity_60x1 = 60)
-# Print results.
-public_firm_bs
-```
+<!-- ```{r} -->
+<!-- # The firm is public now.  -->
+<!-- public_firm_bs <- c(assets = 100, liabilities = 40,  -->
+<!--                     equity_60x1 = 60) -->
+<!-- # Print results. -->
+<!-- public_firm_bs -->
+<!-- ``` -->
 
-In $t=2$ more investors realize that the firm is well managed, its market is growing and there is no close competition. Now, investors actually think that paying 1 USD per stock is actually a bargain, so they are willing to pay even more than 1 USD to participate in this project. So, the demand for those stocks increases, and as a result the price goes from 1 to 2 USD per share. By the end of $t=2$ we have:
+<!-- In $t=2$ more investors realize that the firm is well managed, its market is growing and there is no close competition. Now, investors actually think that paying 1 USD per stock is actually a bargain, so they are willing to pay even more than 1 USD to participate in this project. So, the demand for those stocks increases, and as a result the price goes from 1 to 2 USD per share. By the end of $t=2$ we have: -->
 
-```{r}
-# Stock price increased from 1 to 2.
-public_firm_bs <- c(assets = 100+60, liabilities = 40, 
-                    equity_60x2 = 120)
-# Print results.
-public_firm_bs
-```
+<!-- ```{r} -->
+<!-- # Stock price increased from 1 to 2. -->
+<!-- public_firm_bs <- c(assets = 100+60, liabilities = 40,  -->
+<!--                     equity_60x2 = 120) -->
+<!-- # Print results. -->
+<!-- public_firm_bs -->
+<!-- ``` -->
 
-Now the firm has grown by going public and by showing good perspectives.
+<!-- Now the firm has grown by going public and by showing good perspectives. -->
 
-However, in $t=3$ we sadly get to know that the firm's financial statements were overestimating profits, and a big fraud was detected today. Big scandal and all newspapers talk about it. Then, investors are now interested in selling all their stocks as quickly as they can. Investors are so desperate to sell their stocks that they drop the stock price to almost zero. By the end of $t=3$ we have:
+<!-- However, in $t=3$ we sadly get to know that the firm's financial statements were overestimating profits, and a big fraud was detected today. Big scandal and all newspapers talk about it. Then, investors are now interested in selling all their stocks as quickly as they can. Investors are so desperate to sell their stocks that they drop the stock price to almost zero. By the end of $t=3$ we have: -->
 
-```{r}
-# Stock price decrease to 0.
-public_firm_bs <- c(assets = 40, liabilities = 40, 
-                    equity_60x0 = 0)
-# Print results.
-public_firm_bs
-```
+<!-- ```{r} -->
+<!-- # Stock price decrease to 0. -->
+<!-- public_firm_bs <- c(assets = 40, liabilities = 40,  -->
+<!--                     equity_60x0 = 0) -->
+<!-- # Print results. -->
+<!-- public_firm_bs -->
+<!-- ``` -->
 
-There are still 60 stocks in the market with a unit price of zero, so the market value of equity is null. This hypothetical firm is virtually bankrupt as they need to sell all their assets to pay the debt. In simple terms, a firm is bankrupt when the liabilities are greater than the assets. The firm will hardly get fresh funds as investors realize this was a bad project.
+<!-- There are still 60 stocks in the market with a unit price of zero, so the market value of equity is null. This hypothetical firm is virtually bankrupt as they need to sell all their assets to pay the debt. In simple terms, a firm is bankrupt when the liabilities are greater than the assets. The firm will hardly get fresh funds as investors realize this was a bad project. -->
 
-Many things can happen when a firm faces this difficult situation. Sometimes it is worthwhile to try to improve the firm's financial condition, hiring professional managers, and hope to recover the investor's confidence. Before bankruptcy, firms could also negotiate with their debt holders. If negotiation succeeds, the firm could get a longer debt maturity, a reduced debt to help the firm remain alive and hope to recover its operations, or a more innovative solution. There are also other firms that look for firms in trouble to buy them for a wide variety of reasons. In the US, you may hear about "Chapter 11", which is a form of bankruptcy that involves a reorganization of a debtor's business affairs, debts, and assets, and for that reason is known as "reorganization" bankruptcy. Corporations generally file Chapter 11 if they require time to restructure their debts. This version of bankruptcy gives the debtor a fresh start. However, the terms are subject to the debtor's fulfillment of its obligations under the plan of reorganization.
+<!-- Many things can happen when a firm faces this difficult situation. Sometimes it is worthwhile to try to improve the firm's financial condition, hiring professional managers, and hope to recover the investor's confidence. Before bankruptcy, firms could also negotiate with their debt holders. If negotiation succeeds, the firm could get a longer debt maturity, a reduced debt to help the firm remain alive and hope to recover its operations, or a more innovative solution. There are also other firms that look for firms in trouble to buy them for a wide variety of reasons. In the US, you may hear about "Chapter 11", which is a form of bankruptcy that involves a reorganization of a debtor's business affairs, debts, and assets, and for that reason is known as "reorganization" bankruptcy. Corporations generally file Chapter 11 if they require time to restructure their debts. This version of bankruptcy gives the debtor a fresh start. However, the terms are subject to the debtor's fulfillment of its obligations under the plan of reorganization. -->
 
-As we show before, the stock price evolution is generally a good indicator about how the investors interpret the future of the firm. When the stock price increases, then investors are demanding more stocks. A higher stock price is associated with a more valuable equity and this is good for the firm. When the stock price decreases, then there are more people trying to sell stocks compared to those trying to buy so the stock price falls. There might be some cases in which a drop in the stock price is associated with a firm good performance. Consider the stock price has increased in the last week, investors bought at 10 USD and today's price is 15 USD. Those investors might be interested to sell now to make a 5 USD profit. This increase in the supply of stocks could be significant enough to drop prices in the short run.
+<!-- As we show before, the stock price evolution is generally a good indicator about how the investors interpret the future of the firm. When the stock price increases, then investors are demanding more stocks. A higher stock price is associated with a more valuable equity and this is good for the firm. When the stock price decreases, then there are more people trying to sell stocks compared to those trying to buy so the stock price falls. There might be some cases in which a drop in the stock price is associated with a firm good performance. Consider the stock price has increased in the last week, investors bought at 10 USD and today's price is 15 USD. Those investors might be interested to sell now to make a 5 USD profit. This increase in the supply of stocks could be significant enough to drop prices in the short run. -->
 
-Remember this firm needed to go public before issuing and selling stocks in the stock market. Normally, these firms are big, although there are some stock markets for medium-sized firms. Small firms can hardly access these kinds of markets to get funding in a direct way. This might be problematic because small firms are the ones which require more alternatives to get financing so they can grow. The literature regarding small firms show that one of the most important problems they face is precisely the lack of financing or the limited alternatives to get funds. This remains an open challenge for the financial services and an opportunity for fintech companies. In the world there are significantly more small firms compared with big firms, so any improvement in the credit conditions of small firms could have a significant impact on the income of many people.
+<!-- Remember this firm needed to go public before issuing and selling stocks in the stock market. Normally, these firms are big, although there are some stock markets for medium-sized firms. Small firms can hardly access these kinds of markets to get funding in a direct way. This might be problematic because small firms are the ones which require more alternatives to get financing so they can grow. The literature regarding small firms show that one of the most important problems they face is precisely the lack of financing or the limited alternatives to get funds. This remains an open challenge for the financial services and an opportunity for fintech companies. In the world there are significantly more small firms compared with big firms, so any improvement in the credit conditions of small firms could have a significant impact on the income of many people. -->
 
-In the following section we move from a financial statement analysis to the analysis of stock prices. Note that both are linked by the equity and overall performance of public firms.
+<!-- In the following section we move from a financial statement analysis to the analysis of stock prices. Note that both are linked by the equity and overall performance of public firms. -->
 
 ## Stock prices and other financial data.
 
 Financial markets not only facilitate financial transactions between sellers and buyers, they also represent a rich source of financial data. Here, we show how to use R to download stock price data from financial markets by using a few examples.
 
-R packages like *quantmod* and *tidyquant* make the process of downloading financial data to perform financial analysis very straightforward. The *quantmod* package for R is designed to assist the quantitative trader in the development, testing, and deployment of statistically based trading models. The *tidyquant* package is part of the so-called *tidyverse*, an opinionated collection of R packages introduced by Hadley Wickham and designed for data science. All *tidyverse* packages share an underlying design philosophy, grammar, and data structures.
+R packages like <tt>`quantmod`</tt> and <tt>`tidyquant`</tt> make the process of downloading financial data to perform financial analysis very straightforward. The <tt>`quantmod`</tt> package for R is designed to assist the quantitative trader in the development, testing, and deployment of statistically based trading models. The <tt>`tidyquant`</tt> package is part of the so-called <tt>`tidyverse`</tt>, an opinionated collection of R packages introduced by Hadley Wickham and designed for data science. All <tt>`tidyverse`</tt> packages share an underlying design philosophy, grammar, and data structures.
 
 In the past, when we were interested in performing a financial analysis in a rudimentary statistical software, we had to open the financial market site, download the data in Excel or text format, and then convert it to a compatible format given the statistical software requirements. In ancient times, people had to gather financial data from the newspaper. Fortunately for us, now we have R packages to make this process not only easy but also free, extremely efficient and immediate.
 
-Let's download Apple stock prices in one step (we already loaded the *tidyquant* package as step zero).
+Let's download Apple stock prices in one step using the <tt>`tq_get()`</tt> function available in the <tt>`tidyquant`</tt> package.
 
 ```{r}
 # Get stock prices for Apple stock from Yahoo! finance site.
 aapl_stock_prices <- tq_get("AAPL")
 ```
 
-We are done. The special variable \texttt{aapl\_stock\_prices} contains Apple stock prices and other relevant information. Many things happened here in a very few steps. First, we need to have Internet access, R and R Studio working on our computer. Then, we load the *tidyquant* package. This package presumably integrates the best resources for collecting and analyzing financial data in R. The \texttt{tq\_get} function belongs to the *tidyquant* package, and *tidyquant* belongs to the *tidyverse* packages. Specifically, \texttt{tq\_get} connects to a default financial site, which in this case is the finance.yahoo.com and looks for the "AAPL" symbol which corresponds to Apple Inc. (an American multinational technology company). Finally, we store the data into \texttt{aapl\_stock\_prices}.
+We are done. The special variable <tt>`aapl_stock_prices`</tt> contains Apple stock prices and other relevant information. Many things happened here in a very few steps. First, we need to have Internet access, R and R Studio working on our computer. Then, we load the <tt>`tidyquant`</tt> package. This package presumably integrates the best resources for collecting and analyzing financial data in R. The <tt>`tq_get()`</tt> function belongs to the <tt>`tidyquant`</tt> package, and <tt>`tidyquant`</tt> belongs to the <tt>`tidyverse`</tt> packages. Specifically, <tt>`tq_get()`</tt> connects to a default financial site, which in this case is the finance.yahoo.com and looks for the "AAPL" symbol which corresponds to Apple Inc. (an American multinational technology company). Finally, we store the data into <tt>`aapl_stock_prices`</tt>.
 
-To see what it is inside the \texttt{aapl\_stock\_prices} object we can do the following.
+To see what it is inside the <tt>`aapl_stock_prices`</tt> object we can do the following.
 
 ```{r}
 # str function is a way to display the structure of an R object.
 str(aapl_stock_prices)
 ```
 
-According to the \texttt{str} output, \texttt{aapl\_stock\_prices}, we have `r nrow(aapl_stock_prices)` daily observations for 7 variables. As you can see, we have not only prices but also volume. Let's consider a different way to see and have a grasp of what it is inside \texttt{aapl\_stock\_prices}. In particular, we can see the first and the last part of this lengthy daily database.
+According to the <tt>`str()`</tt> function output, <tt>`aapl_stock_prices`</tt>, we have `r nrow(aapl_stock_prices)` daily observations for 7 variables. As you can see, we have not only prices but also volume. Let's consider a different way to see and have a grasp of what it is inside <tt>`aapl_stock_prices`</tt>. In particular, we can see the first and the last part of this lengthy daily database.
 
 The first observations.
 
@@ -153,79 +153,42 @@ head(aapl_stock_prices)
 The last observations.
 
 ```{r}
-# See the last observations of aapl_stock_prices.
 tail(aapl_stock_prices)
 ```
 
-By default, the \texttt{tq\_get} function downloads the latest set of data available. You can verify that the last date of \texttt{aapl\_stock\_prices} above approximately corresponds to the production date of this tutorial. If there is a difference it is simply because the stock market is still close or we are running the code in a weekend. In this case:
+By default, the <tt>`tq_get()`</tt> function downloads the latest set of data available. You can verify that the last date of <tt>`aapl_stock_prices`</tt> above approximately corresponds to the production date of this tutorial. If there is a difference it is simply because the stock market is still close or we are running the code in a weekend. In this case:
 
--   Last \texttt{aapl\_stock\_prices} observation: `r aapl_stock_prices$date[length(aapl_stock_prices$date)]`.
+-   Last <tt>`aapl_stock_prices`</tt> observation: `r aapl_stock_prices$date[length(aapl_stock_prices$date)]`.
 -   Today is: `r Sys.Date()`.
 
 We also like to show the data in a plot.
 
-```{r}
-# Date is in the x axis, price in the y axis. The type l stands for line.
+```{r fig.cap="Apple stock prices."}
 plot(aapl_stock_prices$date, aapl_stock_prices$adjusted, 
      type = "l")
 ```
 
-```{r PMF_E1 1}
-library(tidyquant)
-library(ggplot2)
-library(dplyr)
-library(quantmod) 
+We can add a few instructions to improve the format of our plot. In particular, $x$ and $y$ labels, the title, and the color of the line.
 
-aapl_stock_prices <- tq_get("AAPL")
-
-aapl_voladj <- aapl_stock_prices |>
-  ggplot(aes(volume, adjusted)) +
-  geom_point(color = "firebrick") +
-  labs(title = "Apple (2011 - to date): volume versus stock price.", 
-       x = "Volume", y = "Adjusted prices") +
-  scale_y_continuous(labels = scales::dollar) +
-  theme_tq() + scale_color_tq()
-aapl_voladj
-```
-
-```{r PMF_E1 2}
-aapl_stock_prices |>
-  mutate(year = as.factor(year(date))) |>
-  filter(year == 2012 | year == 2014) |>
-  ggplot(aes(volume, adjusted, col = year)) +
-  geom_point() +
-  facet_wrap(~year, ncol = 2, scales = "fixed") +
-  labs(title = "Apple: volume versus stock price.", 
-       x = "Volume", y = "Adjusted prices") +
-  scale_y_continuous(labels = scales::dollar) +
-  theme_tq() + scale_color_tq()
-```
-
-We can add a few instructions to improve the format of our plot.
-
-```{r}
-# x and y labels, the title, and the color of the line.
+```{r fig.cap="Apple stock prices, improved format."}
 plot(aapl_stock_prices$date, aapl_stock_prices$adjusted, 
-     type = "l",
-     xlab = "Date", ylab = "Adjusted price", 
+     type = "l", xlab = "Date", ylab = "Adjusted price", 
      main = "Apple stock price", col = "blue")
 ```
 
-We can compare Apple versus a stock index like S&P500.
+We can compare Apple versus a stock index like S&P500. Download the S&P500 index:
 
 ```{r}
-# Download the S&P500 index.
 SP <- tq_get("^GSPC")
 ```
 
 Plot both assets together.
 
-```{r}
+```{r fig.cap="Apple stock prices and SP500."}
 par(mar = c(5, 5, 2, 5))
 plot(SP$date, SP$adjusted, type = "l", col = "red",
      ylab = "Standard and Poors 500 index",
-     xlab = "Date", 
-     main = "Index and stock 2011-01-03 to 2021-03-05")
+     xlab = "Date")
 par(new = T)
 plot(aapl_stock_prices$date, aapl_stock_prices$adjusted, 
      type = "l", axes = F, xlab = NA, ylab = NA, cex = 1.2)
@@ -238,14 +201,13 @@ legend("topleft",
 
 Let's continue with the Apple stock analysis. Stock prices change throughout the trading day. This is, the open price changes every minute (sometimes in milliseconds), so the open price is normally different from the closing price. We can calculate the difference between the high and low price of each day and then show the result in a plot.
 
-```{r}
+```{r fig.cap="Apple stock trading volume."}
 # Create a new variable.
 aapl_diff = aapl_stock_prices$high - aapl_stock_prices$low
 # Plot the new variable.
 plot(aapl_stock_prices$date, aapl_diff, type = "h",
      xlab = "Date", 
      ylab = "Difference between high and low prices", 
-     main = "Apple's stock price can change about $25 in one day",
      col = "blue")
 ```
 
@@ -258,7 +220,7 @@ highest_change = which.max(aapl_diff)
 highest_change
 ```
 
-Consider the value of \texttt{highest\_change} as an index. This is, the number of the row that contains the highest \texttt{aapl\_diff} value. We can use this index to extract the date and the actual \texttt{aapl\_diff} value.
+Consider the value of <tt>`highest_change`</tt> as an index. This is, the number of the row that contains the highest <tt>`aapl_diff`</tt> value. We can use this index to extract the date and the actual <tt>`aapl_diff`</tt> value.
 
 ```{r}
 # Now, extract the date and the actual value of aapl_diff.
@@ -267,20 +229,19 @@ when = aapl_stock_prices$date[highest_change]
 top = aapl_diff[highest_change]
 ```
 
-The output above shows when (in the variable \texttt{when}) Apple stock had its highest price change (\texttt{top}) in one day.
+The output above shows when (in the variable <tt>`when`</tt>) Apple stock had its highest price change (<tt>`top`</tt>) in one day.
 
-```{r}
+```{r fig.cap="Apple stock trading volume a further analysis."}
 # We can use when and top variables to improve our plot.
 plot(aapl_stock_prices$date, aapl_diff, type = "h",
      xlab = "Date", 
      ylab = "Difference between high and low prices", 
-     main = "Apple's stock price can change about $12 in one day",
      col = "blue")
 # Here, we add the red point.
 points(when, top, pch = 19, col = "red", cex = 1.5)
 ```
 
-Up to know, we have been using default options as we simply ask for stock prices of Apple without any other kind of instruction. As a result, we get data starting from 2010: \texttt{tq\_get("AAPL")}. However, we can change default options if needed to get data back to 1990. I will take some online available examples developed by the author of *tidyquant* Matt Dancho.
+Up to know, we have been using default options as we simply ask for stock prices of Apple without any other kind of instruction. As a result, we get data starting from 2010: <tt>`tq_get("AAPL")`</tt>. However, we can change default options if needed to get data back to 1990. I will take some online available examples developed by the author of <tt>`tidyquant`</tt> Matt Dancho.
 
 ```{r}
 # Download Apple stock prices.
@@ -304,7 +265,7 @@ FANG |>
                  indexAt = "lastof")
 ```
 
-The *tidyquant* package can also access other kinds of data from diverse sources like the Federal Reserve Economic Data (FRED). Federal Reserve Economic Data is a database maintained by the Research division of the Federal Reserve Bank of St. Louis that has more than 765,000 economic time series from 96 sources. Consider the WTI Crude Oil Prices.
+The <tt>`tidyquant`</tt> package can also access other kinds of data from diverse sources like the Federal Reserve Economic Data (FRED). Federal Reserve Economic Data is a database maintained by the Research division of the Federal Reserve Bank of St. Louis that has more than 765,000 economic time series from 96 sources. Consider the WTI Crude Oil Prices.
 
 ```{r}
 # See https://fred.stlouisfed.org/series/DCOILWTICO
@@ -316,7 +277,7 @@ wti_price_usd
 
 Now that we have oil prices in basically one single step, we can plot them. It is interesting because recently the oil prices have turned negative in one day. Negative prices are rare but not impossible, especially in commodities.
 
-```{r}
+```{r fig.cap="Oil prices."}
 # ggplot2 is a system for creating graphics see https://amzn.to/2ef1eWp.
 library(ggplot2)
 # Create a simple line plot to show the oil price evolution.
@@ -337,9 +298,9 @@ Without going into technical arguments, we can interpret negative prices as the 
 
 There are other explanations, for example one related to the maturity of oil futures contracts. The price that went negative on Monday 2020-04-20 was for futures contracts to be delivered in May. Those contracts expired on Tuesday 2020-04-21. Upon expiration of the futures contract, the clearinghouse matches the holder of a long contract against the holder of a short position. The short position delivers the underlying asset to the long position. So, on Monday, traders --- who were not equipped to take physical deliveries --- were rushing to sell them to buyers who have booked storage.
 
-The *quantmod* package can retrieve exchange rates easily.
+The <tt>`quantmod`</tt> package can retrieve exchange rates easily.
 
-```{r}
+```{r fig.cap="USD/MXN exchange rate."}
 # Load the package.
 library(quantmod) 
 # Download USD/MXN exchange rate from Oanda site.
@@ -387,7 +348,7 @@ exchange_rate[which.min(exchange_rate)]
 
 Here, 1 USD equals `r last(exchange_rate)` MXN as `r Sys.Date()`. We can show the time series information into a density plot.
 
-```{r}
+```{r fig.cap="USD/MXN exchange rate, a density plot."}
 # Density plots.
 ggplot(exchange_rate, aes(x = USD.MXN, fill = "")) +
   geom_density(alpha = 0.8) +
@@ -521,32 +482,30 @@ AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01",
 
 Let's begin with one plot.
 
-```{r}
+```{r fig.cap="Apple line chart."}
 # Plot the data.
 AAPL |>
     ggplot(aes(x = date, y = close)) + geom_line() +
-    labs(title = "Apple Line Chart", 
-         y = "Closing Price", x = "") +
+    labs(y = "Closing price", x = "") +
     theme_tq()
 ```
 
 The plot above is about closing prices. However, we also have open and close prices per day. We could take advantage of this by plotting vertical lines per day. The length of the daily vertical lines represents the difference between the open and close prices. To make it more informative, blue lines are those cases when the close price is greater than the open price, and red lines are those cases when the close price is lower than the open price.
 
-```{r}
+```{r fig.cap="Apple Candlestick chart."}
 # Plot the data.
 AAPL |>
     ggplot(aes(x = date, y = close)) +
     geom_candlestick(aes(open = open, high = high, low = low, 
                          close = close)) +
-    labs(title = "AAPL Candlestick Chart", y = "Closing Price", 
-         x = "") + theme_tq()
+    labs(y = "Closing Price", x = "") + theme_tq()
 ```
 
 There are some blank spaces. This is simply because the close price of yesterday is not always exactly the same as the open price of today. Local stock markets close on weekends, and there are also holidays.
 
 These kinds of charts are difficult to read when we have many observations. Let's do a zoom:
 
-```{r}
+```{r fig.cap="Apple Candlestick chart, zoom."}
 # A candlestick plot.
 AAPL |>
     ggplot(aes(x = date, y = close)) +
@@ -554,8 +513,7 @@ AAPL |>
                          close = close)) +
   coord_x_date(xlim = c("2016-12-15", "2016-12-31"), 
                ylim = c(28.75, 29.5)) +
-    labs(title = "AAPL Candlestick Chart (zoom)", 
-         y = "Closing Price", x = "") + theme_tq()
+    labs(y = "Closing Price", x = "") + theme_tq()
 ```
 
 A formal interpretation is difficult given the limitations of this analysis. However, the main idea is the following. Consider the stock is increasing quickly, then it is believed that before a fall in the price, the stock will increase at a lower speed. Big blue bars are eventually followed by smaller blue bars before exhibiting a price fall (a red bar).[^4] The same logic can be applied the other way around. A dramatic fall in the price eventually reach a floor. This is, big red bars are eventually followed by smaller red bars before experiencing a price increase.
@@ -568,15 +526,14 @@ Moving averages are supposed to anticipate price movements. The idea is the foll
 
 If the black line crosses the blue from down to top, then we are supposed to anticipate an increase in the stock price. The sign is stronger when the black line crosses the blue line showing a steeper slope. What happens in practice is that the value of $n$ should be calibrated until we fit the moving average with the behaviour of the price stock. This indicator alone is far from being perfect as there might be a lot of contrary signals which might make it difficult to follow the interpretation as we explained above.
 
-```{r}
+```{r fig.cap="Apple Moving average chart."}
 # The simple moving average (SMA) plot. 
 AAPL |>
     ggplot(aes(x = date, y = close)) +
     geom_line(aes(open = open, high = high, low = low, 
                          close = close))  +
     geom_ma(ma_fun = SMA, n = 30, linetype = 1, size = 1.25) +
-    labs(title = "Apple Moving average chart",
-         subtitle = "30-Day SMA",
+    labs(subtitle = "30-Day SMA",
          y = "Closing Price", x = "") + theme_tq()
 ```
 
@@ -590,8 +547,7 @@ AAPL_recent
 
 The Bollinger Bands are envelopes plotted at a standard deviation level above and below a simple moving average of the price. Because the distance of the bands is based on standard deviation, they are supposed to adjust to volatility swings in the underlying price. This indicator can help us to understand the size of the expected change in the future. If the Bollinger Bands become wider then we should expect drastic changes in the stock price.
 
-```{r}
-# Bollinger bands and simple moving average.
+```{r fig.cap="Apple Bollinger bands and simple moving average."}
 AAPL |>
     ggplot(aes(x = date, y = close, open = open,
                high = high, low = low, close = close)) +
@@ -601,7 +557,7 @@ AAPL |>
                 fill        = palette_light()[[1]],
                 color_bands = palette_light()[[1]],
                 color_ma    = palette_light()[[2]]) +
-    labs(title = "BBands with SMA", y = "Closing Price", x = "") +
+    labs(y = "Closing Price", x = "") +
     theme_tq()
 ```
 
@@ -611,7 +567,7 @@ In case you may have a different view or concerns about the previous interpretat
 
 We can show the simple moving average for Facebook.
 
-```{r}
+```{r fig.cap="Facebook Moving average chart."}
 # The simple moving average (SMA) plot. 
 FANG |>
   filter(symbol == "FB") |>
@@ -619,8 +575,7 @@ FANG |>
   geom_line(aes(open = open, high = high, low = low, 
                 close = close))  +
   geom_ma(ma_fun = SMA, n = 60, linetype = 1, size = 1.25) +
-  labs(title = "Facebook Moving average chart",
-       subtitle = "30-Day SMA",
+  labs(subtitle = "30-Day SMA",
        y = "Closing Price", x = "") + theme_tq()
 ```
 

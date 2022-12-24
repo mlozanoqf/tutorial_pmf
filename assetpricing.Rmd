@@ -193,7 +193,7 @@ summarize (man_ret = mean (daily.returns), num =n())
 
 FANG_daily <- FANG
 FANG_Weekly <- weekdays(FANG_daily$date)              
-FANG_Weekly
+#FANG_Weekly
 FANG_daily$Weekdays <- c(FANG_Weekly)
 
 FANG_daily_returns <- FANG_daily |>
