@@ -11,6 +11,8 @@ library(vembedr)
 library(tidyquant)
 library(dplyr)
 library(tidyr)
+library(ggplot2)
+library(quantmod) 
 ```
 
 \newpage
@@ -29,11 +31,7 @@ Financial data is usually free and available in electronic sources for downloadi
 
 <!-- In R, we can download public firm's financial statements from the US Securities and Exchange Commission using the *finreportr* package (there are others like *finstr*). This is useful to evaluate a firm performance and conduct financial analysis as we do not need to visit the firm site. In fact, we could replicate or extend the full analysis by running the code instead of downloading newer financial statements. -->
 
-<!-- In case you are not familiar with R packages, you should know you need to download the packages you need before using them. This is an easy process in RStudio. First, select the "Tools" menu, and then "Install Packages..." option. Now, type the name of the package you need, in this case type *finreportr* for accessing financial statements (later we will need *tidyquant* as well and others), leave the default options as they are, and click "Install". You will see a typical bar progress of this download process and R will let you know when this is done. You only need to download packages once, but you have to load the package (using the function *library*) every time you will use the package in your script. There are plenty of YouTube tutorials showing this installation process step by step, for example <> -->
-
-<!-- ```{r} -->
-<!-- embed_url("https://youtu.be/JBcVi-fAT_k") -->
-<!-- ``` -->
+<!-- In case you are not familiar with R packages, you should know you need to download the packages you need before using them. This is an easy process in RStudio. First, select the "Tools" menu, and then "Install Packages..." option. Now, type the name of the package you need, in this case type *finreportr* for accessing financial statements (later we will need *tidyquant* as well and others), leave the default options as they are, and click "Install". You will see a typical bar progress of this download process and R will let you know when this is done. You only need to download packages once, but you have to load the package (using the function *library*) every time you will use the package in your script. 
 
 <!-- If you are interested in working with financial statements, you should look for the *finreportr* package documentation online or users' examples available in Internet. Perhaps the main drawback of this package is that it may be slow, you normally need to wait for R to download the financial reports. Let's start with some examples here. First, we load the previously downloaded packages. -->
 
@@ -123,6 +121,12 @@ Financial markets not only facilitate financial transactions between sellers and
 
 R packages like <tt>`quantmod`</tt> and <tt>`tidyquant`</tt> make the process of downloading financial data to perform financial analysis very straightforward. The <tt>`quantmod`</tt> package for R is designed to assist the quantitative trader in the development, testing, and deployment of statistically based trading models. The <tt>`tidyquant`</tt> package is part of the so-called <tt>`tidyverse`</tt>, an opinionated collection of R packages introduced by Hadley Wickham and designed for data science. All <tt>`tidyverse`</tt> packages share an underlying design philosophy, grammar, and data structures.
 
+There are plenty of YouTube tutorials showing how to install packages in R. This is one of them:
+
+```{r}
+embed_url("https://youtu.be/JBcVi-fAT_k")
+```
+
 In the past, when we were interested in performing a financial analysis in a rudimentary statistical software, we had to open the financial market site, download the data in Excel or text format, and then convert it to a compatible format given the statistical software requirements. In ancient times, people had to gather financial data from the newspaper. Fortunately for us, now we have R packages to make this process not only easy but also free, extremely efficient and immediate.
 
 Let's download Apple stock prices in one step using the <tt>`tq_get()`</tt> function available in the <tt>`tidyquant`</tt> package.
@@ -132,7 +136,7 @@ Let's download Apple stock prices in one step using the <tt>`tq_get()`</tt> func
 aapl_stock_prices <- tq_get("AAPL")
 ```
 
-We are done. The special variable <tt>`aapl_stock_prices`</tt> contains Apple stock prices and other relevant information. Many things happened here in a very few steps. First, we need to have Internet access, R and R Studio working on our computer. Then, we load the <tt>`tidyquant`</tt> package. This package presumably integrates the best resources for collecting and analyzing financial data in R. The <tt>`tq_get()`</tt> function belongs to the <tt>`tidyquant`</tt> package, and <tt>`tidyquant`</tt> belongs to the <tt>`tidyverse`</tt> packages. Specifically, <tt>`tq_get()`</tt> connects to a default financial site, which in this case is the finance.yahoo.com and looks for the "AAPL" symbol which corresponds to Apple Inc. (an American multinational technology company). Finally, we store the data into <tt>`aapl_stock_prices`</tt>.
+We are done. The variable <tt>`aapl_stock_prices`</tt> contains Apple stock prices and other relevant information. Many things happened here in a very few steps. First, we need to have Internet access, R and R Studio working on our computer. Then, we load the <tt>`tidyquant`</tt> package. This package presumably integrates the best resources for collecting and analyzing financial data in R. The <tt>`tq_get()`</tt> function belongs to the <tt>`tidyquant`</tt> package, and <tt>`tidyquant`</tt> belongs to the <tt>`tidyverse`</tt> packages. Specifically, <tt>`tq_get()`</tt> connects to a default financial site, which in this case is the finance.yahoo.com and looks for the "AAPL" symbol which corresponds to Apple Inc. Finally, we store the data into <tt>`aapl_stock_prices`</tt>.
 
 To see what it is inside the <tt>`aapl_stock_prices`</tt> object we can do the following.
 
@@ -201,75 +205,82 @@ legend("topleft",
 
 Let's continue with the Apple stock analysis. Stock prices change throughout the trading day. This is, the open price changes every minute (sometimes in milliseconds), so the open price is normally different from the closing price. We can calculate the difference between the high and low price of each day and then show the result in a plot.
 
+Create a new variable <tt>`aapl_diff`</tt>.
+
 ```{r fig.cap="Apple stock trading volume."}
-# Create a new variable.
 aapl_diff = aapl_stock_prices$high - aapl_stock_prices$low
-# Plot the new variable.
-plot(aapl_stock_prices$date, aapl_diff, type = "h",
-     xlab = "Date", 
-     ylab = "Difference between high and low prices", 
-     col = "blue")
+```
+
+Plot the new variable.
+
+```{r fig.cap="Apple stock trading volume."}
+plot(aapl_stock_prices$date, aapl_diff, type = "h", xlab = "Date", 
+     ylab = "Difference between high and low prices", col = "blue")
 ```
 
 The difference between high and low prices show that the stock price changes during a trading day. These changes can be considerably high. Moreover, this volatility has increased in recent times. Is it possible to know the exact date in which this difference is the highest? One alternative is to sort all observations, but there is a simpler approach.
 
+Which observation has the maximum value of <tt>`aapl_diff`</tt>?
+
 ```{r}
-# Which observation has the maximum value of aapl_diff?
 highest_change = which.max(aapl_diff)
-# Show results.
 highest_change
 ```
 
 Consider the value of <tt>`highest_change`</tt> as an index. This is, the number of the row that contains the highest <tt>`aapl_diff`</tt> value. We can use this index to extract the date and the actual <tt>`aapl_diff`</tt> value.
 
+Extract the date and the actual value of <tt>`aapl_diff`</tt>.
+
 ```{r}
-# Now, extract the date and the actual value of aapl_diff.
-# See how brackets [] are used to extract a single row value.
+# The brackets [] are used to extract a single row value.
 when = aapl_stock_prices$date[highest_change]
-top = aapl_diff[highest_change]
+when
 ```
 
-The output above shows when (in the variable <tt>`when`</tt>) Apple stock had its highest price change (<tt>`top`</tt>) in one day.
+
+```{r}
+top = aapl_diff[highest_change]
+top
+```
+
+The output above shows <tt>`when`</tt> Apple stock had its highest price change <tt>`top`</tt> in one day. We can use when and top variables to improve our plot.
 
 ```{r fig.cap="Apple stock trading volume a further analysis."}
-# We can use when and top variables to improve our plot.
-plot(aapl_stock_prices$date, aapl_diff, type = "h",
-     xlab = "Date", 
-     ylab = "Difference between high and low prices", 
-     col = "blue")
+plot(aapl_stock_prices$date, aapl_diff, type = "h", xlab = "Date", 
+     ylab = "Difference between high and low prices", col = "blue")
 # Here, we add the red point.
 points(when, top, pch = 19, col = "red", cex = 1.5)
 ```
 
 Up to know, we have been using default options as we simply ask for stock prices of Apple without any other kind of instruction. As a result, we get data starting from 2010: <tt>`tq_get("AAPL")`</tt>. However, we can change default options if needed to get data back to 1990. I will take some online available examples developed by the author of <tt>`tidyquant`</tt> Matt Dancho.
 
+Download Apple stock prices.
+
 ```{r}
-# Download Apple stock prices.
 aapl_prices  <- tq_get("AAPL", get = "stock.prices", 
                        from = " 1990-01-01")
 # Show results.
 aapl_prices
 ```
 
-Sometimes we are interested in periodicity aggregation from daily to monthly. We cannot transform from monthly to daily, but we can always transform from daily to monthly, monthly to yearly and so on. FANG is a dataset containing the daily historical stock prices for the "FANG" tech stocks, "FB", "AMZN", "NFLX", and "GOOG", spanning from the beginning of 2013 through the end of 2016.
+Sometimes we are interested in periodicity aggregation from daily to monthly. We cannot transform from monthly to daily, but we can always transform from daily to monthly, monthly to yearly and so on. FANG is a dataset containing the daily historical stock prices for the FANG tech stocks, FB, AMZN, NFLX, and GOOG, spanning from the beginning of 2013 through the end of 2016.
 
-Let's aggregate data from daily to monthly frequency.
+Let's aggregate the pre-loaded data from daily to monthly frequency.
 
 ```{r}
-# Here, we are using a pre-loaded dataset.
 data("FANG")
-# Transform from daily to monthly stock prices.
 FANG |>
     group_by(symbol) |>
     tq_transmute(select = adjusted, mutate_fun = to.monthly, 
                  indexAt = "lastof")
 ```
 
-The <tt>`tidyquant`</tt> package can also access other kinds of data from diverse sources like the Federal Reserve Economic Data (FRED). Federal Reserve Economic Data is a database maintained by the Research division of the Federal Reserve Bank of St. Louis that has more than 765,000 economic time series from 96 sources. Consider the WTI Crude Oil Prices.
+The <tt>`tidyquant`</tt> package can also access other kinds of data from diverse sources like the Federal Reserve Economic Data (FRED). Federal Reserve Economic Data is a database maintained by the Research division of the Federal Reserve Bank of St. Louis that has more than 819,000 US and international time series from 110 sources. Consider the WTI Crude Oil Prices.
+
+Download oil prices from FRED.
 
 ```{r}
 # See https://fred.stlouisfed.org/series/DCOILWTICO
-# Download oil prices from FRED.
 wti_price_usd <- tq_get("DCOILWTICO", get = "economic.data")
 # Show results.
 wti_price_usd
@@ -277,32 +288,27 @@ wti_price_usd
 
 Now that we have oil prices in basically one single step, we can plot them. It is interesting because recently the oil prices have turned negative in one day. Negative prices are rare but not impossible, especially in commodities.
 
+Create a simple line plot to show the oil price evolution.
+
 ```{r fig.cap="Oil prices."}
-# ggplot2 is a system for creating graphics see https://amzn.to/2ef1eWp.
-library(ggplot2)
-# Create a simple line plot to show the oil price evolution.
 ggplot(wti_price_usd, aes(date, price)) + 
   geom_line() + theme_bw() +
-geom_hline(yintercept = 0, linetype = "dashed", color = "red")
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red")
 ```
 
-It is easy to find out the exact day when the oil price was negative.
+It is easy to find out the exact day when the oil price was negative. Extract one row given a <tt>`price`</tt> condition.
 
 ```{r}
-# Extract one row given a condition.
 subset(wti_price_usd, price < 0)
 ```
 
-
-Without going into technical arguments, we can interpret negative prices as the following. Imagine (as it actually happened) that storing oil is expensive, not only that, imagine oil producers have no further physical space to store oil, so they are desperate to get rid of the oil production. On the other hand, oil buyers realize that the economic perspectives in the world look bad. If the economic activity suddenly stops, then we expect a lower demand for fuel including oil as firms are producing less. Then, producers want to sell and buyers are not interested to buy as they do not need as countries have more than enough inventories. This could go to the extreme in which producers are (sadly) willing to pay people in exchange of taking the oil out of their hands. This is why commodity prices can be negative.
+Without going into technical arguments, we can interpret negative prices as the following. Imagine, as it actually happened, that storing oil is expensive, not only that, imagine oil producers have no further physical space to store oil, so they are desperate to get rid of the oil production. On the other hand, oil buyers realize that the economic perspectives in the world look bad. If the economic activity suddenly stops, then we expect a lower demand for fuel including oil as firms are producing less. Then, producers want to sell and buyers are not interested to buy as they do not need as countries have more than enough inventories. This could go to the extreme in which producers are (sadly) willing to pay people in exchange of taking the oil out of their hands. This is why commodity prices can be negative.
 
 There are other explanations, for example one related to the maturity of oil futures contracts. The price that went negative on Monday 2020-04-20 was for futures contracts to be delivered in May. Those contracts expired on Tuesday 2020-04-21. Upon expiration of the futures contract, the clearinghouse matches the holder of a long contract against the holder of a short position. The short position delivers the underlying asset to the long position. So, on Monday, traders --- who were not equipped to take physical deliveries --- were rushing to sell them to buyers who have booked storage.
 
-The <tt>`quantmod`</tt> package can retrieve exchange rates easily.
+The <tt>`quantmod`</tt> package can retrieve exchange rates as well.
 
 ```{r fig.cap="USD/MXN exchange rate."}
-# Load the package.
-library(quantmod) 
 # Download USD/MXN exchange rate from Oanda site.
 exchange_rate <- getSymbols("USD/MXN", src = "oanda", 
                             auto.assign = FALSE)
@@ -310,97 +316,17 @@ exchange_rate <- getSymbols("USD/MXN", src = "oanda",
 plot(exchange_rate)
 ```
 
-```{r PMF_EFcc}
-exchange_rate <- as.data.frame(exchange_rate)
-plot(lag(exchange_rate$USD.MXN), exchange_rate$USD.MXN)
-ex <- lm(exchange_rate$USD.MXN ~ lag(exchange_rate$USD.MXN))
-summary(ex)
-```
-
-
-```{r PMF_EF}
-exchange_rate <- as.data.frame(exchange_rate)
-ch_ex <- (exchange_rate - lag(exchange_rate))/lag(exchange_rate)
-ex_new <- data.frame(ch_ex, exchange_rate$USD.MXN)
-ex_new[ex_new$USD.MXN>0.01 | ex_new$USD.MXN < -0.01,]
-```
-
-```{r eval=FALSE, include=FALSE}
-exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
-exchange <- data.frame(exchange_rate)
-R_USDMXN <- exchange |> 
-  tq_transmute(select=USD.MXN, mutate_fun=periodReturn,
-               period="daily", type="arithmetic")
-subset(R_USDMXN, USD.MXN_returns > 0.01 | USD.MXN_returns < -0.01)
-```
-
-
-```{r PMF_E1 3}
-exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
-sum(exchange_rate > 20.6) / length(exchange_rate)
-```
-
-```{r PMF_E1 4}
-exchange_rate <- getSymbols("USD/MXN", src = "oanda", auto.assign = FALSE)
-exchange_rate[which.max(exchange_rate)]
-exchange_rate[which.min(exchange_rate)]
-```
 
 Here, 1 USD equals `r last(exchange_rate)` MXN as `r Sys.Date()`. We can show the time series information into a density plot.
 
 ```{r fig.cap="USD/MXN exchange rate, a density plot."}
 # Density plots.
-ggplot(exchange_rate, aes(x = USD.MXN, fill = "")) +
-  geom_density(alpha = 0.8) +
-  geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+ggplot(exchange_rate, aes(x = USD.MXN)) +
+  geom_density(alpha = 0.4, fill = "red") +
+  geom_hline(yintercept = 0) +
   labs(title = "USD.MXN", x = "USD.MXN", y = "Density") +
   theme(legend.position = "none", legend.title = element_blank()) +
   scale_fill_tq()
-```
-
-We can conveniently download the data directly from the FRED API. Let's see data of "Beer, Wine, and Distilled Alcoholic Beverages Sales". For the full database details see:
-
-<https://fred.stlouisfed.org/series/S4248SM144NCEN>
-
-```{r}
-# Beer, Wine, Distilled Alcoholic Beverages, in Millions USD
-beer_sales_tbl <- tq_get("S4248SM144NCEN", get = "economic.data", 
-                         from = "2010-01-01", to = "2021-01-01")
-```
-
-Let's have a look at the data set. By default, it says *price*, but these are basically sales figures. According to the main FRED reference, these are in millions of dollars, not seasonally adjusted.
-
-```{r}
-# See part of the data.
-glimpse(beer_sales_tbl)
-```
-
-Visualization is particularly important for time series analysis and forecasting. It is also important to see the time series because normally the models will perform better if we can identify time series basic characteristics such as trend and seasonality. This data set clearly has a trend and a seasonality.
-
-```{r}
-# Plot the data.
-beer_sales_tbl |>
-  ggplot(aes(date, price)) + 
-  geom_line(col = palette_light()[1]) +
-  geom_point(col = palette_light()[1]) + theme_tq() +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  labs(title = "Beer Sales: 2010 through 2020.") 
-```
-
-A time series can be decomposed as shown below.
-
-```{r}
-library(fpp3)
-
-stl_dcmp <- beer_sales_tbl |> 
-  mutate(date = yearmonth(date)) |>
-  as_tsibble(index = date)
-
-stl_dcmp |>
-  model(STL(price ~ trend(window = 7) + 
-              season(window = "periodic"), robust = TRUE)) |>
-  components() |>
-  autoplot()
 ```
 
 We can also create some interesting visualizations about US employment and the US recessions (in the shaded area) over time. The code below is not so compact but it works.
@@ -424,7 +350,7 @@ recessions.df = read.table(textConnection(
   1990-07-01, 1991-03-01
   2001-03-01, 2001-11-01
   2007-12-01, 2009-06-01
-  2020-02-01, 2021-01-30"), sep = ',', 
+  2020-02-01, 2021-04-30"), sep = ',', 
   colClasses = c('Date', 'Date'), header = TRUE)
 rec3 <- filter(df, df$symbol == "PAYEMS")
 my_trans <- function(in.data,transform = "pctdiff3") {
@@ -432,11 +358,16 @@ my_trans <- function(in.data,transform = "pctdiff3") {
          pctdiff3 = 100 * Delt(in.data, k = 3),
         logdiff3 = c(rep(NA, 3), diff(log(in.data), 3)))
 }
+
 vlist <- c("PAYEMS")
-df2 <- df |> group_by(symbol) |>
+df2 <- df |> 
+  group_by(symbol) |>
   mutate(x = ifelse(symbol %in% vlist, my_trans(price), price))
-df2 |> select(-price)  |> spread(symbol, x) |>
-  mutate(REC12 = lead(USREC, 12)) -> df3              
+
+df2 |> select(-price) |> 
+  spread(symbol, x) |>
+  mutate(REC12 = lead(USREC, 12)) -> df3       
+
 df41 <- filter(df3, year(date) > 1945)
 ```
 
@@ -447,16 +378,15 @@ ggplot(data = df41, aes(x = date, y = PAYEMS)) +
   geom_rect(data = recessions.df, inherit.aes = FALSE,
             aes(xmin = Peak, xmax = Trough, 
                 ymin = -Inf, ymax = +Inf), 
-            fill = 'black', alpha = 0.5) + theme_minimal() + 
-  geom_line(color = "red", size = 1.5) + 
+            fill = 'black', alpha = 0.3) + 
+  theme_minimal() + 
+  geom_line(color = "red", size = 1, alpha = 0.8) + 
   labs(x = "", y = "", 
        title = "US employment growth and recessions.",
-       subtitle = "Last value: December 2020. Shaded area are NBER recessions.", 
+       subtitle = "Shaded area are NBER recessions.", 
        caption = "Source: US Bureau of Labor Statistics.
-       \nretrieved from FRED, Federal Reserve Bank of St. Louis.") + 
+       \nRetrieved from FRED, Federal Reserve Bank of St. Louis.") + 
   geom_hline(yintercept = 0) +
-  geom_vline(xintercept = as.numeric(as.Date("2020-12-01")), 
-             type = 3) +
   theme(plot.caption = element_text(hjust = 0),
         plot.subtitle = element_text(face = "italic", size = 9),
         plot.title = element_text(face = "bold", size = 14))
@@ -464,7 +394,7 @@ ggplot(data = df41, aes(x = date, y = PAYEMS)) +
 
 Here we can see the magnitude of the current and upcoming financial and economic crisis. The fall in the US employment is impressive as you can see. Note how recessions (gray bars) are very closely related with falls in the employment over time.
 
-Given the current (2020) health crisis many sectors and firms in the US economy stopped or reduced operations as a way to reduce the spread of the virus. As firms produce less (or nothing), they sell less (or nothing). Firms face two kinds of costs, variable and fixed. Variable costs depend on production, so if production decreases the variable costs decreases as well. The problem here is fixed costs because they never disappear, they are fixed and they have to be paid no matter what. Some firms might have the possibility to pay fixed costs with reduced or null revenues for a while (days, weeks, probably a little bit more), but definitely not for long. I believe it is clear what happen next. Some firms did not make it, they could not survive and they simply went bankrupt and definitely closed operations. These firms had employees and now they are unemployed. Even those firms who are still operating, in some cases they had to reduce the payroll, and some employees are now unemployed. Less aggregate production and more families without an income reduce the aggregate supply and demand. This is why this current-next economic crisis has no precedent.
+Given the recent health crisis many sectors and firms in the US economy stopped or reduced operations as a way to reduce the spread of the virus. As firms produce less (or nothing), they sell less (or nothing). Firms face two kinds of costs, variable and fixed. Variable costs depend on production, so if production decreases the variable costs decreases as well. The problem here is fixed costs because they never disappear, they are fixed and they have to be paid no matter what. Some firms might have the possibility to pay fixed costs with reduced or null revenues for a while (days, weeks, probably a little bit more), but definitely not for long. I believe it is clear what happen next. Some firms did not make it, they could not survive and they simply went bankrupt and definitely closed operations. These firms had employees and now they are unemployed. Even those firms who are still operating, in some cases they had to reduce the payroll, and some employees are now unemployed. Less aggregate production and more families without an income reduce the aggregate supply and demand. This is why this current-next economic crisis has no precedent.
 
 Having easy access to financial and economic data is important to facilitate the data analysis. However, it is even more important to be able to manipulate the financial and economic data correctly to communicate facts and discover new insights to make better decisions.
 
@@ -483,58 +413,55 @@ AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01",
 Let's begin with one plot.
 
 ```{r fig.cap="Apple line chart."}
-# Plot the data.
 AAPL |>
     ggplot(aes(x = date, y = close)) + geom_line() +
     labs(y = "Closing price", x = "") +
     theme_tq()
 ```
 
-The plot above is about closing prices. However, we also have open and close prices per day. We could take advantage of this by plotting vertical lines per day. The length of the daily vertical lines represents the difference between the open and close prices. To make it more informative, blue lines are those cases when the close price is greater than the open price, and red lines are those cases when the close price is lower than the open price.
+The plot above represents closing prices. However, we also have open and close prices per day. We could take advantage of this by plotting vertical lines per day. The length of the daily vertical lines represents the difference between the open and close prices. To make it more informative, blue lines are those cases when the close price is greater than the open price, and red lines are those cases when the close price is lower than the open price.
 
-```{r fig.cap="Apple Candlestick chart."}
-# Plot the data.
+```{r fig.cap="Apple candlestick chart."}
 AAPL |>
-    ggplot(aes(x = date, y = close)) +
-    geom_candlestick(aes(open = open, high = high, low = low, 
-                         close = close)) +
-    labs(y = "Closing Price", x = "") + theme_tq()
+  ggplot(aes(x = date, y = close)) +
+  geom_candlestick(aes(open = open, high = high, low = low, 
+                       close = close)) +
+  labs(y = "Closing Price", x = "") + 
+  theme_tq()
 ```
 
-There are some blank spaces. This is simply because the close price of yesterday is not always exactly the same as the open price of today. Local stock markets close on weekends, and there are also holidays.
+There are some blank spaces. This is simply because the close price of yesterday is not always exactly the same as the open price of today. Local stock markets close on weekends and holidays.
 
 These kinds of charts are difficult to read when we have many observations. Let's do a zoom:
 
-```{r fig.cap="Apple Candlestick chart, zoom."}
-# A candlestick plot.
+```{r fig.cap="Apple candlestick chart, zoom."}
 AAPL |>
-    ggplot(aes(x = date, y = close)) +
-    geom_candlestick(aes(open = open, high = high, low = low, 
-                         close = close)) +
+  ggplot(aes(x = date, y = close)) +
+  geom_candlestick(aes(open = open, high = high, low = low, 
+                       close = close)) +
   coord_x_date(xlim = c("2016-12-15", "2016-12-31"), 
                ylim = c(28.75, 29.5)) +
-    labs(y = "Closing Price", x = "") + theme_tq()
+  labs(y = "Closing Price", x = "") + 
+  theme_tq()
 ```
 
 A formal interpretation is difficult given the limitations of this analysis. However, the main idea is the following. Consider the stock is increasing quickly, then it is believed that before a fall in the price, the stock will increase at a lower speed. Big blue bars are eventually followed by smaller blue bars before exhibiting a price fall (a red bar).[^4] The same logic can be applied the other way around. A dramatic fall in the price eventually reach a floor. This is, big red bars are eventually followed by smaller red bars before experiencing a price increase.
 
-[^4]: The logic behind this is not very different from what we have heard about "flatten the curve" in the context of the 2020 pandemic. As the curve increases, the high speed of increase is captured by big vertical blue bars. It is expected that the speed of increase slows down before the curve is flat, and this slowing down is captured by smaller vertical blue lines. So, before the curve is flat and starts to decrease, the blue vertical lines become smaller and smaller.
+[^4]: The logic behind this is not very different from what we have heard about *flatten the curve* in the context of the 2020 pandemic. As the curve increases, the high speed of increase is captured by big vertical blue bars. It is expected that the speed of increase slows down before the curve is flat, and this slowing down is captured by smaller vertical blue lines. So, before the curve is flat and starts to decrease, the blue vertical lines become smaller and smaller.
 
-Could you guess what will happen with the price given the chart above? Seems difficult as the last four observations are consecutive blue-red-blue-red. Then, this indicator alone, without any complementary analysis, does not seem to deliver a clear signal.
+Could you guess what will happen with the price given the chart above? Seems difficult as the last four observations are consecutive blue-red-blue-red. Then, this indicator alone, without any complementary analysis, does not seem to deliver a clear trading signal.
 
 Moving averages are supposed to anticipate price movements. The idea is the following. We have two line plots, one is the original evolution of the price chart in black and the second is the moving average in blue. In this case we have a 30-day moving average. The blue line is simply the average of the last 30-day stock prices. In the code below, this value is easily modified by changing the value of $n$, in this case $n=30$. The blue line (moving average) seems to anticipate what happens to the black line. The way we interpret the moving average is simple. If the black line crosses the blue from top to down in $t$, then we are expected to anticipate a drop in the stock price in $t+1$. In case the black line remains below the blue after $t+1$, then we expect the stock price to keep falling in the following periods.
 
 If the black line crosses the blue from down to top, then we are supposed to anticipate an increase in the stock price. The sign is stronger when the black line crosses the blue line showing a steeper slope. What happens in practice is that the value of $n$ should be calibrated until we fit the moving average with the behaviour of the price stock. This indicator alone is far from being perfect as there might be a lot of contrary signals which might make it difficult to follow the interpretation as we explained above.
 
-```{r fig.cap="Apple Moving average chart."}
-# The simple moving average (SMA) plot. 
+```{r fig.cap="Apple 30-day moving average chart."}
 AAPL |>
-    ggplot(aes(x = date, y = close)) +
-    geom_line(aes(open = open, high = high, low = low, 
-                         close = close))  +
-    geom_ma(ma_fun = SMA, n = 30, linetype = 1, size = 1.25) +
-    labs(subtitle = "30-Day SMA",
-         y = "Closing Price", x = "") + theme_tq()
+  ggplot(aes(x = date, y = close)) +
+  geom_line()  +
+  geom_ma(ma_fun = SMA, n = 30, linetype = 1, size = 1.25) +
+  labs(y = "Closing Price", x = "") + 
+  theme_tq()
 ```
 
 There is a price fall a few weeks before January 2016 and a few weeks after January 2016. This price fall was correctly anticipated by the moving average. Then the stock price increased a bit more than 110 USD, this was also correctly anticipated by the moving average. The period around July 2016 is less clear. By the end of the time-series, the black line is above the blue, so trying to follow our previous explanation this means that we should not expect a significant drop in the stock price.
@@ -549,34 +476,32 @@ The Bollinger Bands are envelopes plotted at a standard deviation level above an
 
 ```{r fig.cap="Apple Bollinger bands and simple moving average."}
 AAPL |>
-    ggplot(aes(x = date, y = close, open = open,
-               high = high, low = low, close = close)) +
-    geom_line() +
-    geom_bbands(ma_fun = SMA, sd = 2, n = 30,
-                linetype = 2, size = 1, alpha = 0.2,
-                fill        = palette_light()[[1]],
-                color_bands = palette_light()[[1]],
-                color_ma    = palette_light()[[2]]) +
-    labs(y = "Closing Price", x = "") +
-    theme_tq()
+  ggplot(aes(x = date, y = close, open = open,
+             high = high, low = low, close = close)) +
+  geom_line() +
+  geom_bbands(ma_fun = SMA, sd = 2, n = 30,
+              linetype = 2, size = 0.5, alpha = 0.2,
+              fill        = palette_light()[[1]],
+              color_bands = palette_light()[[1]],
+              color_ma    = palette_light()[[2]]) +
+  labs(y = "Closing Price", x = "") +
+  theme_tq()
 ```
 
 Let's look at the very last observation. The price line is above the moving average (now in red, dotted line). This means that we should not expect a drop in the stock price in the following periods. However, the Bollinger Bands suggest that the price is currently very close to the upper bound, plus the upper bounds is also close to the historical maximum price at least in this plot. In sum, the last price is 115.82 USD and we do not expect a fall in the stock price according to the moving average and the expected price change is in the range of 107 to 119 USD approximately.
 
-In case you may have a different view or concerns about the previous interpretation then you now realize the pitfalls and the disadvantages of this kind of analysis when it is conducted as a simple chart read. Although, the technical analysis is popular, it could lead to different interpretations easily when we interpret one or two indicators by eye. This does not mean we have to ignore this kind of analysis because we can always incorporate formal techniques to try to validate buy and sell signals to help traders and conduct short-run investment strategies. In fact, there are very serious developments like the *quantstrat* package, which provides a generic infrastructure to model and backtest signal-based quantitative strategies.
+In case you may have a different view or concerns about the previous interpretation then you now realize the pitfalls and the disadvantages of this kind of analysis when it is conducted as a simple chart read. Although, the technical analysis is popular, it could lead to different interpretations easily when we interpret one or two indicators by eye. This does not mean we have to ignore this kind of analysis because we can always incorporate formal techniques to try to validate buy and sell signals to help traders and conduct short-run investment strategies. In fact, there are very serious developments like the <tt>`quantstrat`</tt> package, which provides a generic infrastructure to model and backtest signal-based quantitative strategies.
 
 We can show the simple moving average for Facebook.
 
-```{r fig.cap="Facebook Moving average chart."}
-# The simple moving average (SMA) plot. 
+```{r fig.cap="Facebook 60-day moving average chart."}
 FANG |>
   filter(symbol == "FB") |>
   ggplot(aes(x = date, y = close)) +
-  geom_line(aes(open = open, high = high, low = low, 
-                close = close))  +
+  geom_line()  +
   geom_ma(ma_fun = SMA, n = 60, linetype = 1, size = 1.25) +
-  labs(subtitle = "30-Day SMA",
-       y = "Closing Price", x = "") + theme_tq()
+  labs(y = "Closing Price", x = "") + 
+  theme_tq()
 ```
 
 This suggests that the stock price will decrease in the near future. Let's see if the moving average signal is correct.
