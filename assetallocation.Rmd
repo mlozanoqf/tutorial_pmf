@@ -92,6 +92,23 @@ opt_roi
 The output above shows the portfolio weights, return and risk of the two optimal portfolios. Before showing the results of this optimization in a plot, let's look at the initial situation. In particular, the individual assets before adding any portfolio.
 
 ```{r}
+FANG_monthly_returns <- FANG |>
+    group_by(symbol) |>
+    tq_transmute(select     = adjusted,
+                 mutate_fun = periodReturn,
+                 period     = "monthly",
+                 type       = "arithmetic")
+
+FANG_stats <- FANG_monthly_returns |>
+summarise(mean = mean(monthly.returns), sd = sd(monthly.returns), 
+          sr = mean/sd, iqr = IQR(monthly.returns))
+FANG_stats
+```
+
+
+
+
+```{r}
 ggplot(FANG_stats, aes(x = sd, y = mean, color = symbol)) +
   geom_point(size = 5) + geom_text(aes(label = paste0(symbol)), 
   vjust = 2, color = "black", size = 3.5) +

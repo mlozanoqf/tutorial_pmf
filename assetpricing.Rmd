@@ -3,6 +3,16 @@ title: ''
 output: pdf_document
 ---
 
+```{r echo=FALSE}
+# This removes all items in environment. 
+rm(list=ls())
+library(tidyquant)
+library(ggplot2)
+library(tidyr)
+```
+
+\newpage
+
 # Asset pricing.
 
 The aim of asset pricing theories is to determine the fundamental value of an asset. There is a close relation between this fundamental value and an appropriate return. Then, the main focus of asset pricing theories and models is to determine this appropriate return. Most models relate expected returns to risks investors have to bear and have to be compensated for. They differ mainly in the risk factors they allow to enter into the model.
@@ -39,7 +49,7 @@ stock_prices_MA_V <- c("MA", "V") |>
 
 Then transform prices into cumulative returns and plot them.
 
-```{r}
+```{r fig.cap="MA and V: wealth index."}
 # Transform prices into log returns.
 stock_cumret_MA_V <- stock_prices_MA_V |>
     tq_transmute(adjusted,
@@ -50,11 +60,11 @@ stock_cumret_MA_V <- stock_prices_MA_V |>
 # Create the wealth index.
     mutate(wealth.index = 100 * cumprod(1 + returns))
 # Visualize the wealth index.
-ggplot(stock_cumret_MA_V, aes(x = date, y = wealth.index, 
-                              color = symbol)) +
-    geom_line(size = 1) + labs(title = "MA and V: wealth index",
-    subtitle = "100 USD investment growth from 2015-01-01 to 2016-12-31.") +
-    theme_tq() + scale_color_tq()
+ggplot(stock_cumret_MA_V, aes(x = date, y = wealth.index, color = symbol)) +
+  geom_line(size = 1, alpha = 0.7) + 
+  labs(subtitle = "100 USD investment growth from 2015-01-01 to 2016-12-31.") +
+  theme_tq() + 
+  scale_color_tq()
 ```
 
 Apparently, these stock returns are indeed closely related. Ups and downs are very similar in this time-series. These are the exact values:
@@ -71,7 +81,7 @@ The 100 USD investment growth is basically the same in both assets.
 
 Let's see the daily returns of both stocks in a scatter plot now. This allows us to confirm if both stock returns are related.
 
-```{r}
+```{r fig.cap="Visualizing relationship of stocks returns."}
 # Show the return relationship.
 stock_ret_MA_V <- stock_prices_MA_V |>
     tq_transmute(select     = adjusted,
@@ -80,23 +90,22 @@ stock_ret_MA_V <- stock_prices_MA_V |>
                  type       = "log",
                  col_rename = "returns") 
 
-ggplot(stock_ret_MA_V, aes(x = date, y = returns, 
-                           group = symbol)) +
+ggplot(stock_ret_MA_V, aes(x = date, y = returns, group = symbol)) +
   geom_line(aes(color = symbol), alpha = 0.6) +
-  labs(title = "Visualizing relationship of stocks returns",
-       subtitle = "Not very clear, right?") + theme_tq()
+  labs(subtitle = "Not very clear, right?") + 
+  theme_tq()
 ```
 
 The line plot was not a good idea to show our main point. You cannot see anything clear here. Only ups and downs with no clear visual pattern. Let's propose a different way to illustrate the relationship of stock returns.
 
-```{r}
+```{r fig.cap="Visualizing relationship of stocks returns, a clearer view."}
 # Show the return relationship.
 stock_ret_MA_V  |>
-    spread(key = symbol, value = returns) |>
-    ggplot(aes(x = V, y = MA)) +
-    geom_point(color = palette_light()[[1]], alpha = 0.5) +
-    geom_smooth(method = "lm") +
-    labs(title = "Visualizing relationship of stocks returns") + theme_tq()
+  spread(key = symbol, value = returns) |>
+  ggplot(aes(x = V, y = MA)) +
+  geom_point(color = "blue", alpha = 0.4) +
+  geom_smooth(method = "lm", color = "black") + 
+  theme_tq()
 ```
 
 Dropping the time and plotting coordinates looks better. The scatter plot above suggests that if Visa stock returns are low, Mastercard stock returns are low as well. By the same token, if Visa sock returns are high, Mastercard stock returns are high as well. We have 504 points; every point represents a pair of daily returns of both firms. Stock returns are then positively related, and this relationship seems to be strong and linear. We can add one line to the above plot to summarize this linear relationship between the 504 stock return pairs.
@@ -114,35 +123,6 @@ lm(MA ~ V, data = reg) |>
 summary()
 ```
 
-```{r eval=FALSE, include=FALSE}
-# Prepare the data.
-reg <- stock_ret_MA_V |>
-  spread(key = symbol, value = returns)
-# Estimate the model.
-lm(MA ~ lag(MA), data = reg) |>
-summary()
-```
-
-```{r exx2}
-# Prepare the data.
-reg <- stock_ret_MA_V |>
-  spread(key = symbol, value = returns)
-# Estimate the model.
-mav <- lm(MA ~ V, data = reg)
-mav$coefficients
-
-0.0001129858+0.8133651942*mean(reg$V)
-mean(reg$MA)
-
-stock_ret_MA_V  |>
-    spread(key = symbol, value = returns) |>
-    ggplot(aes(x = V, y = MA)) +
-    geom_point(color = palette_light()[[1]], alpha = 0.5) +
-    geom_smooth(method = "lm") +
-    geom_point(aes(x=mean(V), y=mean(MA)), colour="red", size=3)
-    labs(title = "Visualizing relationship of stocks returns") + theme_tq()
-
-```
 
 
 ```{r PMF_sEmmF}
@@ -252,16 +232,15 @@ In this case, the correlation of Visa and Mastercard stock returns is 0.8485187.
 
 Let's visualize a 1:1 relationship just as a reference in the red line below.
 
-```{r}
+```{r fig.cap="Visualizing relationship of stocks returns, one to one reference in red."}
 # Add a reference red line representing beta=1.
 stock_ret_MA_V  |>
-    spread(key = symbol, value = returns) |>
-    ggplot(aes(x = V, y = MA)) +
-    geom_point(color = palette_light()[[1]], alpha = 0.5) +
-    geom_smooth(method = "lm") + 
-    geom_abline(intercept = 0, color = "red") +
-    labs(title = "Visualizing relationship of stocks returns") +
-    theme_tq()
+  spread(key = symbol, value = returns) |>
+  ggplot(aes(x = V, y = MA)) +
+  geom_point(color = "blue", alpha = 0.4) +
+  geom_smooth(method = "lm", color = "black") + 
+  geom_abline(intercept = 0, color = "red") +
+  theme_tq()
 ```
 
 The strength of this fit can be measured by the R-squared. The R-squared value can be interpreted as the variation of $MA$ explained by variations of $V$. In particular, almost 72% of the variations of $MA$ is explained by variations in $V$. The rest (about 28%) remains unexplained according to the model. This 28% could be explained by adding more risk factors to the asset pricing model, or proposing an alternative estimation method.
@@ -311,17 +290,6 @@ The relationship of the risk-return trade-off is the heart of equilibrium asset 
 What if we propose that the return of an individual asset is partially explained by the market return? This proposal is similar as if we assume that the education level of one individual depends on the education level of the whole country. This proposal seems reasonable although not perfect. The market return is an aggregation of all individual asset returns traded in the stock market. There are several ways we can estimate the market return. One of them is to calculate the return of a stock index like the S&P500. The S&P500, or simply the S&P, is a stock market index that measures the stock performance of about 500 large companies listed on stock exchanges in the United States. It is one of the most commonly followed equity indexes, and many consider it to be one of the best representations of the US stock market.
 
 Market indexes as the S&P500 are important for several reasons. We have discussed that stock price evolution is a good way to track the performance of a single company. However, we are usually interested in evaluating the performance of all the companies in the market, not only one or two. Stock market indexes are formed by several firms or in some cases many participants known as constituents. There is a wide variety of stock market indexes, some are country specific, or based on industries and other firm characteristics. By looking at the price or index evolution of these indexes we can track what happens with the firms in an aggregate approach. Then, an index value change in a day show what happened with the firms in average in that specific day. If the S&P500 increases in one day then we interpret this as if most of the firms that participate in the S&P500 increased its value in that particular day.
-
-These are the S&P500 constituents ticker symbols, or in other words the 500 large companies that belongs to the S&P 500 index.
-
-```{r}
-# Load the package.
-library(BatchGetSymbols)
-sp500 <- GetSP500Stocks()
-sp500$Tickers
-```
-
-These are the S&P500 constituents. Have you seen that there are more than 500? Companies listed in the index may have issued multiple types of common stock, this is why we do not have exactly 500.
 
 Let's conduct a regression analysis as before. Now the model is $stock_{i,j} = \alpha_i + \beta_i SP500_j + \epsilon_i$, where sub-index $i$ represents a given stock, and $j$ the historical observations. Note that this model is very similar as the general equation of a straight line is $y = a + bx$. The model $stock_{i,j} = \alpha_i + \beta_i SP500_j + \epsilon_i$ is basically the single-index-model. It is called single because we assume there is only one risk factor which in this case is the market return. There are other multi-factor models that adds more factors (like factor *F* for example) and they look like this: $stock_{i,j} = \alpha_i + \beta_i SP500_j + \delta_i F_j + \epsilon_i$.
 
@@ -387,7 +355,7 @@ We need a deeper econometric analysis to validate our interpretations. Here, we 
 
 We can illustrate the previous results in a graphical way.
 
-```{r}
+```{r fig.cap="Relationship between asset return and market."}
 R_stocks_market$symbol <- 
   factor(R_stocks_market$symbol, levels =
            unique(R_stocks_market$symbol))
@@ -399,8 +367,7 @@ R_stocks_market |>
   facet_wrap(~symbol, ncol = 5) +
   geom_abline(intercept = 0, color = "black", linetype = 1) +
   theme_minimal() + 
-  labs(x = "SP500 Return", y = "Asset Return", 
-       title = "Relationship between asset return and market") +
+  labs(x = "SP500 return", y = "Asset return") +
   theme(legend.position = "none", legend.title = element_blank())
 ```
 
@@ -424,7 +391,7 @@ arrange(`AnnualizedSharpe(Rf=0%)`)
 
 A stock beta is a measure of the individual asset return risk with respect to the market. The annualized Sharpe ratio above is a measure of the individual asset return per unit of risk. Let's visualize the previous table.
 
-```{r}
+```{r fig.cap="The higher the risk, the higher the return?"}
 # Calculate annualized returns.
 R_stocks_market_stats <- R_stocks_market |>
     tq_performance(Ra = R_stocks, Rb = NULL, 
@@ -437,8 +404,7 @@ R_stocks_market_stats <- R_stocks_market |>
             vjust = 2, color = "black", size = 3.5) +
   geom_text(aes(label = paste0(symbol)), 
             vjust = -1, color = "black", size = 3.5) + ylim(-0.17, 0.35) +
-  labs(title = "The higher the risk, the higher the return?",
-subtitle = "Numerical values represent return per unit of risk.",
+  labs(subtitle = "Numerical values represent return per unit of risk.",
        x = "Risk", y = "Return") + theme_tq() +
   theme(legend.position = "none", legend.title = element_blank())
 R_stocks_market_stats
@@ -588,7 +554,7 @@ R_capm_plot
 
 What if we use the values of betas and Sharpe ratios to form investment portfolios with these 10 assets? We call a portfolio to the new asset formed by several (smaller) investments in single assets. Let's start with a visualization of monthly return of a naive portfolio. A naive portfolio is basically formed by a 10% investment in each of the 10 assets. Here, we do not invest more in higher stock betas or in higher Sharpe ratio stocks. It is simply an equally weighted portfolio.
 
-```{r}
+```{r fig.cap="Equally weighted portfolio monthly returns."}
 # Weights.
 wts <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
 # Portfolio creation.
@@ -599,20 +565,20 @@ portfolio_returns_monthly <- R_stocks_market |>
                  col_rename  = "Ra")
 portfolio_returns_monthly |>
   # Visualization.
-    ggplot(aes(x = date, y = Ra)) +
-    geom_bar(stat = "identity", fill = palette_light()[[1]]) +
-    labs(title = "Portfolio monthly returns.",
-         subtitle = "10% in each one of the 10 assets.",
-caption = "Shows an above-zero trend meaning positive returns.",
-         x = "", y = "Monthly Returns") +
-    geom_smooth(method = "lm", color = "red") +
-    theme_tq() + scale_color_tq() +
-    scale_y_continuous(labels = scales::percent)
+  ggplot(aes(x = date, y = Ra)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(subtitle = "10% in each one of the 10 assets.",
+       caption = "Shows an above-zero trend meaning positive returns.",
+       x = "", y = "Monthly returns") +
+  geom_smooth(method = "lm", color = "red") +
+  theme_tq() + 
+  scale_color_tq() +
+  scale_y_continuous(labels = scales::percent)
 ```
 
 A monthly returns plot is a good representation, but we normally show the evolution of an investment's growth. In this case we consider an initial investment of 10,000 USD.
 
-```{r}
+```{r fig.cap="Equally weighted portfolio growth of $10,000."}
 # Cumulative returns.
 portfolio_growth_monthly <- R_stocks_market |>
     tq_portfolio(assets_col   = symbol, 
@@ -621,17 +587,19 @@ portfolio_growth_monthly <- R_stocks_market |>
                  col_rename   = "investment.growth",
                  wealth.index = TRUE) |>
     mutate(investment.growth = investment.growth * 10000)
+
 portfolio_growth_monthly |>
-    ggplot(aes(x = date, y = investment.growth)) +
-    geom_line(size = 2, color = palette_light()[[1]]) +
-    labs(title = "Portfolio growth of $10,000.",
-         subtitle = "10% in each one of the 10 assets.",
-         caption = "Now we can really visualize performance!",
-         x = "", y = "Portfolio Value") +
-    geom_smooth(method = "loess") +
-    theme_tq() +
-    scale_color_tq() +
-    scale_y_continuous(labels = scales::dollar)
+  ggplot(aes(x = date, y = investment.growth)) +
+  geom_line(size = 2, color = "blue") +
+  geom_point(aes(x = as.Date("2010-01-01"), y = 10000), 
+             size = 4, col = "black", alpha = 0.4) +
+  labs(subtitle = "10% in each one of the 10 assets.", 
+      caption = "Now we can really visualize performance!",
+      x = "", y = "Portfolio value") +
+  geom_smooth(method = "loess", color = "black") +
+  theme_tq() +
+  scale_color_tq() +
+  scale_y_continuous(labels = scales::dollar)
 ```
 
 Looks OK. However, we are not sure if this is the best combination of assets. This is, what if the equally weighted portfolio is in fact the worst alternative? This is why we are interested in comparing this equally weighted portfolio with some other portfolios. In particular, a beta increasing portfolio and a Sharpe ratio increasing portfolio. These are basically incremental weights of 10%, 20%, 30% and 40% for the highest four betas and for the highest four Sharpe ratios.
@@ -679,10 +647,12 @@ portfolio_growth_monthly_multi <- stock_returns_monthly_multi |>
 portfolio_growth_monthly_multi |>
   ggplot(aes(x = date, y = investment.growth, color = factor(portfolio))) +
     geom_line(size = 2) +
+    geom_point(aes(x = as.Date("2010-01-01"), y = 10000), 
+             size = 4, col = "black", alpha = 0.4) +
     labs(title = "Portfolio growth of 10,000.",
          subtitle = "1: Equally weighted; 2: Sharpe ratio; 3: Beta",
-         caption = "Portfolio 2 is a Standout!",
-         x = "", y = "Portfolio Value",
+         caption = "Portfolio 2 is a standout!",
+         x = "", y = "Portfolio value",
          color = "Portfolio") +
     geom_smooth(method = "loess") +
     theme_tq() + scale_color_tq() +
@@ -690,165 +660,5 @@ portfolio_growth_monthly_multi |>
 ```
 
 In this case the increasing Sharpe ratio portfolio is the best one. In particular, the portfolio is: 10% in KLAC, 20% in TXN, 30% in CLX, 40% in KR, and 0% in the rest.
-
-## Predict asset prices.
-
-In the previous section we were interested to explain what drives the changes of asset returns. By knowing these drivers, we could identify significant risk factors of individual assets. In the example above we propose that the risk factor was the market index (although there are more). We see that some assets are more related with the market than others. Up to this point, we know that NEM barely reacts to the changes in the S&P500 whereas TIF reacts more than proportional than the changes in the S&P500. The question that arises is, can we anticipate the evolution of the S&P500? Can we anticipate the changes in the risk factors? Because if we can, then we could use this information to anticipate the impact over individual assets. In fact, the kind of techniques and examples that we will explain in this section are as flexible that can be easily applied to any kind of asset prices.
-
-In finance we care about the future so it makes sense to introduce some forecasting techniques in R. The forecasting techniques shown here do not depend on other external factors (as in the case of asset pricing models). You will realize that the only information we need to do these specific forecasts is the information of the past prices of the asset.
-
-Let's download the data. In this case, the S&P500 index.
-
-```{r}
-# Download the data.
-sp_500 <- "^GSPC" |>
-  tq_get(get  = "stock.prices", from = "1995-01-01",
-         to   = "2017-12-31") |>
-  tq_transmute(select     = adjusted, 
-               mutate_fun = to.monthly,
-               col_rename = "sp_500")
-```
-
-Now, let's see the data.
-
-```{r}
-# Split the data into training and test.
-sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
-sp500_training <- window(sp500_all, start = 1995, end = c(2014, 12))
-sp500_test <- window(sp500_all, start = 2015)
-# See the data before forecast.
-plot(sp500_all, type = "l", main = "SP500 index evolution.
-Train set in black, test set in red.")
-lines(sp500_training, col = "black")
-lines(sp500_test, col ="red")
-abline(v = 2015, lty = 2, col = "red")
-```
-
-Most of us hear the weather forecast every morning and I think we agree it is not always accurate. In econometrics we care about this and we are interested in evaluating our forecasts. This is problematic because my current forecast in $t=0$ will be validated in $t=1$, but I need to know how good my forecast is in $t=0$, not in $t=1$. That is tricky. Since we do not have the Infinity Stone known as the Time Stone and we do not have Dr. Strange's skills, then we have to find an alternative solution. The solution is the following. Consider we assume that we have information until Dec 2014, so we are going to estimate our model up to Dec 2014 and forecast the following 36 months: 2015, 2016 and 2017. The train set is then from Jan 1995 to Dec 2014, and the test set from 2015 to 2017. The trick is that we actually know what happened in the test set, so we could be able to compare different forecasts and see which one was closer to what really happened. By doing this, we could have a better idea about how good is my today's forecast.
-
-In statistics and econometrics, and in particular in time series analysis, an autoregressive integrated moving average (ARIMA) model is a generalization of an autoregressive moving average (ARMA) model. Both of these models are fitted to time series data either to better understand the data or to predict future points in the series (forecasting).
-
-Without going into more details, we can estimate an ARIMA model to conduct our forecast.
-
-```{r}
-# Load the package.
-library(forecast)
-# Estimation of ARIMA model.
-fit <- auto.arima(sp500_training)
-# See results.
-summary(fit)
-```
-
-This is the model estimation.
-
-Now, let's see the forecast.
-
-```{r}
-# 36-month forecast.
-for_sp500_all <- forecast(fit, h = 36)
-# Evaluate percentage error.
-cbind(arima_forecast = tail(for_sp500_all$mean, 36), 
-      test_set = tail(sp500_test, 36), 
-      percentage_error = 100*(tail(for_sp500_all$mean, 36) - 
-      tail(sp500_test, 36))/(tail(for_sp500_all$mean, 36)))
-```
-
-There are months in which the forecast looks OK, but in others the difference is more than 10%. It's easier if we see the forecast.
-
-```{r}
-plot(for_sp500_all, main = "ARIMA forecast in blue.
-Training set in black, test set in red.")
-lines(sp500_test, col = "red")
-abline(v = 2015, lty = 2, col = "red")
-```
-
-The ARIMA model overestimate the S&P500 at the first months, and then underestimate it. As a rule of thumb, long term forecasts are hard, they are usually not very accurate. This makes sense as it is easier to forecast tomorrow weather compared to 3 month forecast weather.
-
-```{r eval=FALSE, include=FALSE}
-library(fpp3)
-sp500_all.tsibble <- as_tsibble(sp500_all)
-
-sp500_training.tsibble <- as_tsibble(sp500_training)
-
-sp500_training.tsibble |>
-model(AAN = ETS(sp500_training ~ error("A") + trend("A") + season("N"))) |>
-  forecast(h = 36) |>
-  autoplot(sp500_training.tsibble) +
-  labs(title = "SP500",
-       y = "Index") +
-  guides(colour = guide_legend(title = "Forecast")) +
-autolayer(sp500_all.tsibble)
-
-```
-
-```{r eval=FALSE, include=FALSE}
-sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
-sp500_all.tsibble <- as_tsibble(sp500_all)
-
-sp500_training.tsibble |>
-model(hw = ETS(sp500_training ~ error("A") + trend("A") + season("A")))|>
-  forecast(h = 36) |>
-  autoplot(sp500_training.tsibble) +
-  labs(title = "SP500",
-       y = "Index") +
-  guides(colour = guide_legend(title = "Forecast")) +
-autolayer(sp500_all.tsibble)
-```
-
-```{r eval=FALSE, include=FALSE}
-library(fpp3)
-sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
-sp500_all.tsibble <- as_tsibble(sp500_all)
-
-sp500_all.tsibble |>
-  model(
-    classical_decomposition(value, type = "additive")
-  ) |>
-  components() |>
-  autoplot() +
-  labs(title = "Classical additive decomposition of total
-                  US retail employment")
-```
-
-We can compare ARIMA forecast with TBATS forecast. The TBATS model combines several components, making them a very good choice for forecasting. It constitutes the following elements:
-
--   T: Trigonometric terms for seasonality.
--   B: Box-Cox transformations for heterogeneity.
--   A: ARMA errors for short-term dynamics.
--   T: Trend.
--   S: Seasonal (including multiple and non-integer periods).
-
-This is the implementation in R.
-
-```{r eval=FALSE, include=FALSE}
-# 36-month forecast.
-for_tbats <- forecast::forecast(sp500_training, h = 36)
-df_tbats = as.data.frame(for_tbats)
-df_tbats <- ts(df_tbats$`Point Forecast`, start = c(2015, 1), freq = 12)
-# Evaluate percentage error.
-cbind(TBATS_forecast = df_tbats, 
-      test_set=tail(sp500_test, 36), 
-      percentage_error = 100*((df_tbats) - 
-      tail(sp500_test, 36))/(df_tbats))
-```
-
-After 36 months (Dec 2017), ARIMA error is −16.33%, while TBATS is −11.6%. These might not be very impressive values. And in fact, we can do better by implementing more elaborated techniques, including machine learning. However, a 36 month forecast with a percentage error of −11.6% looks not so bad.
-
-We can see all results together.
-
-```{r eval=FALSE, include=FALSE}
-# Plot all previous results.
-plot(sp500_all, main = "ARIMA forecast in blue, TBATS in green.
-Training set in black, test set in red.")
-lines(sp500_training)
-lines(sp500_test, col = "red")
-lines(df_tbats, col = "green", lwd = 3)
-lines(for_sp500_all$mean, col = "blue", lwd = 3)
-abline(v = 2015, lty = 2, col = "red")
-```
-
-In finance we are interested in forecasting because these techniques allow us to have some certainty about the future. Since we take investment decisions today looking for a return in the future, we need to have some tools to anticipate the future the best way we can.
-
-The story so far is the following. We care about firm performance, and the evolution of the stock return is a good indicator. We care about the determinants of stock returns and we propose that the market and other risk factors determine the stock returns. Then we care about the evolution of the market and risk factors as these anticipate changes in the stock returns. Forecasting techniques are only one alternative to have some idea about the evolution of asset prices, including a stock market index like the S&P500. We know that the S&P500 was 2,058.90 in December 2014, and our best forecast for Dec 2017 (36 months in the future), is 2,394.947 and in reality, it was 2,673.61 (a percentage error of −11.6%). This is how we can anticipate firm performance.
 
 The next section deals with the actual investment problem. In which assets should we invest? How much should we invest in each asset? Those questions can be addressed by learning asset allocation or portfolio selection techniques.
