@@ -239,7 +239,7 @@ ggplot(aes(x = date-12, y = cr, color = symbol)) +
   geom_point(aes(x = as.Date("2012-12-31"), y = 100), 
              size = 4, col = "black", alpha = 0.5) +
   labs(subtitle = "100 USD investment growth from 2013-01-01 to 2016-12-31.",
-         x = "", y = "USD value at the end of the year", color = "") +
+         x = "", y = "USD value at the end of the month", color = "") +
   scale_y_continuous(labels = scales::dollar) +
   theme_tq() + 
   scale_color_tq()
