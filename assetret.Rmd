@@ -4,10 +4,10 @@ output: pdf_document
 ---
 
 ```{r echo=FALSE}
-# This removes all items in environment. 
 rm(list=ls())
 library(tidyquant)
 library(ggplot2)
+library(dplyr)
 ```
 
 \newpage
@@ -57,7 +57,8 @@ Let's add one line of code to see the price time-series more clearly.
 
 ```{r fig.cap="Daily Stock Prices - easier to read."}
 FANG_daily <- FANG_daily_all +
-  facet_wrap(~ symbol, ncol = 2, scales = "free_y")
+  facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+  theme(legend.position = "none", legend.title = element_blank())
 
 FANG_daily
 ```
@@ -90,7 +91,8 @@ FANG_annual_returns |>
   labs(y = "Annual returns", x = "") +
   facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
   theme_tq() + 
-  scale_fill_tq()
+  scale_fill_tq() +
+  theme(legend.position = "none", legend.title = element_blank())
 ```
 
 Risky stocks like these are risky because the returns change drastically from time to time. Note that here, it is easy to see that 2014 was indeed a bad year for Amazon, Google and Netflix as we anticipate when looking at the price chart. These three assets confirm what we anticipate before because we see negative returns in 2014. The year 2015 was good for Amazon and Google as we said before.
@@ -191,7 +193,8 @@ FANG_annual_cum_returns <- FANG_annual_returns |>
   scale_y_continuous(labels = scales::dollar) +
   facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
   theme_tq() + 
-  scale_color_tq()
+  scale_color_tq() +
+  theme(legend.position = "none", legend.title = element_blank())
 
 FANG_annual_cum_returns
 ```
@@ -217,7 +220,8 @@ ggplot(FANG_monthly_returns, aes(x = date-12,
   labs(y = "Monthly returns", x = "") +
   facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
   theme_tq() + 
-  scale_fill_tq()
+  scale_fill_tq() +
+  theme(legend.position = "none", legend.title = element_blank())
 ```
 
 By increasing the frequency from yearly to monthly we now have 12 observations per month instead of 1. Note that this new plot reveals how volatile these stock returns are. There is a negative return just the month after GOOG reached a positive 20% return. It looks hard to anticipate what will happen the next month since there is evidence that these returns change from positive to negative quite frequently.
@@ -248,7 +252,8 @@ Alternatively, we can split the plot in four panels. This facilitates the readin
 
 ```{r fig.cap="Monthly cumulative USD returns, a facet view."}
 FANG_monthly <- FANG_monthly_all +
-  facet_wrap(~ symbol, ncol = 2, scales = "free_y")
+  facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+  theme(legend.position = "none", legend.title = element_blank())
 
 FANG_monthly
 ```
@@ -292,7 +297,8 @@ ggplot(FANG_monthly_returns, aes(x = monthly.returns, fill = symbol)) +
   xlim(-0.3, 0.9) +
   theme_tq() + 
   scale_fill_tq() + 
-  facet_wrap(~ symbol, ncol = 2)
+  facet_wrap(~ symbol, ncol = 2) +
+  theme(legend.position = "none", legend.title = element_blank())
 ```
 Now, we have one density plot for each stock. Let's analyze each plot.
 
