@@ -3,19 +3,32 @@ title: ''
 output: pdf_document
 ---
 
+```{r echo=FALSE}
+rm(list=ls())
+library(PortfolioAnalytics)
+library(ROI)
+library(ROI.plugin.glpk)
+library(ROI.plugin.quadprog)
+library(dplyr)
+library(tbl2xts)
+```
+
+\newpage
+
+
 # Asset allocation.
 
-In finance, we are expected to take good financing and investment decisions. Asset allocation and portfolio theory are areas that show how we can take optimal investment decisions. In general, optimization is the act of achieving the best possible result under given circumstances. In our context, the best possible result is the highest return given a risk level, or alternatively the lowest risk given a return level. The "given circumstances" refer to a set of restrictions or constraints that we can face in the market. These restrictions are in the form of a maximum level of one asset in a portfolio, constraints about short sales, etc. Computers can solve complex optimization problems so it makes sense to use R and conduct asset allocation and tasks and estimate portfolio optimization models.
+In finance, we are expected to take good financing and investment decisions. Asset allocation and portfolio theory are areas that show how we can take optimal investment decisions. In general, optimization is the act of achieving the best possible result under given circumstances. In our context, the best possible result is the highest return given a risk level, or alternatively the lowest risk given a return level. The *given circumstances* refer to a set of restrictions or constraints that we can face in the market. These restrictions are in the form of a maximum level of one asset in a portfolio, constraints about short sales, etc. Computers can solve complex optimization problems so it makes sense to use R and conduct asset allocation and tasks and estimate portfolio optimization models.
 
-In principle, we all know that the popular wisdom suggests *not to put all the eggs in the same basket*. This suggestion makes sense as we should diversify as diversification is a way to manage the risk of losing all the eggs if something bad happens. For example, imagine I invest in two firms, one that sells ice cream and another that sells hot chocolate. Assume that as an exchange of my investment, I get some returns based on these firms' sales. My diversification in these two firms seems reasonable as the weather (relevant risk factor) affects the sales of these two companies in an opposite way. When it is hot, sales increases in the ice cream shop and decreases in the hot chocolate shop; and when it is cold, sales increases in the hot chocolate shop and decreases in the ice cream shop. Then, my revenues will be fairly constant every year, and this is desirable as I reduce the volatility of my revenues, they become less risky, the standard deviation of my revenues is small. You may remember our previous discussion about the correlation of Mastercard and Visa, the correlation of these firms' stock returns is 0.8480487 and we argue that this mean that they not only share the same risk factors, but they also react almost the same to changes in these risk factors, and this is why they behave similar. In the ice cream and hot chocolate shop example, we could guess that the sales' correlation of both shops have a strong negative correlation let's say −0.9. This means that the sales of both shops behave opposite and they are affected differently by the risk factor called weather.
+In principle, we all know that the popular wisdom suggests *not to put all the eggs in the same basket*. This suggestion makes sense as we should diversify as diversification is a way to manage the risk of losing all the eggs if something bad happens. For example, imagine I invest in two firms, one that sells ice cream and another that sells hot chocolate. Assume that as an exchange of my investment, I get some returns based on these firms' sales. My diversification in these two firms seems reasonable as the weather (relevant risk factor) affects the sales of these two companies in an opposite way. In particular, when it is hot, sales increases in the ice cream shop and decreases in the hot chocolate shop; and when it is cold, sales increases in the hot chocolate shop and decreases in the ice cream shop. Then, my revenues will be fairly constant every year, and this is desirable as I reduce the volatility of my revenues, they become less risky, the standard deviation of my revenues is small. You may remember our previous discussion about the correlation of Mastercard and Visa, the correlation of these firms' stock returns is 0.8480487 and we argue that this mean that they not only share the same risk factors, but they also react almost the same to changes in these risk factors, and this is why they behave similar. In the ice cream and hot chocolate shop example, we could guess that the sales' correlation of both shops have a strong negative correlation let's say −0.9. This means that the sales of both shops behave opposite and they are affected differently by the risk factor called weather.
 
 If the popular wisdom suggests *not to put all the eggs in the same basket*, then, the interesting question is, how many eggs should we put in each basket? This is the equivalent to an investment recommendation in the form of how much to invest in each individual asset. We call portfolio to the new asset formed by several (smaller) investments in single assets. And we call a portfolio weight to the percentage invested in single assets. Asset allocation models allow us to estimate these optimal portfolio weights. Let's see an extreme example first. Imagine my current investment is 1% in the ice cream shop and 99% in the hot chocolate shop. This does not look like a good idea because these portfolio weights make the portfolio highly vulnerable to hot weather. After implementing an asset allocation optimization, the portfolio weights could be 60% of my money invested in the ice cream shop and 40% in the hot chocolate shop.
 
 ## The single-period problem.
 
-The single-period problem is the simplest framework to implement asset allocation models. Here, we assume that the investor has some historical information about the assets in $t=0$ (today), she makes an investment decision today, and she expects a return in $t=1$, end of story. Let's see how we should distribute the 100% of available money to invest in four stocks using the *PortfolioAnalytics* R package.
+The single-period problem is the simplest framework to implement asset allocation models. Here, we assume that the investor has some historical information about the assets in $t=0$ (today), she makes an investment decision today, and she expects a return in $t=1$, end of story. Let's see how we should distribute the 100% of available money to invest in four stocks using the <tt>`PortfolioAnalytics`</tt> R package.
 
-We need data to start. For convenience, we use the monthly returns of the FANG database.
+We need data to start. For convenience, we use the monthly returns of the <tt>`FANG`</tt> database.
 
 ```{r}
 FANG_monthly_returns <- FANG |>
@@ -27,23 +40,16 @@ FANG_monthly_returns <- FANG |>
 FANG_monthly_returns
 ```
 
-The format of *FANG_monthly_returns* is not compatible with the *PortfolioAnalytics* package as the data is currently tidy. So, we have to transform the way our database looks. Originally, we have a column called "symbol" and we need each stock to have their corresponding name. We can implement this change easily.
+The format of <tt>`FANG_monthly_returns`</tt> is not compatible with the <tt>`PortfolioAnalytics`</tt> package as the data is currently tidy. So, we have to transform the way our database looks. Originally, we have a column called <tt>`symbol`</tt> and we need each stock to have their corresponding name in different columns. We can implement this change easily.
 
 ```{r}
-# Load the relevant packages.
-library(PortfolioAnalytics)
-library(ROI)
-library(ROI.plugin.glpk)
-library(ROI.plugin.quadprog)
-library(dplyr)
-library(tbl2xts)
+fang <- FANG_monthly_returns |> 
+  tbl_xts(spread_by = "symbol")
 
-fang <- 
-  FANG_monthly_returns |> tbl_xts(spread_by = "symbol")
 head(fang)
 ```
 
-As you can confirm, the database *fang* is the same as we only changed the format. Following our discussion about the correlation, we calculate the correlation matrix for these 4 stocks.
+As you can confirm, the <tt>`FANG`</tt> database is the same as we only changed the format. Following our discussion about the correlation, we calculate the correlation matrix for these 4 stocks.
 
 ```{r}
 cor(fang)
@@ -51,31 +57,49 @@ cor(fang)
 
 The lowest correlation is between FB and AMZN (0.1846197). This means that both firms exhibit a weak linear relationship. On the other hand, we have GOOG and AMZN with a correlation of 0.6171376, which suggest a stronger linear relationship between these stock returns. In principle, the lower the correlation of our assets, the greater the diversification possibilities when forming a portfolio. Remember the ice cream and the hot chocolate shop example, we assumed a correlation of −0.9 and we were supposed to decrease the volatility of our sales. In practice, it is not very easy to find negative correlated assets. However, we can achieve diversification gains as long as the correlation value is less than +1.
 
-Let's continue with our main objective. We are interested in an investment recommendation (how much to invest in each of the four assets). We first define a portfolio specification.
+Let's continue with our main objective. We are interested in an investment recommendation (how much to invest in each of the four assets). 
+
+We first define a portfolio specification with the help of <tt>`portfolio.spec()`</tt> function. 
 
 ```{r}
 # Create the portfolio specification
 port_spec <- portfolio.spec(colnames(fang))
-# Add a full investment constraint such that the weights sum to 1
+port_spec
+```
+
+Given the portfolio specification, we are interested in four asssets. Now, add a full investment constraint such that the weights sum to 1. We use the <tt>`add.constraint()`</tt> function. 
+
+```{r}
 port_spec <- add.constraint(portfolio = 
                               port_spec, type = "full_investment")
-# Add a long only constraint such that the 
-# weight of an asset is between 0 and 1
+port_spec
+```
+
+Add a long only constraint such that the portfolio optimal weights are between 0 and 1.
+
+```{r}
 port_spec <- add.constraint(portfolio = port_spec, type = "long_only")
+port_spec
+```
+
+We are interested in risk and return.
+
+```{r}
 # Add an objective to minimize portfolio standard deviation
 port_spec <- add.objective(portfolio = port_spec,
                            type = "risk",
                            name = "StdDev")
-# Add an objective to minimize portfolio standard deviation
 port_spec <- add.objective(portfolio = port_spec,
                            type = "return",
                            name = "mean")
 port_spec
 ```
 
-The portfolio specification indicates that we have four assets available, these are: FB, AMZN, NFLX and GOOG. Constraints indicates that we are expected to spend 100% of the funds available (full investment). This is, the sum of the portfolio weights of the four assets should be 100%. The constraint long refers that individual portfolio weights have to be positive. The StdDev is an objective because we are interested in minimizing the standard deviation (risk), and we want to maximize the mean.
+The portfolio specification indicates that we have four assets available, these are: FB, AMZN, NFLX and GOOG. Constraints indicates that we are expected to spend 100% of the funds available (full investment). This is, the sum of the portfolio weights of the four assets should be 100%. The constraint long refers that individual portfolio weights have to be positive.
 
-The alternative of the constraint *long_only* is to allow the model to suggest negative portfolio weights. Negative portfolio weights represent short sales. Short selling is an investment strategy that speculates on the decline in a stock. Sometimes short selling is not allowed so the *long_only* constraint will deliver only positive portfolio weights. The *optimize.portfolio* function allows us to solve our portfolio problem by taking a variety of methods, constraints and objectives. Let's run two of them (random and ROI) and then we can discuss their differences.
+The alternative of the constraint <tt>`long_only`</tt> is to allow the model to suggest negative portfolio weights. Negative portfolio weights represent short sales. Short selling is an investment strategy that speculates on the decline in a stock. Sometimes short selling is not allowed so the <tt>`long_only`</tt> constraint will deliver only positive portfolio weights. The <tt>`optimize.portfolio()`</tt> function allows us to solve our portfolio problem by taking a variety of methods, constraints and objectives. 
+
+Let's run two of them (random and ROI) and then we can discuss their differences.
 
 ```{r}
 # Solve the optimization problem.
@@ -89,7 +113,9 @@ opt_rand
 opt_roi
 ```
 
-The output above shows the portfolio weights, return and risk of the two optimal portfolios. Before showing the results of this optimization in a plot, let's look at the initial situation. In particular, the individual assets before adding any portfolio.
+The output above shows the portfolio weights, return and risk of the two optimal portfolios. Before showing the results of this optimization in a plot, let's look at the initial situation. In particular, the individual assets before considering any portfolio.
+
+First, download the data.
 
 ```{r}
 FANG_monthly_returns <- FANG |>
@@ -106,15 +132,15 @@ FANG_stats
 ```
 
 
-
-
-```{r}
+```{r fig.cap="The higher the risk, the higher the return."}
 ggplot(FANG_stats, aes(x = sd, y = mean, color = symbol)) +
-  geom_point(size = 5) + geom_text(aes(label = paste0(symbol)), 
+  geom_point(size = 5) + 
+  geom_text(aes(label = paste0(symbol)), 
   vjust = 2, color = "black", size = 3.5) +
-  xlim(0.05, 0.169) + ylim(0.01, 0.06) +
-  labs(title = "The higher the risk, the higher the return",
-       x = "Risk", y = "Return") + theme_tq()
+  xlim(0.05, 0.169) + 
+  ylim(0.01, 0.06) +
+  labs(x = "Risk", y = "Return") + 
+  theme_tq()
 ```
 
 ```{r}
@@ -301,6 +327,20 @@ points(6, sum(opt_roi$weights*r_stocks),  col = "red", pch = 19, cex = 2)
 The realized returns can be quite different from the promised or expected returns. This difference depends on the method, the model, the database length, the ability of the portfolio designer, and also depends on a random component. In our FANG example, the investment recommendations were good alternatives.
 
 It is tempting to calculate an optimal portfolio based on our previous CAPM example. Let's do it here just to show how easy is it to replicate the analysis with a different database, which is the beauty of reproducibility as I basically did a copy paste of the previous code.
+
+```{r}
+# Download individual asset returns.
+R_stocks <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT", 
+              "KLAC", "TEF") |>
+  tq_get(get  = "stock.prices", from = "2010-01-01", 
+         to   = "2015-12-31") |>
+  group_by(symbol) |> 
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "monthly", 
+               col_rename = "R_stocks")
+R_stocks
+```
 
 ```{r}
 capm_stocks <- 
