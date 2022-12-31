@@ -140,7 +140,7 @@ FANG_stats
 ```
 
 
-```{r fig.cap="The four individual assets."}
+```{r fig.cap="FANG, the four individual assets."}
 ggplot(FANG_stats, aes(x = sd, y = mean, color = symbol)) +
   geom_point(size = 5) + 
   geom_text(aes(label = paste0(symbol)), 
@@ -159,7 +159,7 @@ For example, I do not think you will be happy with a portfolio whose return is 0
 
 The random technique (Random Portfolios Optimization) evaluates many investment recommendation alternatives, each one is one portfolio. In principle, the technique should recommend a portfolio which leads to a more attractive return per unit of risk alternative than investing in individual assets.
 
-```{r fig.cap="Random method optimal portfolio."}
+```{r fig.cap="FANG, random method optimal portfolio."}
 # Plot results.
 chart.RiskReward(opt_rand, risk.col = "StdDev", 
                  return.col = "mean", chart.assets = TRUE, 
@@ -177,7 +177,7 @@ See the blue optimal portfolio again. We would prefer any other portfolio locate
 Then, what can we do to invest in the blue optimal portfolio?
 
 
-```{r fig.cap="Random method optimal weights."}
+```{r fig.cap="FANG, random method optimal weights."}
 chart.Weights(opt_rand)
 ```
 
@@ -207,7 +207,7 @@ The optimal portfolio <tt>`opt_rand`</tt> has a 0.4555797 return per unit of ris
 A second criterion is to optimize according to ROI (R Optimization Infrastructure for linear and quadratic programming solvers).
 
 
-```{r fig.cap="ROI method optimal portfolio."}
+```{r fig.cap="FANG, ROI method optimal portfolio."}
 # Plot results.
 chart.RiskReward(opt_roi, risk.col = "StdDev", 
                  xlim = c(0.05, 0.18),
@@ -220,7 +220,7 @@ legend("bottomright", legend = c("ROI", "opt_rand"),
 A different optimization criterion leads to a different optimal portfolio. However, they are both optimal as they are in the efficient frontier.
 
 
-```{r fig.cap="Random method optimal weights."}
+```{r fig.cap="FANG, ROI method optimal weights."}
 chart.Weights(opt_roi)
 ```
 
@@ -285,16 +285,16 @@ FANG_stats |>
 It may be disappointing to find out that the naïve portfolio has the higher Sharpe ratio including the optimal alternatives. We can add a target return constraint to the optimization problem so we can find out an optimal portfolio that targets the naïve portfolio expected return.
 
 ```{r}
-port_spec <- add.constraint(portfolio = port_spec, type = "return", 
+port_spec2 <- add.constraint(portfolio = port_spec, type = "return", 
                              return_target = 0.03414333)
 set.seed(13)
-opt_roi2 <- optimize.portfolio(fang, portfolio = port_spec,
+opt_roi2 <- optimize.portfolio(fang, portfolio = port_spec2,
                                optimize_method = "ROI", maxSR = TRUE,
                                rf = 0, trace = TRUE)
 ```
 
 
-```{r fig.cap="ROI method optimal weights that targets the naïve portfolio expected return."}
+```{r fig.cap="FANG, ROI method optimal weights that targets the naïve portfolio expected return."}
 chart.Weights(opt_roi2)
 ```
 
@@ -304,7 +304,7 @@ According to the <tt>`opt_roi2`</tt> portfolio, we have to invest:
 extractWeights(opt_roi2)
 ```
 
-```{r fig.cap="ROI method that targets the naïve portfolio expected return."}
+```{r fig.cap="FANG, ROI method that targets the naïve portfolio expected return."}
 # Plot results.
 chart.RiskReward(opt_roi2, risk.col = "StdDev",
 xlim = c(0.07, 0.073),
@@ -356,7 +356,7 @@ s_roi <- rnorm(sim, opt_roi$opt_values$mean, opt_roi$opt_values$StdDev)
 
 The simulation is done. Now let's visualize the results in a boxplot. Boxplots show the distribution of the data in a data set. It divides the data set into three quartiles. This graph represents the minimum, maximum, median, first quartile and third quartile in the data set.
 
-```{r fig.cap="Simulated returns of investment alternatives."}
+```{r fig.cap="FANG, simulated returns of investment alternatives."}
 # The boxplot.
 b = cbind(s_FB, s_AMZN, s_NFLX, s_GOOG, s_ran, s_roi)
 boxplot(b, las = 2)
@@ -399,7 +399,7 @@ In sum, the expected monthly return in $t=0$ of <tt>`opt_rand`</tt> portfolio is
 
 Let's see the whole thing now. This is, the distribution of the simulation and the realized returns in red.
 
-```{r fig.cap="Simulated returns of investment alternatives. What really happened by 2017-01-30 in red."}
+```{r fig.cap="FANG, simulated returns of investment alternatives. What really happened by 2017-01-30 in red."}
 # The simulation.
 boxplot(b, las = 2)
 abline(h=0, lty = 2)
@@ -408,13 +408,17 @@ points(1, 0.1208283,  col = "red", pch = 19, cex = 2)
 points(2, 0.101782,   col = "red", pch = 19, cex = 2)
 points(3, 0.1076947,  col = "red", pch = 19, cex = 2)
 points(4, 0.02058163, col = "red", pch = 19, cex = 2)
-points(5, sum(opt_rand$weights * r_stocks), col = "red", pch = 19, cex = 2)
-points(6, sum(opt_roi$weights * r_stocks),  col = "red", pch = 19, cex = 2)
+points(5, sum(opt_rand$weights * r_stocks), col = "red", 
+       pch = 19, cex = 2)
+points(6, sum(opt_roi$weights * r_stocks),  col = "red", 
+       pch = 19, cex = 2)
 ```
 
 The realized returns can be quite different from the promised or expected returns. This difference depends on the method, the model, the database length, the ability of the portfolio designer, and also depends on a random component. In our <tt>`FANG`</tt> example, the optimal investment recommendations were good alternatives.
 
 It is tempting to calculate an optimal portfolio based on our previous CAPM example. Let's do it here just to show how easy is it to replicate the analysis with a different database, which is the beauty of reproducibility as I basically did a copy paste of the previous code.
+
+The data.
 
 ```{r}
 # Download individual asset returns.
@@ -430,25 +434,34 @@ R_stocks <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT",
 R_stocks
 ```
 
+The portfolio specification.
+
 ```{r}
-capm_stocks <- 
-  R_stocks |> tbl_xts(spread_by = "symbol") |>
+capm_stocks <- R_stocks |> 
+  tbl_xts(spread_by = "symbol") |>
   na.fill(fill = 0.00)
+
 port_spec <- portfolio.spec(colnames(capm_stocks))
-port_spec <- add.constraint(portfolio = 
-                              port_spec, type = "full_investment")
-port_spec <- add.constraint(portfolio = port_spec, type = "long_only")
+port_spec <- add.constraint(portfolio = port_spec, type = "weight_sum",
+                            min_sum = 0.99, max_sum = 1.01)
+port_spec <- add.constraint(portfolio = port_spec, type = "box", 
+                            min = 0, max = 1)
 port_spec <- add.objective(portfolio = port_spec,
                            type = "risk",
                            name = "StdDev")
 port_spec <- add.objective(portfolio = port_spec,
                            type = "return",
                            name = "mean")
-set.seed(14)
+port_spec
+```
+
+The random method.
+
+```{r fig.cap="10-assets, random method optimal portfolio."}
+set.seed(13)
 opt_rand <- optimize.portfolio(capm_stocks, portfolio = port_spec,
                           optimize_method = "random", trace = TRUE)
 chart.RiskReward(opt_rand, risk.col = "StdDev", 
-                 main = "Minimum Variance Optimization",
                  return.col = "mean", chart.assets = TRUE)
 legend("bottomleft", legend = c("opt_rand", "equally_weighted"),
        col = c("blue", "orange"), pch = 19, cex = 0.8)
@@ -459,10 +472,19 @@ abline(0, opt_rand$objective_measures$mean /
 Here, the slope of the red line corresponds to the optimal portfolio return per unit of risk. This means that the optimal portfolio has a similar return per unit of risk compared with KR. Note how the rest of the assets have a lower return per unit of risk.
 
 ```{r}
+extractWeights(opt_rand)
+```
+
+```{r fig.cap="10-assets, random method optimal weights."}
+chart.Weights(opt_rand)
+```
+
+Finally the ROI method.
+
+```{r fig.cap="10-assets, ROI method optimal portfolio."}
 opt_roi <- optimize.portfolio(capm_stocks, portfolio = port_spec,
                           optimize_method = "ROI", trace = TRUE)
 chart.RiskReward(opt_roi, risk.col = "StdDev", 
-                 main = "Minimum Variance Optimization",
                  return.col = "mean", rp = TRUE, chart.assets = TRUE)
 legend("bottomleft", legend = c("opt_roi"),
        col = c("blue"), pch = 19, cex = 0.8)
@@ -470,22 +492,14 @@ abline(0, opt_roi$objective_measures$mean /
          opt_roi$objective_measures$StdDev, lwd = 2, col = "red")
 
 ```
+This is basically 100% in KR.
 
-```{r PMF E2 q4, eval=FALSE, include=FALSE}
-# Create yearly returns.
-FANG_daily_returns <- FANG |>
-    group_by(symbol) |>
-    tq_transmute(select     = adjusted,
-                 mutate_fun = periodReturn,
-                 period     = "daily",
-                 type       = "arithmetic")
-library(tbl2xts)
-f <- FANG_daily_returns |> tbl_xts(spread_by = "symbol")
-cor(f)
-set.seed(13)
-opt_rand_daily <- optimize.portfolio(f, portfolio = port_spec,
-                          optimize_method = "random", trace = TRUE)
-opt_rand_daily
+```{r}
+extractWeights(opt_roi)
+```
+
+```{r fig.cap="10-assets, ROI method optimal weights."}
+chart.Weights(opt_roi)
 ```
 
 ## Diversification.
