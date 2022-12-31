@@ -24,13 +24,13 @@ In finance, we are expected to take good financing and investment decisions. Ass
 
 In principle, we all know that the popular wisdom suggests *not to put all the eggs in the same basket*. This suggestion makes sense as we should diversify as diversification is a way to manage the risk of losing all the eggs if something bad happens. For example, imagine I invest in two firms, one that sells ice cream and another that sells hot chocolate. Assume that as an exchange of my investment, I get some returns based on these firms' sales. My diversification in these two firms seems reasonable as the weather (relevant risk factor) affects the sales of these two companies in an opposite way. In particular, when it is hot, sales increases in the ice cream shop and decreases in the hot chocolate shop; and when it is cold, sales increases in the hot chocolate shop and decreases in the ice cream shop. Then, my revenues will be fairly constant every year, and this is desirable as I reduce the volatility of my revenues, they become less risky, the standard deviation of my revenues is small. You may remember our previous discussion about the correlation of Mastercard and Visa, the correlation of these firms' stock returns is 0.8480487 and we argue that this mean that they not only share the same risk factors, but they also react almost the same to changes in these risk factors, and this is why they behave similar. In the ice cream and hot chocolate shop example, we could guess that the sales' correlation of both shops have a strong negative correlation let's say −0.9. This means that the sales of both shops behave opposite and they are affected differently by the risk factor called weather.
 
-If the popular wisdom suggests *not to put all the eggs in the same basket*, then, the interesting question is, how many eggs should we put in each basket? This is the equivalent to an investment recommendation in the form of how much to invest in each individual asset. We call portfolio to the new asset formed by several (smaller) investments in single assets. And we call a portfolio weight to the percentage invested in single assets. Asset allocation models allow us to estimate these optimal portfolio weights. Let's see an extreme example first. Imagine my current investment is 1% in the ice cream shop and 99% in the hot chocolate shop. This does not look like a good idea because these portfolio weights make the portfolio highly vulnerable to hot weather. After implementing an asset allocation optimization, the portfolio weights could be 60% of my money invested in the ice cream shop and 40% in the hot chocolate shop.
+If the popular wisdom suggests *not to put all the eggs in the same basket*, then, the interesting question is, how many eggs should we put in each basket? This is the equivalent to an investment recommendation in the form of how much to invest in each individual asset. We call portfolio to the new asset formed by several and smaller investments in single assets. And we call a portfolio weight to the percentage invested in single assets. Asset allocation models allow us to estimate these optimal portfolio weights. Let's see an extreme example first. Imagine my current investment is 1% in the ice cream shop and 99% in the hot chocolate shop. This does not look like a good idea because these portfolio weights make the portfolio highly vulnerable to hot weather. After implementing an asset allocation optimization, the portfolio weights could be 60% of my money invested in the ice cream shop and 40% in the hot chocolate shop.
 
 ## The single-period problem.
 
-The single-period problem is the simplest framework to implement asset allocation models. Here, we assume that the investor has some historical information about the assets in $t=0$ (today), she makes an investment decision today, and she expects a return in $t=1$, end of story. Let's see how we should distribute the 100% of available money to invest in four stocks using the <tt>`PortfolioAnalytics`</tt> R package.
+The single-period problem is the simplest framework to implement asset allocation models. Here, we assume that the investor has some historical information about the assets in $t=0$ (today), she makes an investment decision today, and she expects a return in $t=1$, end of story. 
 
-We need data to start. For convenience, we use the monthly returns of the <tt>`FANG`</tt> database.
+Let's see how we should distribute the 100% of available money to invest in four stocks using the <tt>`PortfolioAnalytics`</tt> R package. We need data to start. For convenience, we use the monthly returns of the <tt>`FANG`</tt> database.
 
 ```{r}
 FANG_monthly_returns <- FANG |>
@@ -39,6 +39,7 @@ FANG_monthly_returns <- FANG |>
                  mutate_fun = periodReturn,
                  period     = "monthly",
                  type       = "arithmetic")
+
 FANG_monthly_returns
 ```
 
@@ -77,7 +78,7 @@ port_spec <- add.constraint(portfolio = port_spec, type = "weight_sum",
 port_spec
 ```
 
-Add a box constraint such that the portfolio optimal weights are between 0 and 1.
+Add a box constraint such that the portfolio optimal weights are between 0 and 1. This is equivalent as a *long only* constraint.
 
 ```{r}
 port_spec <- add.constraint(portfolio = port_spec, type = "box", 
@@ -98,11 +99,11 @@ port_spec <- add.objective(portfolio = port_spec,
 port_spec
 ```
 
-The portfolio specification indicates that we have four assets available, these are: FB, AMZN, NFLX and GOOG. Constraints indicates that we are expected to spend 100% of the funds available (full investment). This is, the sum of the portfolio weights of the four assets should be 100%. The constraint long refers that individual portfolio weights have to be positive.
+The portfolio specification indicates that we have four assets available, these are: FB, AMZN, NFLX and GOOG. Constraints indicates that we are expected to spend 100% of the funds available, or very close to that. The constraint long refers that individual portfolio weights have to be positive.
 
-The alternative of the box constraint is to allow the model to deliver negative portfolio weights. Negative portfolio weights represent short sales. Short selling is an investment strategy that speculates on the decline in a stock. Sometimes short selling is not allowed so the box constraint will deliver only positive portfolio weights. The <tt>`optimize.portfolio()`</tt> function allows us to solve our portfolio problem by taking a variety of methods, constraints and objectives. 
+The alternative of the box constraint is to allow the model to deliver negative portfolio weights. Negative portfolio weights represent short sales. Short selling is an investment strategy that speculates on the decline in a stock. Sometimes short selling is not allowed so the box constraint will deliver only positive portfolio weights. 
 
-Let's run two of them: random and ROI, and then we can discuss their differences.
+The <tt>`optimize.portfolio()`</tt> function allows us to solve our portfolio problem by taking a variety of methods, constraints and objectives. Let's run two of them: random and ROI, and then we can discuss their differences.
 
 ```{r}
 # Solve the optimization problem.
@@ -131,13 +132,15 @@ FANG_monthly_returns <- FANG |>
                  type       = "arithmetic")
 
 FANG_stats <- FANG_monthly_returns |>
-summarise(mean = mean(monthly.returns), sd = sd(monthly.returns), 
-          sr = mean/sd, iqr = IQR(monthly.returns))
+summarise(mean = mean(monthly.returns), 
+          sd = sd(monthly.returns), 
+          sr = mean/sd)
+
 FANG_stats
 ```
 
 
-```{r fig.cap="The higher the risk, the higher the return."}
+```{r fig.cap="The four individual assets."}
 ggplot(FANG_stats, aes(x = sd, y = mean, color = symbol)) +
   geom_point(size = 5) + 
   geom_text(aes(label = paste0(symbol)), 
@@ -156,39 +159,35 @@ For example, I do not think you will be happy with a portfolio whose return is 0
 
 The random technique (Random Portfolios Optimization) evaluates many investment recommendation alternatives, each one is one portfolio. In principle, the technique should recommend a portfolio which leads to a more attractive return per unit of risk alternative than investing in individual assets.
 
-```{r}
+```{r fig.cap="Random method optimal portfolio."}
 # Plot results.
 chart.RiskReward(opt_rand, risk.col = "StdDev", 
-                 main = "Minimum Variance Optimization", 
-                 xlim = c(0, 10),
-                 return.col = "mean", chart.assets = TRUE)
+                 return.col = "mean", chart.assets = TRUE, 
+                 xlim = c(0, 0.10))
+abline(v = 0.05941703, lty = 2)
+abline(h = 0.02566966, lty = 2)
 legend("bottomright", legend = c("opt_rand", "equally_weighted"),
-       col = c("blue", "orange"), pch = 19, cex = 0.8) +
-  scale_y_continuous(labels = scales::percent) +
-  scale_x_continuous(labels = scales::percent)
-
+       col = c("blue", "orange"), pch = 19, cex = 0.9)
 ```
 
-According to our portfolio specification and assets, gray circles represent available portfolios or feasible portfolios in the sense that they are possibilities given the individual assets. Note that there are some available portfolios with a lower risk than GOOG. In fact, the algorithm suggests the blue portfolio as the optimal portfolio. This blue portfolio is attractive because it has the same risk than GOOG, but it has higher expected return. Moreover, our optimal blue portfolio has a similar return as AMZN, but with less risk. So, apparently the blue alternative is an attractive investment recommendation. Note that the gray portfolios form a kind of frontier in this mean-variance plot. This frontier suggests that it is not possible to invest in a portfolio at the left of this frontier. The optimal portfolio lies just in the frontier.
+According to our portfolio specification and assets, gray circles represent feasible portfolios in the sense that they are possible combinations given the individual assets. Note that there are some available portfolios with a lower risk than GOOG. In fact, the algorithm suggests the blue portfolio as the optimal portfolio. This blue portfolio is attractive because it has the same risk than GOOG, but it has higher expected return. Moreover, our optimal blue portfolio has a similar return as AMZN, but with less risk. So, apparently the blue alternative is an attractive investment recommendation. Note that the gray portfolios form a kind of frontier in this mean-variance plot. This frontier suggests that it is not possible to invest in a portfolio at the left of this frontier. The optimal portfolio lies just in the frontier.
 
 See the blue optimal portfolio again. We would prefer any other portfolio located in the top (higher return) or at the left (lower risk), but that is impossible given the data. On the other hand, it is possible to achieve a portfolio located below (low return) or at the right (high risk), but that is not optimal. This is why optimal portfolios are those that lie in the frontier, those are the portfolios located in the extreme high and left of this mean-variance plot.
 
 Then, what can we do to invest in the blue optimal portfolio?
 
 
-```{r}
+```{r fig.cap="Random method optimal weights."}
 chart.Weights(opt_rand)
 ```
 
-According to the opt_rand portfolio, we have to invest 29.8% in FB, 18.2% in AMZN, 0.5% in NFLX, and 47% in GOOG. The optimal portfolio has a 0.4488096 return per unit of risk. This is clearly a better alternative compared with investing in individual assets as we show below.
-
-A second criterion is to optimize according to ROI (R Optimization Infrastructure for linear and quadratic programming solvers).
-
+According to the <tt>`opt_rand`</tt> portfolio, we have to invest:
 
 ```{r}
-# Extract weight, risk and return.
 extractWeights(opt_rand)
+```
 
+```{r}
 opt_rand_mean <- as.numeric(extractObjectiveMeasures(opt_rand)$mean)
 opt_rand_sd <- 
   as.numeric(extractObjectiveMeasures(opt_rand)$StdDev[1,1])
@@ -198,38 +197,41 @@ opt_rand_summary <-data.frame(mean = opt_rand_mean,
                               sd = opt_rand_sd, sr = opt_rand_sr)
 row.names(opt_rand_summary) <- "opt_rand"
 
-FANG_stats[,1:4] |>
+FANG_stats |>
   add_row(symbol = "opt_rand", opt_rand_summary) |>
   arrange(-sr)
 ```
 
-```{r}
+The optimal portfolio <tt>`opt_rand`</tt> has a 0.4555797 return per unit of risk. This is clearly a better alternative compared with investing in individual assets as we show below.
+
+A second criterion is to optimize according to ROI (R Optimization Infrastructure for linear and quadratic programming solvers).
+
+
+```{r fig.cap="ROI method optimal portfolio."}
 # Plot results.
 chart.RiskReward(opt_roi, risk.col = "StdDev", 
-                 main = "Minimum Variance Optimization", 
                  xlim = c(0.05, 0.18),
                  return.col = "mean", rp = TRUE, chart.assets = TRUE)
-points(0.05807126, 0.02606294, pch = 19, cex = 1.5, col = "black")
+points(0.05807856, 0.02645942, pch = 19, cex = 1.5, col = "black")
 legend("bottomright", legend = c("ROI", "opt_rand"),
        col = c("blue", "black"), pch = 19, cex = 0.9)
 ```
 
-A different optimization criterion leads to a different optimal portfolio. However, they are both optimal as they rely just on the efficient frontier.
+A different optimization criterion leads to a different optimal portfolio. However, they are both optimal as they are in the efficient frontier.
 
 
-```{r}
+```{r fig.cap="Random method optimal weights."}
 chart.Weights(opt_roi)
 ```
 
+According to the <tt>`opt_roi`</tt> portfolio, we have to invest:
 
-The ROI criterion recommends investing 38.3% in FB and 61.7% in NFLX. This led to a return per unit of risk of 0.4237292. Let's compare the alternatives.
-
+```{r}
+extractWeights(opt_roi)
+```
 
 
 ```{r}
-# Extract weight, risk and return.
-extractWeights(opt_roi)
-
 opt_roi_mean <- as.numeric(extractObjectiveMeasures(opt_roi)$mean)
 opt_roi_sd <- 
   as.numeric(extractObjectiveMeasures(opt_roi)$StdDev)
@@ -239,21 +241,103 @@ opt_roi_summary <-data.frame(mean = opt_roi_mean,
                               sd = opt_roi_sd, sr = opt_roi_sr)
 row.names(opt_roi_summary) <- "opt_roi"
 
-FANG_stats[,1:4] |>
+FANG_stats |>
   add_row(symbol = "opt_rand", opt_rand_summary) |>
   add_row(symbol = "opt_roi", opt_roi_summary) |>
   arrange(-sr)
 ```
+The optimal portfolio <tt>`opt_roi`</tt> has a 0.4244362 return per unit of risk. This is higher than the individual assets but lower than the <tt>`opt_rand`</tt> portfolio. According to the return per unit of risk, we should choose the <tt>`opt_rand`</tt> portfolio because it has a 0.4555797 return per unit of risk. The optimization process succeeds at proposing a better investment strategy compared with the individual assets. In practice, if you were interested to form a diversified portfolio, you could implement an analysis like this one, with some more extensive tests, but very similar to this analysis. As an individual, you could contact your broker or your financial institution at $t=0$ to ask them to invest your money according to the c portfolio: 28.2% in FB, 16.2% in AMZN, 7.4% in NFLX, and 47.2% in GOOG, and you should expect to get the <tt>`opt_rand`</tt> portfolio risky return at $t=1$.
 
-The yellow portfolio is also interesting as it represents an equally weighted portfolio. This is, 25% in each individual asset. We usually take this as a benchmark portfolio. You do not have to implement any optimization process to find out the 25% as it is basically $1/4$ or 1 over the number of assets. Interestingly, this equally weighted portfolio is close to being optimal but if you look closer, it is not optimal.
+The orange portfolio is also interesting as it represents an equally weighted portfolio. This is, 25% in each individual asset. We usually take this as a benchmark portfolio. You do not have to implement any optimization process to find out the 25% as it is basically $1/4$ or 1 over the number of assets. Interestingly, this equally weighted portfolio is close to being optimal but if you look closer, it is not optimal.
+
+Let's take a closer look at the naïve portfolio. We have to define a new portfolio specification <tt>`port_naive`</tt> as we want to make sure the weights of the naïve portfolio are exactly 0.25.
+
+```{r}
+port_naive <- portfolio.spec(colnames(fang))
+port_naive <- add.constraint(portfolio = port_naive, type = "full_investment")
+port_naive <- add.constraint(portfolio = port_naive, type = "long_only")
+port_naive <- add.objective(portfolio = port_naive,
+                           type = "risk",
+                           name = "StdDev")
+port_naive <- add.objective(portfolio = port_naive,
+                           type = "return",
+                           name = "mean")
+```
+
+Now, compare the naïve portfolio with the rest.
+
+```{r}
+opt_naive <- equal.weight(fang, portfolio = port_naive)
+opt_naive_mean <- as.numeric(extractObjectiveMeasures(opt_naive)$mean)
+opt_naive_sd <- 
+  as.numeric(extractObjectiveMeasures(opt_naive)$StdDev)
+opt_naive_sr <- opt_naive_mean/opt_naive_sd
+opt_naive_summary <-data.frame(mean = opt_naive_mean, 
+                              sd = opt_naive_sd, sr = opt_naive_sr)
+row.names(opt_naive_summary) <- "opt_naive"
+
+FANG_stats |>
+  add_row(symbol = "opt_rand", opt_rand_summary) |>
+  add_row(symbol = "opt_roi", opt_roi_summary) |>
+  add_row(symbol = "opt_naive", opt_naive_summary) |>
+  arrange(-sr)
+```
+It may be disappointing to find out that the naïve portfolio has the higher Sharpe ratio including the optimal alternatives. We can add a target return constraint to the optimization problem so we can find out an optimal portfolio that targets the naïve portfolio expected return.
+
+```{r}
+port_spec <- add.constraint(portfolio = port_spec, type = "return", 
+                             return_target = 0.03414333)
+set.seed(13)
+opt_roi2 <- optimize.portfolio(fang, portfolio = port_spec,
+                               optimize_method = "ROI", maxSR = TRUE,
+                               rf = 0, trace = TRUE)
+```
 
 
-According to the return per unit of risk, we should choose the opt_rand portfolio because it has a 0.449 return per unit of risk. The optimization process succeeds at proposing a better investment strategy compared with the individual assets. In practice, if you were interested to form a diversified portfolio, you could implement an analysis like this one, with some more extensive tests, but very similar to this analysis. As an individual, you could contact your broker or your financial institution at $t=0$ to ask them to invest your money according to the opt_rand portfolio: 29.8% in FB, 18.2% in AMZN, 0.5% in NFLX, and 47% in GOOG, and you should expect to get the opt_rand portfolio risky return at $t=1$.
+```{r fig.cap="ROI method optimal weights that targets the naïve portfolio expected return."}
+chart.Weights(opt_roi2)
+```
 
-The expected return in $t=0$ of your opt_rand portfolio is 0.02606294. The value of 0.02606294 is simply the sum of the opt_rand portfolio weights multiplied by the individual asset returns. But, what will be your realized return at $t=1$? It is hard to wait until $t=1$ to know your return (or loss). When we introduced the forecasts methods, we used the training and test periods to evaluate what might happen in the future. We can do the same here, but I propose a different approach now. In particular, I propose to simulate the future.
+According to the <tt>`opt_roi2`</tt> portfolio, we have to invest:
 
-In this case we invest in $t=0$ or 2016-12-30 and the future is $t=1$ or 2017-01-31. There are many ways to conduct the simulation. Let's keep it simple and use the historical mean and standard deviation information we have.
+```{r}
+extractWeights(opt_roi2)
+```
 
+```{r fig.cap="ROI method that targets the naïve portfolio expected return."}
+# Plot results.
+chart.RiskReward(opt_roi2, risk.col = "StdDev",
+xlim = c(0.07, 0.073),
+ylim = c(0.032, 0.036),
+return.col = "mean", chart.assets = TRUE, cex = 2)
+points(0.07176544, 0.03414333, pch = 19, col = "orange", cex = 2)
+legend("bottomright", legend = c("opt_roi", "equally_weighted"),
+col = c("blue", "orange"), pch = 19, cex = 0.8)
+```
+
+Now, compare the <tt>`opt_roi2`</tt> portfolio with the rest.
+
+```{r}
+opt_roi2_mean <- as.numeric(extractObjectiveMeasures(opt_roi2)$mean)
+opt_roi2_sd <- 
+  as.numeric(extractObjectiveMeasures(opt_roi2)$StdDev)
+opt_roi2_sr <- opt_roi2_mean/opt_roi2_sd
+opt_roi2_summary <-data.frame(mean = opt_roi2_mean, 
+                              sd = opt_roi2_sd, sr = opt_roi2_sr)
+row.names(opt_roi2_summary) <- "opt_roi2"
+
+FANG_stats |>
+  add_row(symbol = "opt_rand", opt_rand_summary) |>
+  add_row(symbol = "opt_roi", opt_roi_summary) |>
+  add_row(symbol = "opt_naive", opt_naive_summary) |>
+  add_row(symbol = "opt_roi2", opt_roi2_summary) |>
+  arrange(-sr)
+```
+
+
+The expected return in $t=0$ of the <tt>`opt_rand`</tt> portfolio is 0.02645942. The value of 0.02606294 is simply the sum of the <tt>`opt_rand`</tt> portfolio weights multiplied by the individual asset returns. But, what will be your realized return at $t=1$? Let's simulate the future $t=1$ to find out.
+
+In this case, we invest in $t=0$ or 2016-12-30 and the future is $t=1$ or 2017-01-31. There are many ways to conduct the simulation. Let's keep it simple and use the historical mean and standard deviation information we have.
 
 Let's simulate 1,000 observations of each individual asset and portfolios. We assume that the assets behave as a normal with mean and standard deviation as we show in the table above. This approach can be interpreted as if we were simulating 1,000 alternative values for 2017-01-31. By doing this, we could have a sense about what will be the most likely value at $t=1$.
 
@@ -272,16 +356,16 @@ s_roi <- rnorm(sim, opt_roi$opt_values$mean, opt_roi$opt_values$StdDev)
 
 The simulation is done. Now let's visualize the results in a boxplot. Boxplots show the distribution of the data in a data set. It divides the data set into three quartiles. This graph represents the minimum, maximum, median, first quartile and third quartile in the data set.
 
-```{r}
+```{r fig.cap="Simulated returns of investment alternatives."}
 # The boxplot.
 b = cbind(s_FB, s_AMZN, s_NFLX, s_GOOG, s_ran, s_roi)
-boxplot(b, las = 2, main = "Simulated returns of investment alternatives.")
+boxplot(b, las = 2)
 abline(h = 0, lty = 2)
 ```
 
-Note that the opt_rand portfolio is well diversified and opt_roi is more risky. This plot reveals a glimpse to the future assuming that the assets follow a normal distribution. This assumption is not as bad and it is useful to simplify the analysis. Are we satisfied with this glimpse to the future? Sometimes it is the best you can have at $t=0$. In this case, we fortunately know what really happened with these stocks on 2017-01-31. Let's evaluate the returns that really happened at $t=1$ for the individual and portfolios.
+Note that the <tt>`opt_rand`</tt> portfolio is well diversified and <tt>`opt_roi`</tt> is more risky. This plot reveals a glimpse to the future assuming that the assets follow a normal distribution. This assumption is not as bad and it is useful to simplify the analysis. Are we satisfied with this glimpse to the future? Sometimes it is the best you can have at $t=0$. In this case, we fortunately know what really happened with these stocks on 2017-01-31. Let's evaluate the returns that really happened at $t=1$ for the individual and portfolios.
 
-First, we need the 2017-01-31 actual or realized returns. We need to download the data as the FANG database ends at 2016-12-30.
+First, we need the 2017-01-31 actual or realized returns. We need to download the data as the <tt>`FANG`</tt> database ends at 2016-12-30.
 
 ```{r}
 # Download the 2017-01-31 individual asset returns.
@@ -294,6 +378,7 @@ r_stocks <- c("META", "AMZN", "NFLX", "GOOG") |>
                period     = "monthly", 
                col_rename = "R_stocks") |>
   tbl_xts(spread_by = "symbol")
+
 r_stocks
 ```
 
@@ -301,31 +386,33 @@ These are the realized monthly returns at $t=1$. Please note that we have not in
 
 ```{r}
 # Calculate realized portfolio returns.
-realized_ret <- c(rand = sum(opt_rand$weights*r_stocks),
-                  roi = sum(opt_roi$weights*r_stocks))
+realized_ret <- c(rand = sum(opt_rand$weights * r_stocks),
+                  roi = sum(opt_roi$weights * r_stocks))
 
 expected_ret <- c(rand = opt_rand$opt_values$mean,
                   roi = opt_roi$opt_values$mean)
+
 data.frame(cbind(realized_ret, expected_ret))
 ```
 
-In sum, the expected monthly return in $t=0$ of opt_rand portfolio is 0.02606294, and the realized monthly return in $t=1$ is 0.06958923. Not bad. Let's see the whole thing now. This is, the distribution of the simulation and the realized returns in red.
+In sum, the expected monthly return in $t=0$ of <tt>`opt_rand`</tt> portfolio is 0.02606294, and the realized monthly return in $t=1$ is 0.06958923. Not bad. The expected monthly return in $t=0$ of <tt>`opt_roi`</tt> is 0.04999645, and the realized monthly return in $t=1$ is 0.11390269. 
 
-```{r}
+Let's see the whole thing now. This is, the distribution of the simulation and the realized returns in red.
+
+```{r fig.cap="Simulated returns of investment alternatives. What really happened by 2017-01-30 in red."}
 # The simulation.
-boxplot(b, las = 2, main = "Simulated returns of investment alternatives.
-What really happened by 2017-01-30 in red.")
+boxplot(b, las = 2)
 abline(h=0, lty = 2)
 # The realized returns in red.
 points(1, 0.1208283,  col = "red", pch = 19, cex = 2)
 points(2, 0.101782,   col = "red", pch = 19, cex = 2)
 points(3, 0.1076947,  col = "red", pch = 19, cex = 2)
-points(4, 0.02058157, col = "red", pch = 19, cex = 2)
-points(5, sum(opt_rand$weights*r_stocks), col = "red", pch = 19, cex = 2)
-points(6, sum(opt_roi$weights*r_stocks),  col = "red", pch = 19, cex = 2)
+points(4, 0.02058163, col = "red", pch = 19, cex = 2)
+points(5, sum(opt_rand$weights * r_stocks), col = "red", pch = 19, cex = 2)
+points(6, sum(opt_roi$weights * r_stocks),  col = "red", pch = 19, cex = 2)
 ```
 
-The realized returns can be quite different from the promised or expected returns. This difference depends on the method, the model, the database length, the ability of the portfolio designer, and also depends on a random component. In our FANG example, the investment recommendations were good alternatives.
+The realized returns can be quite different from the promised or expected returns. This difference depends on the method, the model, the database length, the ability of the portfolio designer, and also depends on a random component. In our <tt>`FANG`</tt> example, the optimal investment recommendations were good alternatives.
 
 It is tempting to calculate an optimal portfolio based on our previous CAPM example. Let's do it here just to show how easy is it to replicate the analysis with a different database, which is the beauty of reproducibility as I basically did a copy paste of the previous code.
 
@@ -517,7 +604,7 @@ opt_xy_summary <-data.frame(mean = opt_xy_mean,
                               sd = opt_xy_sd, sr = opt_xy_sr)
 row.names(opt_xy_summary) <- "opt_xy"
 
-FANG_stats[,1:4] |>
+FANG_stats |>
   add_row(symbol = "opt_rand", opt_rand_summary) |>
   add_row(symbol = "opt_roi", opt_roi_summary) |>
   add_row(symbol = "opt_xy", opt_xy_summary) |>

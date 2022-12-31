@@ -12,7 +12,7 @@ library(dplyr)
 
 \newpage
 
-# Asset returns.
+# Prices and returns.
 
 An asset is any resource owned by a business or an economic entity. It is anything that can produce value (or returns) in the future. Here, we frequently use firm stocks as financial assets, but we also show other examples of assets such as commodities, currencies, bonds, derivatives, etc.
 
