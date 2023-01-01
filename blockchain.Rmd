@@ -5,7 +5,7 @@ output: pdf_document
 
 # Blockchain.
 
-Original example by Massimo Franceschet.
+Here, we develop an example originally taken from Massimo Franceschet.
 
 -   [Blockchain Explanation](https://youtu.be/J-ab9was1p0)
 -   [How does a blockchain work - Simply Explained](https://youtu.be/SSo_EIwHSd4)
@@ -21,17 +21,17 @@ A blockchain is a distributed system using cryptography to secure an evolving co
 
 A blockchain is a chain of blocks. Hence, we first describe a block. A block is a container for data. In its simplest form it contains:
 
-* an identification number.
-* a timestamp of block creation.
-* a bunch of data.
-* a reference to the previous block (parent block) in the chain.
+* An identification number, <tt>`number`</tt>.
+* A timestamp of block creation <tt>`timestamp`</tt>.
+* A bunch of data, <tt>`data`</tt>.
+* A reference to the previous block (parent block) in the chain, <tt>`parent`</tt>.
 
 ```{r}
-# A list allow us to incorporate different kind of data.
-block <- list(number = 3, # ID.
-             timestamp = "2018-10-01 17:24:18 CEST", # Timestamp.
-             data = "London", # Data.
-             parent = 2) # Reference to the previous block in the chain.
+block <- list(number = 3, 
+             timestamp = "2018-10-01 17:24:18 CEST", 
+             data = "London", 
+             parent = 2) 
+
 block
 ```
 This was a single unchained block. Now, let's introduce the concept of chain.
@@ -104,9 +104,9 @@ $hash_3 = f_3(f_2(f_1(block_1), block_2), block_3)$.
 
 The hash algorithm used here (SHA-256) is part of SHA-2 (Secure Hash Algorithm 2), a set of cryptographic hash functions designed by the United States National Security Agency (NSA). In particular, it uses digests of 256 bits (or 32 hexadecimal figures). See for example:
 
-https://passwordsgenerator.net/sha256-hash-generator/
+https://emn178.github.io/online-tools/sha256.html
 
-It is implemented in R package \texttt{digest}.
+It is implemented in R package <tt>`digest`</tt>.
 
 ```{r}
 # Creates hash digests of arbitrary R objects.
@@ -120,12 +120,6 @@ The hash 256 has a length of 64 characters.
 ```{r}
 nchar("A blockchain is a chain of blocks")
 nchar("5c2005976411a1628fabcdde3ac04be563d18943e710b7446afa2a8a5fab9abc")
-```
-
-If you are interested in comparing passwordsgenerator.net with \texttt{digest} in R, you should add \texttt{serialize = FALSE}.
-
-```{r}
-digest("A blockchain is a chain of blocks", "sha256", serialize = FALSE)
 ```
 
 Let's implement the hash in the blockchain construction.
@@ -260,7 +254,7 @@ It takes 6 iterations to solve the problem of difficulty 1. Quite easy for a com
 # Evaluate a difficulty of 2 (two leading zeros)
 proof_of_work(block, 2, print = TRUE)
 ```
-It takes 165 iterations to solve the problem of difficulty 2. How difficult is difficulty 3? This time \texttt{print = FALSE} to save space.
+It takes 165 iterations to solve the problem of difficulty 2. How difficult is difficulty 3? This time <tt>`print = FALSE`</tt> to save space.
 
 ```{r}
 # Evaluate a difficulty of 3 (three leading zeros)
@@ -348,7 +342,7 @@ Nice.
 
 Typically, the data field of a block contains a certain number of transactions. Each transaction has a sender, a receiver and a value of crypto currency that is transferred from sender to receiver. Moreover, it contains a fee of the transaction. Transactions are stored in a pool of pending transactions and each mined block will include a (proper) subset of pending transactions. The miner of the block gets the fees of all blocked transactions plus a fixed mining reward (and this transaction is included in the following block). This is how new coins are introduced in the blockchain economy.
 
-Let’s create a pool of fictitious pending transactions. We store them in a data frame structure using the \texttt{tibble} package.
+Let’s create a pool of fictitious pending transactions. We store them in a data frame structure using the <tt>`tibble`</tt> package.
 
 ```{r}
 library(tibble)
@@ -359,7 +353,7 @@ value <- round(runif(n = ntrx, min = 0, max = 100), 0) # Transaction value.
 fee <- round(runif(n = ntrx, min = 0, max = 1), 2) # Transaction fee.
 (transactions = tibble(sender, receiver, value, fee)) # Pending transactions.
 ```
-Let’s update the mining function. Each block will include the most profitable transactions (the ones with the highest fees) among the pending ones. The miner of the block gets as reward the sum of the fees of transactions in the block. The reward transaction is inserted in the next block. We take advantage of \texttt{dplyr} package.
+Let’s update the mining function. Each block will include the most profitable transactions (the ones with the highest fees) among the pending ones. The miner of the block gets as reward the sum of the fees of transactions in the block. The reward transaction is inserted in the next block. We take advantage of <tt>`dplyr`</tt> package.
 
 Update of the mining function.
 ```{r}
@@ -465,7 +459,7 @@ To speed up the process of transmission, instead of applying the sender’s digi
 
 RSA (Rivest–Shamir–Adleman) is one of the first public-key cryptosystems and is widely used for secure data transmission. In RSA, the asymmetry is based on the practical difficulty of the factorization of the product of two large prime numbers.
 
-Next is an example of encryption and digital signature using package \texttt{openssl}. First, the encryption example.
+Next is an example of encryption and digital signature using package <tt>`openssl`</tt>. First, the encryption example.
 
 Generate a RSA (Rivest–Shamir–Adleman) private and a public key (pubkey).
 
@@ -484,7 +478,7 @@ str(pubkey)
 str(key)
 ```
 
-The \texttt{charToRaw} converts a length-one character string to raw bytes.
+The <tt>`charToRaw()`</tt> function converts a length-one character string to raw bytes.
 
 ```{r}
 # Message.
@@ -526,14 +520,14 @@ Serialize the transaction data.
 data <- serialize(trans, NULL)
 data
 ```
-In computing, serialization is the process of translating a data structure or object state into a format that can be stored or transmitted and reconstructed later. Here, the transaction is translated into a format that can be reconstructed later. At the moment, this object called \texttt{data} has not been signed yet by the sender. The next code chunk sign the \texttt{data} object by the sender.
+In computing, serialization is the process of translating a data structure or object state into a format that can be stored or transmitted and reconstructed later. Here, the transaction is translated into a format that can be reconstructed later. At the moment, this object called <tt>`data`</tt> has not been signed yet by the sender. The next code chunk sign the <tt>`data`</tt> object by the sender.
 
 ```{r}
 # Sign (a hash of) the transaction with private key.
 sig <- signature_create(data, sha256, key = key)
 sig
 ```
-The new object \texttt{sig} has not only the translated transaction, it has been also signed by the sender. With the function \texttt{signature\_verify}, anyone could verify that the sender of the transaction is the owner of the \texttt{pubkey}. 
+The new object <tt>`sig`</tt> has not only the translated transaction, it has been also signed by the sender. With the function <tt>`signature_verify()`</tt>, anyone could verify that the sender of the transaction is the owner of the <tt>`pubkey`</tt>. 
 
 Verify the message with public key.
 
@@ -542,14 +536,14 @@ signature_verify(data, sig, sha256, pubkey = pubkey)
 ```
 
 
-Anyone could know that the transaction belongs to the sender with the \texttt{pubkey}. Now, we encrypt the translated and signed transaction.
+Anyone could know that the transaction belongs to the sender with the <tt>`pubkey`</tt>. Now, we encrypt the translated and signed transaction.
 
 ```{r}
 # Cipher the transaction with public key
 ciphermsg <- rsa_encrypt(data, pubkey)
 ciphermsg
 ```
-The transaction is translated, signed by the sender and now encrypted with the sender's \texttt{pubkey}. To recover the original transaction we would need to decrypt the serialized message with the private key \texttt{key}, and then unserialize the result.
+The transaction is translated, signed by the sender and now encrypted with the sender's <tt>`pubkey`</tt>. To recover the original transaction we would need to decrypt the serialized message with the private key <tt>`key`</tt>, and then unserialize the result.
 
 ```{r}
 # Decrypt and unserialize the transation with private key.

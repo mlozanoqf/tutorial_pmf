@@ -285,7 +285,7 @@ FANG_stats |>
   add_row(symbol = "opt_naive", opt_naive_summary) |>
   arrange(-sr)
 ```
-It may be disappointing to find out that the naïve portfolio has the higher Sharpe ratio including the optimal alternatives. We can add a target return constraint to the optimization problem so we can find out an optimal portfolio that targets the naïve portfolio expected return.
+It may be disappointing to find out that the naïve portfolio <tt>`port_naive`</tt> has the higher Sharpe ratio including the optimal alternatives. We can add a target return constraint to the optimization problem so we can find out an optimal portfolio that targets the naïve portfolio expected return.
 
 ```{r}
 port_spec2 <- add.constraint(portfolio = port_spec, type = "return", 
@@ -389,11 +389,11 @@ These are the realized monthly returns at $t=1$. Please note that we have not in
 
 ```{r}
 # Calculate realized portfolio returns.
-realized_ret <- c(rand = sum(opt_rand$weights * r_stocks),
-                  roi = sum(opt_roi$weights * r_stocks))
+realized_ret <- c(opt_rand = sum(opt_rand$weights * r_stocks),
+                  opt_roi = sum(opt_roi$weights * r_stocks))
 
-expected_ret <- c(rand = opt_rand$opt_values$mean,
-                  roi = opt_roi$opt_values$mean)
+expected_ret <- c(opt_rand = opt_rand$opt_values$mean,
+                  opt_roi = opt_roi$opt_values$mean)
 
 data.frame(cbind(realized_ret, expected_ret))
 ```
@@ -405,7 +405,7 @@ Let's see the whole thing now. This is, the distribution of the simulation and t
 ```{r fig.cap="FANG, simulated returns of investment alternatives. What really happened by 2017-01-30 in red."}
 # The simulation.
 boxplot(b, las = 2)
-abline(h=0, lty = 2)
+abline(h = 0, lty = 2)
 # The realized returns in red.
 points(1, 0.1208283,  col = "red", pch = 19, cex = 2)
 points(2, 0.101782,   col = "red", pch = 19, cex = 2)
@@ -554,7 +554,8 @@ sd_xy <- (w_x^2 * sd(fang_xy$X)^2 +
 ```
 
 ```{r fig.cap="2-assets, efficient frontier."}
-plot(sd_xy, ret_xy, type = "l", xlim = c(0, 0.15), ylim = c(0, 0.05))
+plot(sd_xy, ret_xy, type = "l", xlim = c(0, 0.15), ylim = c(0, 0.05),
+     xlab = "Risk", ylab = "Expected return")
 abline(v = 0, lty = 2)
 abline(h = 0, lty = 2)
 points(sd(fang_xy$X), mean(fang_xy$X), cex = 2, pch = 19, col = "red")
@@ -574,7 +575,8 @@ which.min(sd_xy)
 ```
 
 ```{r fig.cap="2-assets, efficient frontier and minimum variance portfolio."}
-plot(sd_xy, ret_xy, type = "l", xlim = c(0, 0.15), ylim = c(0, 0.05))
+plot(sd_xy, ret_xy, type = "l", xlim = c(0, 0.15), ylim = c(0, 0.05),
+     xlab = "Risk", ylab = "Expected return")
 abline(v = 0, lty = 2)
 abline(h = 0, lty = 2)
 points(sd(fang_xy$X), mean(fang_xy$X), cex = 2, pch = 19, col = "red")
@@ -620,7 +622,7 @@ chart.RiskReward(opt_xy, risk.col = "StdDev",
 points(0.05807126, 0.02606294, pch = 19, cex = 1.5, col = "black")
 points(0.1170653,0.04960399, pch = 19, cex = 1.5, col = "red")
 legend("topleft", legend = c("opt_xy (FANG+X+Y)", 
-       "opt_rand (FANG)", "ROI (FANG)", "equally weighted (FANG)"),
+       "opt_rand (FANG)", "opt_roi (FANG)", "opt_naive (FANG)"),
        col = c("blue", "black", "red", "orange"), pch = 19, cex = 0.9)
 ```
 

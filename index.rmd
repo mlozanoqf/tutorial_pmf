@@ -88,10 +88,10 @@ xfun::file_string('contact.html')
 ```
 
 
-\newpage
+#\newpage
 
-```{r DatavizMultilevel, child = 'multilevel.Rmd'}
-```
+#```{r DatavizMultilevel, child = 'multilevel.Rmd'}
+#```
 
 \newpage
 
