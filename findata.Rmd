@@ -316,8 +316,7 @@ exchange_rate <- getSymbols("USD/MXN", src = "oanda",
 plot(exchange_rate)
 ```
 
-
-Here, 1 USD equals `r last(exchange_rate)` MXN as `r Sys.Date()`. We can show the time series information into a density plot.
+We can show the time series information into a density plot.
 
 ```{r fig.cap="USD/MXN exchange rate, a density plot."}
 # Density plots.

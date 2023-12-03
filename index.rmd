@@ -15,8 +15,9 @@ output:
     theme: readable #darkly 
     includes:
       after_body: analytics_pmf.html
-abstract: We show how to analyze financial data and extract basic insights from basic financial models using R programming language [@Rref]. We extend examples and codes freely available in Internet including some Matt Dancho’s Business Science IO, and some of my own. As in the philosophy of Donald Knuth [@knuth1984literate], the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
+abstract: We show how to analyze financial data and extract basic insights from basic financial models using R programming language [@Rref]. We extend examples and codes freely available in Internet including some Matt Dancho’s Business Science IO, and some of my own. As in the philosophy of @knuth1984literate, the objective of this document is to explain to human beings what we want a computer to do as literate programming. This is a work in progress and it is under revision.
 bibliography: mybibfile.bib
+link-citations: yes
 ---
 
 ```{=tex}
