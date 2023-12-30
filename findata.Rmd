@@ -10,8 +10,6 @@ library(ggplot2)
 library(quantmod) 
 ```
 
-\newpage
-
 # Financial data.
 
 Data is everywhere and finance has always been about data.[^3] Industries perceive data as an essential commodity and fuel to take decisions under uncertainty. As a matter of fact, data science and finance go hand in hand. Even before the term data science was coined, finance was using it. Data Science is widely used in areas like risk analytics, credit risk, fraud detection, risk management, pricing, and algorithmic trading. Financial institutions were among the earliest users and presumably pioneers of data analytics. We need data to perform financial analysis, estimate financial models, forecast financial variables, take financing and investment decisions, and more. The alternative of data is to listen to your guts, your intuition, or experience. This alternative is not bad by itself, but it would not be our main approach here.
@@ -162,14 +160,18 @@ By default, the <tt>`tq_get()`</tt> function downloads the latest set of data av
 
 We also like to show the data in a plot.
 
-```{r fig.cap="Apple stock prices."}
+```{r}
+#| label: fig-asp
+#| fig-cap: "Apple stock prices."
 plot(aapl_stock_prices$date, aapl_stock_prices$adjusted, 
      type = "l")
 ```
 
 We can add a few instructions to improve the format of our plot. In particular, $x$ and $y$ labels, the title, and the color of the line.
 
-```{r fig.cap="Apple stock prices, improved format."}
+```{r}
+#| label: fig-aspif
+#| fig-cap: "Apple stock prices, improved format."
 plot(aapl_stock_prices$date, aapl_stock_prices$adjusted, 
      type = "l", xlab = "Date", ylab = "Adjusted price", 
      main = "Apple stock price", col = "blue")
@@ -183,7 +185,9 @@ SP <- tq_get("^GSPC")
 
 Plot both assets together.
 
-```{r fig.cap="Apple stock prices and SP500."}
+```{r}
+#| label: fig-aspas
+#| fig-cap: "Apple stock prices and SP500."
 par(mar = c(5, 5, 2, 5))
 plot(SP$date, SP$adjusted, type = "l", col = "red",
      ylab = "Standard and Poors 500 index",
@@ -202,13 +206,15 @@ Let's continue with the Apple stock analysis. Stock prices change throughout the
 
 Create a new variable <tt>`aapl_diff`</tt>.
 
-```{r fig.cap="Apple stock trading volume."}
+```{r}
 aapl_diff = aapl_stock_prices$high - aapl_stock_prices$low
 ```
 
 Plot the new variable.
 
-```{r fig.cap="Apple stock trading volume."}
+```{r}
+#| label: fig-astv
+#| fig-cap: "Apple stock trading volume."
 plot(aapl_stock_prices$date, aapl_diff, type = "h", xlab = "Date", 
      ylab = "Difference between high and low prices", col = "blue")
 ```
@@ -240,7 +246,9 @@ top
 
 The output above shows <tt>`when`</tt> Apple stock had its highest price change <tt>`top`</tt> in one day. We can use when and top variables to improve our plot.
 
-```{r fig.cap="Apple stock trading volume a further analysis."}
+```{r}
+#| label: fig-astvafa
+#| fig-cap: "Apple stock trading volume a further analysis."
 plot(aapl_stock_prices$date, aapl_diff, type = "h", xlab = "Date", 
      ylab = "Difference between high and low prices", col = "blue")
 # Here, we add the red point.
@@ -285,7 +293,9 @@ Now that we have oil prices in basically one single step, we can plot them. It i
 
 Create a simple line plot to show the oil price evolution.
 
-```{r fig.cap="Oil prices."}
+```{r}
+#| label: fig-op
+#| fig-cap: "Oil prices."
 ggplot(wti_price_usd, aes(date, price)) + 
   geom_line() + theme_bw() +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red")
@@ -303,7 +313,9 @@ There are other explanations, for example one related to the maturity of oil fut
 
 The <tt>`quantmod`</tt> package can retrieve exchange rates as well.
 
-```{r fig.cap="USD/MXN exchange rate."}
+```{r}
+#| label: fig-uer
+#| fig-cap: "USD/MXN exchange rate."
 # Download USD/MXN exchange rate from Oanda site.
 exchange_rate <- getSymbols("USD/MXN", src = "oanda", 
                             auto.assign = FALSE)
@@ -313,7 +325,9 @@ plot(exchange_rate)
 
 We can show the time series information into a density plot.
 
-```{r fig.cap="USD/MXN exchange rate, a density plot."}
+```{r}
+#| label: fig-ueradp
+#| fig-cap: "USD/MXN exchange rate, a density plot."
 # Density plots.
 ggplot(exchange_rate, aes(x = USD.MXN)) +
   geom_density(alpha = 0.4, fill = "red") +
@@ -406,7 +420,9 @@ AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01",
 
 Let's begin with one plot.
 
-```{r fig.cap="Apple line chart."}
+```{r}
+#| label: fig-alc
+#| fig-cap: "Apple line chart."
 AAPL |>
     ggplot(aes(x = date, y = close)) + geom_line() +
     labs(y = "Closing price", x = "") +
@@ -415,7 +431,9 @@ AAPL |>
 
 The plot above represents closing prices. However, we also have open and close prices per day. We could take advantage of this by plotting vertical lines per day. The length of the daily vertical lines represents the difference between the open and close prices. To make it more informative, blue lines are those cases when the close price is greater than the open price, and red lines are those cases when the close price is lower than the open price.
 
-```{r fig.cap="Apple candlestick chart."}
+```{r}
+#| label: fig-acc
+#| fig-cap: "Apple candlestick chart."
 AAPL |>
   ggplot(aes(x = date, y = close)) +
   geom_candlestick(aes(open = open, high = high, low = low, 
@@ -428,7 +446,9 @@ There are some blank spaces. This is simply because the close price of yesterday
 
 These kinds of charts are difficult to read when we have many observations. Let's do a zoom:
 
-```{r fig.cap="Apple candlestick chart, zoom."}
+```{r}
+#| label: fig-accz
+#| fig-cap: "Apple candlestick chart, zoom."
 AAPL |>
   ggplot(aes(x = date, y = close)) +
   geom_candlestick(aes(open = open, high = high, low = low, 
@@ -449,7 +469,9 @@ Moving averages are supposed to anticipate price movements. The idea is the foll
 
 If the black line crosses the blue from down to top, then we are supposed to anticipate an increase in the stock price. The sign is stronger when the black line crosses the blue line showing a steeper slope. What happens in practice is that the value of $n$ should be calibrated until we fit the moving average with the behaviour of the price stock. This indicator alone is far from being perfect as there might be a lot of contrary signals which might make it difficult to follow the interpretation as we explained above.
 
-```{r fig.cap="Apple 30-day moving average chart."}
+```{r}
+#| label: fig-a3dmac
+#| fig-cap: "Apple 30-day moving average chart."
 AAPL |>
   ggplot(aes(x = date, y = close)) +
   geom_line()  +
@@ -468,7 +490,9 @@ AAPL_recent
 
 The Bollinger Bands are envelopes plotted at a standard deviation level above and below a simple moving average of the price. Because the distance of the bands is based on standard deviation, they are supposed to adjust to volatility swings in the underlying price. This indicator can help us to understand the size of the expected change in the future. If the Bollinger Bands become wider then we should expect drastic changes in the stock price.
 
-```{r fig.cap="Apple Bollinger bands and simple moving average."}
+```{r}
+#| label: fig-abbasma
+#| fig-cap: "Apple Bollinger bands and simple moving average."
 AAPL |>
   ggplot(aes(x = date, y = close, open = open,
              high = high, low = low, close = close)) +
@@ -488,7 +512,9 @@ In case you may have a different view or concerns about the previous interpretat
 
 We can show the simple moving average for Facebook.
 
-```{r fig.cap="Facebook 60-day moving average chart."}
+```{r}
+#| label: fig-f6dmac
+#| fig-cap: "Facebook 60-day moving average chart."
 FANG |>
   filter(symbol == "FB") |>
   ggplot(aes(x = date, y = close)) +

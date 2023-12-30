@@ -34,7 +34,9 @@ There are more technical reasons to work with returns, but we can proceed with o
 
 We need time series of asset prices to calculate time series of asset returns. Let's begin with a visual representation of the <tt>`FANG`</tt> database. Here, we have daily stock prices per stock.
 
-```{r fig.cap="Daily stock prices - not so easy to read."}
+```{r}
+#| label: fig-dspnsetr
+#| fig-cap: "Daily stock prices - not so easy to read."
 FANG_daily_all <- FANG |>
   group_by(symbol) |>
   ggplot(aes(x = date, y = adjusted, color = symbol)) +
@@ -51,7 +53,9 @@ See how stock prices fluctuate in different ranges. It would be a mistake to pre
 
 Let's add one line of code to see the price time-series more clearly.
 
-```{r fig.cap="Daily Stock Prices - easier to read."}
+```{r}
+#| label: fig-dspetr
+#| fig-cap: "Daily Stock Prices - easier to read."
 FANG_daily <- FANG_daily_all +
   facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
   theme(legend.position = "none", legend.title = element_blank())
@@ -78,7 +82,9 @@ This is what we call tidy data because (1) each variable forms a column; (2) eac
 
 The next chunk of code shows how to visualize the annual returns in a nice plot.
 
-```{r fig.cap="FANG: annual returns."}
+```{r}
+#| label: fig-far
+#| fig-cap: "FANG: annual returns."
 FANG_annual_returns |>
   ggplot(aes(x = date-365, y = yearly.returns, fill = symbol)) +
   geom_col() +
@@ -171,7 +177,9 @@ This phenomenon is an example of a result that is well known in mathematics. The
 
 For now, we will work with arithmetic returns. Let's see How \$100 investment growth each year per stock. Note that the plotted values are in USD.
 
-```{r fig.cap="Yearly cumulative USD returns, a facet view."}
+```{r}
+#| label: fig-ycurafv
+#| fig-cap: "Yearly cumulative USD returns, a facet view."
 # Yearly returns.
 FANG_annual_returns <- FANG |>
     group_by(symbol) |>
@@ -199,7 +207,9 @@ Please verify that the dollar value of \$100 invested in Amazon at the end of th
 
 We can also modify the code above to show monthly returns instead of yearly.
 
-```{r fig.cap="FANG: monthly returns, a facet view."}
+```{r}
+#| label: fig-fmrafv
+#| fig-cap: "FANG: monthly returns, a facet view."
 # Monthly returns.
 FANG_monthly_returns <- FANG |>
     group_by(symbol) |>
@@ -224,7 +234,9 @@ By increasing the frequency from yearly to monthly we now have 12 observations p
 
 Let's see cumulative monthly returns per stock to extend our \$100 investment example.
 
-```{r fig.cap="Monthly cumulative USD returns."}
+```{r}
+#| label: fig-mcur
+#| fig-cap: "Monthly cumulative USD returns."
 # Calculate monthly cumulative returns.
 FANG_monthly_cum_returns <- FANG_monthly_returns |>
   mutate(cr = 100 * cumprod(1 + monthly.returns))
@@ -246,7 +258,9 @@ FANG_monthly_all
 Alternatively, we can split the plot in four panels. This facilitates the reading of the plot.
 
 
-```{r fig.cap="Monthly cumulative USD returns, a facet view."}
+```{r}
+#| label: fig-mcurafv
+#| fig-cap: "Monthly cumulative USD returns, a facet view."
 FANG_monthly <- FANG_monthly_all +
   facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
   theme(legend.position = "none", legend.title = element_blank())
@@ -258,7 +272,9 @@ Again, please verify that the dollar value of \$100 invested in Amazon at the en
 
 Remember this plot?
 
-```{r fig.cap="Daily stock prices - not so easy to read (again)."}
+```{r}
+#| label: fig-dspnsetra
+#| fig-cap: "Daily stock prices - not so easy to read (again)."
 FANG_daily_all
 ```
 
@@ -272,7 +288,9 @@ Although time series plots represent a useful tool for financial analysis, it is
 
 Let's visualize a density plot for the <tt>`FANG`</tt> data.
 
-```{r fig.cap="FANG: monthly returns, a density view."}
+```{r}
+#| label: fig-fmradv
+#| fig-cap: "FANG: monthly returns, a density view."
 ggplot(FANG_monthly_returns, aes(x = monthly.returns, fill = symbol)) +
   geom_density(alpha = 0.5) +
   geom_hline(yintercept = 0, color = palette_light()[[1]]) +
@@ -284,7 +302,9 @@ ggplot(FANG_monthly_returns, aes(x = monthly.returns, fill = symbol)) +
 
 Note that monthly returns around zero are frequent, whereas monthly returns above 50% are very infrequent. Apparently, this 50% value is red, so this should be the case of Facebook. It is also noteworthy to mention that Netflix has the higher monthly return dispersion of all. If this is not clear enough, we can add one line to the code to make it clearer.
 
-```{r fig.cap="FANG: monthly returns, a density and facet view."}
+```{r}
+#| label: fig-fmradafv
+#| fig-cap: "FANG: monthly returns, a density and facet view."
 # Density plots.
 ggplot(FANG_monthly_returns, aes(x = monthly.returns, fill = symbol)) +
   geom_density(alpha = 0.5) +
@@ -307,7 +327,9 @@ Density distributions are useful to have an idea about the overall risk and retu
 
 Here is another way to show the returns.
 
-```{r fig.cap="FANG: Monthly return distribution per year."}
+```{r}
+#| label: fig-fmrdpy
+#| fig-cap: "FANG: Monthly return distribution per year."
 FANG_monthly_returns |>
   mutate(year = as.factor(year(date))) |>
   ggplot(aes(x = monthly.returns, fill = symbol)) +
@@ -335,7 +357,9 @@ Comparing return and risk, or mean and standard deviation of stock returns can b
 
 Let's see the risk and return in a plot.
 
-```{r fig.cap="FANG: the higher the risk, the higher the return."}
+```{r}
+#| label: fig-fthtrthtr
+#| fig-cap: "FANG: the higher the risk, the higher the return."
 # Mean variance plot.
 FANG_stats |>
   ggplot(aes(x = sd, y = mean, color = symbol)) +
@@ -357,7 +381,9 @@ Imagine stock 1 has a return of 5% and a risk of 4%, whereas stock 2 has a retur
 
 Note how we can differentiate between a less risky and a riskier asset returns by looking at their correspondent distributions. Let's highlight these principles by using a brief example. Below we simulate a couple of asset returns by generating random values. Both artificially created assets have the same return of 0% and one is riskier than the other.
 
-```{r fig.cap="Risk illustration."}
+```{r}
+#| label: fig-ri
+#| fig-cap: "Risk illustration."
 # Create random assets.
 less_risky <- data.frame(length = rnorm(10000, 0, 1))
 more_risky <- data.frame(length = rnorm(10000, 0, 2))

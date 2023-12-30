@@ -1,4 +1,3 @@
-
 # Blockchain.
 
 Here, we develop an example originally taken from Massimo Franceschet.

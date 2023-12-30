@@ -1,4 +1,3 @@
-
 ```{r echo=FALSE}
 # This removes all items in environment. 
 rm(list=ls())
@@ -45,7 +44,9 @@ stock_prices_MA_V <- c("MA", "V") |>
 
 Then transform prices into cumulative returns and plot them.
 
-```{r fig.cap="MA and V: wealth index."}
+```{r}
+#| label: fig-mavwi
+#| fig-cap: "MA and V: wealth index."
 # Transform prices into log returns.
 stock_cumret_MA_V <- stock_prices_MA_V |>
     tq_transmute(adjusted,
@@ -80,7 +81,9 @@ The 100 USD investment growth is basically the same in both assets by the end of
 
 Let's see the daily returns of both stocks in a scatter plot now. This allows us to confirm if both stock returns are related.
 
-```{r fig.cap="Visualizing relationship of stocks returns."}
+```{r}
+#| label: fig-vrosr
+#| fig-cap: "Visualizing relationship of stocks returns."
 # Show the return relationship.
 stock_ret_MA_V <- stock_prices_MA_V |>
     tq_transmute(select     = adjusted,
@@ -98,7 +101,9 @@ ggplot(stock_ret_MA_V, aes(x = date, y = returns, group = symbol)) +
 
 The line plot was not a good idea to show our main point which is to reveal whether these two stock returns are related. You cannot see anything clear here. Only ups and downs with no clear visual pattern. Let's propose a different way to illustrate the relationship of stock returns.
 
-```{r fig.cap="Visualizing relationship of stocks returns, a clearer view."}
+```{r}
+#| label: fig-vrosracv
+#| fig-cap: "Visualizing relationship of stocks returns, a clearer view."
 # Show the return relationship.
 stock_ret_MA_V  |>
   spread(key = symbol, value = returns) |>
@@ -143,7 +148,9 @@ In this case, the correlation of Visa and Mastercard stock returns is 0.8485187.
 
 Let's visualize a 1:1 relationship just as a reference in the red line below.
 
-```{r fig.cap="Visualizing relationship of stocks returns, one to one reference in red."}
+```{r}
+#| label: fig-vrosrotorir
+#| fig-cap: "Visualizing relationship of stocks returns, one to one reference in red."
 # Add a reference red line representing beta=1.
 stock_ret_MA_V  |>
   spread(key = symbol, value = returns) |>
@@ -238,7 +245,9 @@ We need a deeper econometric analysis to validate our interpretations. Here, we 
 
 We can illustrate the previous results in a graphical way.
 
-```{r fig.cap="Relationship between asset return and market."}
+```{r}
+#| label: fig-rbaram
+#| fig-cap: "Relationship between asset return and market."
 R_stocks_market$symbol <- 
   factor(R_stocks_market$symbol, levels =
            unique(R_stocks_market$symbol))
@@ -274,7 +283,9 @@ arrange(`AnnualizedSharpe(Rf=0%)`)
 
 A stock beta is a measure of the individual asset return risk with respect to the market. The annualized Sharpe ratio above is a measure of the individual asset return per unit of risk. Let's visualize the previous table.
 
-```{r fig.cap="The higher the risk, the higher the return?"}
+```{r}
+#| label: fig-thtrthtr2
+#| fig-cap: "The higher the risk, the higher the return?"
 # Calculate annualized returns.
 R_stocks_market_stats <- R_stocks_market |>
     tq_performance(Ra = R_stocks, Rb = NULL, 
@@ -298,7 +309,9 @@ I added a straight line of 45 degrees so any asset above the red line means a re
 
 An alternative view to show the Sharpe ratio.
 
-```{r fig.cap="Annualized Sharpe ratio for 10 stocks."}
+```{r}
+#| label: fig-asrf1s
+#| fig-cap: "Annualized Sharpe ratio for 10 stocks."
 R_stocks_market_stats <- R_stocks_market |>
     tq_performance(Ra = R_stocks, Rb = NULL, 
                    performance_fun = table.AnnualizedReturns) |>
@@ -312,7 +325,9 @@ R_stocks_market_stats
 
 What if we use the values of betas and Sharpe ratios to form investment portfolios with these 10 assets? We call a portfolio to the new asset formed by several (smaller) investments in single assets. Let's start with a visualization of monthly return of a naïve portfolio. A naïve portfolio is basically formed by a 10% investment in each of the 10 assets. Here, we do not invest more in higher stock betas or in higher Sharpe ratio stocks. It is simply an equally weighted portfolio.
 
-```{r fig.cap="Equally weighted portfolio monthly returns."}
+```{r}
+#| label: fig-ewpmr
+#| fig-cap: "Equally weighted portfolio monthly returns."
 # Weights.
 wts <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
 # Portfolio creation.
@@ -336,7 +351,9 @@ portfolio_returns_monthly |>
 
 A monthly returns plot is a good representation, but we normally show the evolution of an investment's growth. In this case, we consider an initial investment of 10,000 USD.
 
-```{r fig.cap="Equally weighted portfolio growth of $10,000."}
+```{r}
+#| label: fig-ewpgo1
+#| fig-cap: "Equally weighted portfolio growth of $10,000."
 # Cumulative returns.
 portfolio_growth_monthly <- R_stocks_market |>
     tq_portfolio(assets_col   = symbol, 
