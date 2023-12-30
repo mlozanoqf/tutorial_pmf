@@ -1,9 +1,3 @@
----
-title: ''
-  html_document:
-    df_print: paged
----
-
 ```{r echo=FALSE}
 # This removes all items in environment. 
 rm(list=ls())
@@ -12,7 +6,7 @@ rm(list=ls())
 \newpage
 
 
-# Introduction.
+# Introduction. {.unnumbered}
 
 The main objective of this document is to show how to extract, visualize and analyze financial data in the context of asset pricing models, asset allocation models, a few financial econometrics techniques, and review some the most cutting edge technologies applications such as blockchain, using R. Here, we are interested in explaining concepts and real-life applications by developing examples that start from the data extraction, the problem statement, the proposed solution and the evaluation of the solution. 
 

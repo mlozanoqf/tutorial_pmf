@@ -29,3 +29,5 @@ vignettes/*.pdf
 Tectutorial_files/
 XBRL_cache/
 Tectutorial.log
+
+/.quarto/

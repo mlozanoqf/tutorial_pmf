@@ -1,7 +1,3 @@
----
-title: ''
-output: pdf_document
----
 
 ```{r echo=FALSE}
 # This removes all items in environment. 
