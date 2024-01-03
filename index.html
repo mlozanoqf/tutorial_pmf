@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">December 30, 2023, 02:30:16 am.</p>
+      <p class="date-modified">January 2, 2024, 23:59:52 pm.</p>
     </div>
   </div>
     
@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span id="cb1-5"><a href="#cb1-5"></a>            <span class="fu">Sys.Date</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "There are 20250 R packages available in CRAN as of 2023-12-30"</code></pre>
+<pre><code>[1] "There are 20249 R packages available in CRAN as of 2024-01-02"</code></pre>
 </div>
 </div>
 <p>Every R package has its own PDF online documentation and there are many online examples developed by users as well, you just have to Google it. Many times, we do not know how to deal with an error message, and we can find our way out by Google it. <!-- I have been using R, Matlab, Python, Octave and other languages for the last 15 years and I can confirm every time I do not know how to code something in R, I can easily find a solution online either in specialized discussion forums, official documentation, or in YouTube videos and tutorials. You also have several online and free resources in the course syllabus, and you can always ask me for help. --></p>
@@ -433,18 +433,18 @@ document.addEventListener("DOMContentLoaded", function() {
 <span id="cb5-2"><a href="#cb5-2"></a><span class="fu">str</span>(aapl_stock_prices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>tibble [2,768 × 8] (S3: tbl_df/tbl/data.frame)
- $ symbol  : chr [1:2768] "AAPL" "AAPL" "AAPL" "AAPL" ...
- $ date    : Date[1:2768], format: "2013-01-02" "2013-01-03" ...
- $ open    : num [1:2768] 19.8 19.6 19.2 18.6 18.9 ...
- $ high    : num [1:2768] 19.8 19.6 19.2 18.9 19 ...
- $ low     : num [1:2768] 19.3 19.3 18.8 18.4 18.6 ...
- $ close   : num [1:2768] 19.6 19.4 18.8 18.7 18.8 ...
- $ volume  : num [1:2768] 5.61e+08 3.53e+08 5.94e+08 4.84e+08 4.59e+08 ...
- $ adjusted: num [1:2768] 16.8 16.6 16.1 16 16 ...</code></pre>
+<pre><code>tibble [2,516 × 8] (S3: tbl_df/tbl/data.frame)
+ $ symbol  : chr [1:2516] "AAPL" "AAPL" "AAPL" "AAPL" ...
+ $ date    : Date[1:2516], format: "2014-01-02" "2014-01-03" ...
+ $ open    : num [1:2516] 19.8 19.7 19.2 19.4 19.2 ...
+ $ high    : num [1:2516] 19.9 19.8 19.5 19.5 19.5 ...
+ $ low     : num [1:2516] 19.7 19.3 19.1 19.2 19.2 ...
+ $ close   : num [1:2516] 19.8 19.3 19.4 19.3 19.4 ...
+ $ volume  : num [1:2516] 2.35e+08 3.92e+08 4.13e+08 3.17e+08 2.59e+08 ...
+ $ adjusted: num [1:2516] 17.3 16.9 17 16.9 17 ...</code></pre>
 </div>
 </div>
-<p>According to the <tt><code>str()</code></tt> function output, <tt><code>aapl_stock_prices</code></tt>, we have 2768 daily observations for 7 variables. As you can see, we have not only prices but also volume. Let’s consider a different way to see and have a grasp of what it is inside <tt><code>aapl_stock_prices</code></tt>. In particular, we can see the first and the last part of this lengthy daily database.</p>
+<p>According to the <tt><code>str()</code></tt> function output, <tt><code>aapl_stock_prices</code></tt>, we have 2516 daily observations for 7 variables. As you can see, we have not only prices but also volume. Let’s consider a different way to see and have a grasp of what it is inside <tt><code>aapl_stock_prices</code></tt>. In particular, we can see the first and the last part of this lengthy daily database.</p>
 <p>The first observations.</p>
 <div class="cell">
 <details>
@@ -456,12 +456,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <pre><code># A tibble: 6 × 8
   symbol date        open  high   low close    volume adjusted
   &lt;chr&gt;  &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 AAPL   2013-01-02  19.8  19.8  19.3  19.6 560518000     16.8
-2 AAPL   2013-01-03  19.6  19.6  19.3  19.4 352965200     16.6
-3 AAPL   2013-01-04  19.2  19.2  18.8  18.8 594333600     16.1
-4 AAPL   2013-01-07  18.6  18.9  18.4  18.7 484156400     16.0
-5 AAPL   2013-01-08  18.9  19.0  18.6  18.8 458707200     16.0
-6 AAPL   2013-01-09  18.7  18.8  18.4  18.5 407604400     15.8</code></pre>
+1 AAPL   2014-01-02  19.8  19.9  19.7  19.8 234684800     17.3
+2 AAPL   2014-01-03  19.7  19.8  19.3  19.3 392467600     16.9
+3 AAPL   2014-01-06  19.2  19.5  19.1  19.4 412610800     17.0
+4 AAPL   2014-01-07  19.4  19.5  19.2  19.3 317209200     16.9
+5 AAPL   2014-01-08  19.2  19.5  19.2  19.4 258529600     17.0
+6 AAPL   2014-01-09  19.5  19.5  19.1  19.2 279148800     16.8</code></pre>
 </div>
 </div>
 <p>The last observations.</p>
@@ -485,7 +485,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>By default, the <tt><code>tq_get()</code></tt> function downloads the latest set of data available. You can verify that the last date of <tt><code>aapl_stock_prices</code></tt> above approximately corresponds to the production date of this tutorial. If there is a difference it is simply because the stock market is still close or we are running the code in a weekend. In this case:</p>
 <ul>
 <li>Last <tt><code>aapl_stock_prices</code></tt> observation: 2023-12-29.</li>
-<li>Today is: 2023-12-30.</li>
+<li>Today is: 2024-01-02.</li>
 </ul>
 <p>We also like to show the data in a plot.</p>
 <div class="cell">
@@ -586,7 +586,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span id="cb17-2"><a href="#cb17-2"></a>highest_change</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1934</code></pre>
+<pre><code>[1] 1682</code></pre>
 </div>
 </div>
 <p>Consider the value of <tt><code>highest_change</code></tt> as an index. This is, the number of the row that contains the highest <tt><code>aapl_diff</code></tt> value. We can use this index to extract the date and the actual <tt><code>aapl_diff</code></tt> value.</p>
@@ -697,20 +697,20 @@ document.addEventListener("DOMContentLoaded", function() {
 <span id="cb28-4"><a href="#cb28-4"></a>wti_price_usd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2,866 × 3
+<pre><code># A tibble: 2,605 × 3
    symbol     date       price
    &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt;
- 1 DCOILWTICO 2013-01-01  NA  
- 2 DCOILWTICO 2013-01-02  93.1
- 3 DCOILWTICO 2013-01-03  93.0
- 4 DCOILWTICO 2013-01-04  93.1
- 5 DCOILWTICO 2013-01-07  93.2
- 6 DCOILWTICO 2013-01-08  93.2
- 7 DCOILWTICO 2013-01-09  93.1
- 8 DCOILWTICO 2013-01-10  93.8
- 9 DCOILWTICO 2013-01-11  93.6
-10 DCOILWTICO 2013-01-14  94.3
-# ℹ 2,856 more rows</code></pre>
+ 1 DCOILWTICO 2014-01-01  NA  
+ 2 DCOILWTICO 2014-01-02  95.1
+ 3 DCOILWTICO 2014-01-03  93.7
+ 4 DCOILWTICO 2014-01-06  93.1
+ 5 DCOILWTICO 2014-01-07  93.3
+ 6 DCOILWTICO 2014-01-08  91.9
+ 7 DCOILWTICO 2014-01-09  91.4
+ 8 DCOILWTICO 2014-01-10  92.4
+ 9 DCOILWTICO 2014-01-13  91.4
+10 DCOILWTICO 2014-01-14  92.2
+# ℹ 2,595 more rows</code></pre>
 </div>
 </div>
 <p>Now that we have oil prices in basically one single step, we can plot them. It is interesting because recently the oil prices have turned negative in one day. Negative prices are rare but not impossible, especially in commodities.</p>
@@ -1738,12 +1738,12 @@ lm(formula = MA ~ V, data = reg)
 
 Residuals:
        Min         1Q     Median         3Q        Max 
--0.0269576 -0.0039657  0.0002149  0.0039653  0.0289462 
+-0.0269569 -0.0039657  0.0002147  0.0039656  0.0289462 
 
 Coefficients:
              Estimate Std. Error t value Pr(&gt;|t|)    
 (Intercept) 0.0001130  0.0003097   0.365    0.715    
-V           0.8133652  0.0226393  35.927   &lt;2e-16 ***
+V           0.8133658  0.0226393  35.927   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1774,7 +1774,7 @@ F-statistic:  1291 on 1 and 502 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="sourceCode cell-code" id="cb95"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1"></a><span class="fu">cor</span>(reg<span class="sc">$</span>MA, reg<span class="sc">$</span>V)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8485189</code></pre>
+<pre><code>[1] 0.8485192</code></pre>
 </div>
 </div>
 <p>In this case, the correlation of Visa and Mastercard stock returns is 0.8485187. This correlation value is very close to 1, so these variables are strongly linear correlated. This is important because we can argue that these two stocks are very similar, if one increases the other increases and if one decreases the other decreases. This behaviour makes sense because as we said before these firms are exposed to the same (or very similar) risk factors.</p>
@@ -1816,11 +1816,11 @@ lm(formula = V ~ MA, data = reg)
 
 Residuals:
       Min        1Q    Median        3Q       Max 
--0.034372 -0.003965 -0.000032  0.003423  0.035421 
+-0.034372 -0.003965 -0.000032  0.003423  0.035420 
 
 Coefficients:
               Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) -1.103e-06  3.231e-04  -0.003    0.997    
+(Intercept) -1.104e-06  3.231e-04  -0.003    0.997    
 MA           8.852e-01  2.464e-02  35.927   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -3091,9 +3091,9 @@ Enabled objective names
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>          NEM          AMCR           CLX          PEAK            KR 
--2.339573e-18 -7.389579e-16  3.092152e-17 -6.540601e-18  1.000000e+00 
+ 2.678417e-17  1.977324e-16  1.477513e-17  3.972548e-17  1.000000e+00 
           TXN             F           TXT          KLAC           TEF 
- 7.358458e-17  2.513982e-17  0.000000e+00  1.000000e-02 -3.716301e-16 </code></pre>
+ 1.163355e-16 -3.057955e-17  0.000000e+00  1.000000e-02  1.041718e-17 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -4272,7 +4272,7 @@ $nonce
 [1] 1
 
 [[1]]$timestamp
-[1] "2023-12-30 02:30:08.997591 CST"
+[1] "2024-01-02 23:59:46.650306 CST"
 
 [[1]]$data
 [1] "I'm genesis block"
@@ -4281,10 +4281,10 @@ $nonce
 [1] "0"
 
 [[1]]$nonce
-[1] 6317
+[1] 10846
 
 [[1]]$hash
-[1] "0009bc95b869a39183db3764eb2e70252477e8901e27ea8ce4db3ef9e5d2fc7c"
+[1] "000d70e61ddb2618977a6af37dcf28b556e50f639d4c236939ab5661221341ac"
 
 
 [[2]]
@@ -4292,19 +4292,19 @@ $nonce
 [1] 2
 
 [[2]]$timestamp
-[1] "2023-12-30 02:30:09.296823 CST"
+[1] "2024-01-02 23:59:47.052567 CST"
 
 [[2]]$data
 [1] "I'm block 2"
 
 [[2]]$parent_hash
-[1] "0009bc95b869a39183db3764eb2e70252477e8901e27ea8ce4db3ef9e5d2fc7c"
+[1] "000d70e61ddb2618977a6af37dcf28b556e50f639d4c236939ab5661221341ac"
 
 [[2]]$nonce
-[1] 4304
+[1] 3066
 
 [[2]]$hash
-[1] "000fe86cb6b4b05b3422d3ab60cbaaa2f44439352ddd69631e7cacce623cb25c"
+[1] "000f89d9f598d7e2c47780ade01658a244bfec986bf07b8a2a11d2cbecb1e608"
 
 
 [[3]]
@@ -4312,19 +4312,19 @@ $nonce
 [1] 3
 
 [[3]]$timestamp
-[1] "2023-12-30 02:30:09.465513 CST"
+[1] "2024-01-02 23:59:47.19418 CST"
 
 [[3]]$data
 [1] "I'm block 3"
 
 [[3]]$parent_hash
-[1] "000fe86cb6b4b05b3422d3ab60cbaaa2f44439352ddd69631e7cacce623cb25c"
+[1] "000f89d9f598d7e2c47780ade01658a244bfec986bf07b8a2a11d2cbecb1e608"
 
 [[3]]$nonce
-[1] 293
+[1] 2185
 
 [[3]]$hash
-[1] "000c37ed2862a4d2aa51efa364b894378711ae09cdbfecfcc4328ce613865dc2"
+[1] "00044431f9243270d0e300bce1aa4058392ec88f5a98ef4a3842bf9b6cc8d6a3"
 
 
 [[4]]
@@ -4332,19 +4332,19 @@ $nonce
 [1] 4
 
 [[4]]$timestamp
-[1] "2023-12-30 02:30:09.48387 CST"
+[1] "2024-01-02 23:59:47.276062 CST"
 
 [[4]]$data
 [1] "I'm block 4"
 
 [[4]]$parent_hash
-[1] "000c37ed2862a4d2aa51efa364b894378711ae09cdbfecfcc4328ce613865dc2"
+[1] "00044431f9243270d0e300bce1aa4058392ec88f5a98ef4a3842bf9b6cc8d6a3"
 
 [[4]]$nonce
-[1] 5388
+[1] 6003
 
 [[4]]$hash
-[1] "0003ede590ecbff7b5bd5b0083b398602bb005149951f5dab3b0762447d21a1d"</code></pre>
+[1] "000272a43911dd3166c5a2f837680fc0f7c0af5c478c3444cd4f23521481829e"</code></pre>
 </div>
 </div>
 <p>Nice.</p>
@@ -4465,7 +4465,7 @@ $nonce
 [1] 1
 
 $timestamp
-[1] "2023-12-30 02:30:10.415515 CST"
+[1] "2024-01-02 23:59:47.690387 CST"
 
 $data
 # A tibble: 5 × 4
@@ -4481,10 +4481,10 @@ $parent_hash
 [1] "0"
 
 $nonce
-[1] 2826
+[1] 3458
 
 $hash
-[1] "0003281be5a1230cadcab8f9964ac0d37952b6f4541a4b07e5f47bab2e9c48fe"</code></pre>
+[1] "000ee4538a804b980c19bc933f9255b18ab0a1ed0c673ce2a2bca5d7002dffa3"</code></pre>
 </div>
 </div>
 <p>In the first block above, we have the first half of the transactions sorted by fee.</p>
@@ -4498,7 +4498,7 @@ $hash
 [1] 2
 
 $timestamp
-[1] "2023-12-30 02:30:10.705048 CST"
+[1] "2024-01-02 23:59:47.817323 CST"
 
 $data
 # A tibble: 5 × 4
@@ -4511,13 +4511,13 @@ $data
 5 Q      P           24  0.34
 
 $parent_hash
-[1] "0003281be5a1230cadcab8f9964ac0d37952b6f4541a4b07e5f47bab2e9c48fe"
+[1] "000ee4538a804b980c19bc933f9255b18ab0a1ed0c673ce2a2bca5d7002dffa3"
 
 $nonce
-[1] 2498
+[1] 963
 
 $hash
-[1] "00025f108f278ed70024423e393d398a1d2d276e761d809555ca6f626648f9fc"</code></pre>
+[1] "00086392d4427baa4226ec9b8abd66ef26ac174ae5aece581d112e8b5fa027da"</code></pre>
 </div>
 </div>
 <p>In the second block above, we have the second half of the transactions sorted by fee.</p>
@@ -4531,7 +4531,7 @@ $hash
 [1] 3
 
 $timestamp
-[1] "2023-12-30 02:30:10.914923 CST"
+[1] "2024-01-02 23:59:47.86622 CST"
 
 $data
 # A tibble: 2 × 4
@@ -4541,13 +4541,13 @@ $data
 2 &lt;NA&gt;   Z         2.62  0.01
 
 $parent_hash
-[1] "00025f108f278ed70024423e393d398a1d2d276e761d809555ca6f626648f9fc"
+[1] "00086392d4427baa4226ec9b8abd66ef26ac174ae5aece581d112e8b5fa027da"
 
 $nonce
-[1] 3200
+[1] 912
 
 $hash
-[1] "000461cbd74cb23aca9ded8b007d49e7bc8b7e04b027800d85cdcd0a061ddc01"</code></pre>
+[1] "000180211f77f6235ebf1c8c016ae2610da6f4f5dd5703fe14d8a84250cff303"</code></pre>
 </div>
 </div>
 <p>In the third block above, the miner of the block Z solves the leading zeros problem and gets the fees of all blocked transactions plus a fixed mining reward (and this transaction is included in the following block).</p>
@@ -4572,8 +4572,8 @@ $hash
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[512-bit rsa private key]
-md5: 9c01cedaa32f2865f7360e4851795f75
-sha256: 58e74262a39aefe760bd009b07107843f3e38095d5ece066f0ab7e7aaa2777e7</code></pre>
+md5: ce1eea4490b0bda6547e76c7db45123b
+sha256: edfe1b5979ee54e4a83fb6b3bed5040793f13a521d496aef4207ad4ddf9cd23e</code></pre>
 </div>
 <details>
 <summary>Code</summary>
@@ -4581,8 +4581,8 @@ sha256: 58e74262a39aefe760bd009b07107843f3e38095d5ece066f0ab7e7aaa2777e7</code><
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[512-bit rsa public key]
-md5: 9c01cedaa32f2865f7360e4851795f75
-sha256: 58e74262a39aefe760bd009b07107843f3e38095d5ece066f0ab7e7aaa2777e7</code></pre>
+md5: ce1eea4490b0bda6547e76c7db45123b
+sha256: edfe1b5979ee54e4a83fb6b3bed5040793f13a521d496aef4207ad4ddf9cd23e</code></pre>
 </div>
 </div>
 <p>Looks the same, but the the private key has some more information inside the key object.</p>
@@ -4595,11 +4595,11 @@ sha256: 58e74262a39aefe760bd009b07107843f3e38095d5ece066f0ab7e7aaa2777e7</code><
 <pre><code>List of 5
  $ type       : chr "rsa"
  $ size       : int 512
- $ ssh        : chr "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAQQCU0mG13/ebCW ..."
- $ fingerprint: 'hash' raw [1:32] 58 e7 42 62 ...
+ $ ssh        : chr "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAQQCe0Lr9vrBsXu ..."
+ $ fingerprint: 'hash' raw [1:32] ed fe 1b 59 ...
  $ data       :List of 2
   ..$ e: 'bignum' raw [1:3] 01 00 01
-  ..$ n: 'bignum' raw [1:65] 00 94 d2 61 ...</code></pre>
+  ..$ n: 'bignum' raw [1:65] 00 9e d0 ba ...</code></pre>
 </div>
 <details>
 <summary>Code</summary>
@@ -4612,20 +4612,20 @@ sha256: 58e74262a39aefe760bd009b07107843f3e38095d5ece066f0ab7e7aaa2777e7</code><
  $ pubkey:List of 5
   ..$ type       : chr "rsa"
   ..$ size       : int 512
-  ..$ ssh        : chr "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAQQCU0mG13/ebCW ..."
-  ..$ fingerprint: 'hash' raw [1:32] 58 e7 42 62 ...
+  ..$ ssh        : chr "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAQQCe0Lr9vrBsXu ..."
+  ..$ fingerprint: 'hash' raw [1:32] ed fe 1b 59 ...
   ..$ data       :List of 2
   .. ..$ e: 'bignum' raw [1:3] 01 00 01
-  .. ..$ n: 'bignum' raw [1:65] 00 94 d2 61 ...
+  .. ..$ n: 'bignum' raw [1:65] 00 9e d0 ba ...
  $ data  :List of 8
   ..$ e : 'bignum' raw [1:3] 01 00 01
-  ..$ n : 'bignum' raw [1:65] 00 94 d2 61 ...
-  ..$ p : 'bignum' raw [1:33] 00 c3 69 77 ...
-  ..$ q : 'bignum' raw [1:33] 00 c2 f6 e3 ...
-  ..$ d : 'bignum' raw [1:64] 19 8c 80 8f ...
-  ..$ dp: 'bignum' raw [1:33] 00 85 5a 8f ...
-  ..$ dq: 'bignum' raw [1:32] 3c 92 49 e1 ...
-  ..$ qi: 'bignum' raw [1:32] 11 50 00 5a ...</code></pre>
+  ..$ n : 'bignum' raw [1:65] 00 9e d0 ba ...
+  ..$ p : 'bignum' raw [1:33] 00 cc 16 3d ...
+  ..$ q : 'bignum' raw [1:33] 00 c7 36 7d ...
+  ..$ d : 'bignum' raw [1:64] 75 79 56 67 ...
+  ..$ dp: 'bignum' raw [1:32] 47 cd 17 70 ...
+  ..$ dq: 'bignum' raw [1:32] 09 78 c1 c8 ...
+  ..$ qi: 'bignum' raw [1:33] 00 b8 24 fa ...</code></pre>
 </div>
 </div>
 <p>The <tt><code>charToRaw()</code></tt> function converts a length-one character string to raw bytes.</p>
@@ -4649,9 +4649,9 @@ sha256: 58e74262a39aefe760bd009b07107843f3e38095d5ece066f0ab7e7aaa2777e7</code><
 <span id="cb282-2"><a href="#cb282-2"></a>ciphermsg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 35 5e ed f2 7f 7d dd a8 ee ef d8 f4 3f 2c 68 c0 eb 2b f3 a0 4f ca dd d3 c7
-[26] d6 28 f9 bf d4 0d 35 19 ab a5 14 a8 6d 49 dd bd 31 29 99 45 39 56 48 54 cd
-[51] 52 1d ed 05 bd 0f c7 43 69 c4 4f d2 6e 0b</code></pre>
+<pre><code> [1] 2e bb 7b 07 e5 56 c2 2b 97 28 d6 29 72 de 39 f1 89 96 a7 7b 14 a1 25 4e 46
+[26] cd 6a b1 06 dd f0 30 9f e5 74 11 f8 ce 2b 55 93 0b 62 bf 98 ad 93 e2 6d bf
+[51] e2 01 4a 88 a1 d6 34 ed 54 7b 2a 68 8a b2</code></pre>
 </div>
 </div>
 <p>This is how it looks the encrypted message <em>Blockchain is terrific!</em></p>
@@ -4715,17 +4715,17 @@ $amount
 <span id="cb290-3"><a href="#cb290-3"></a>sig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 17 3a 55 42 58 7c f0 90 bd a7 00 f9 df 22 30 4a 82 1c e4 8b 4e 1a 0b 19 51
- [26] a8 ee c6 5a ea 0e c1 f1 d3 26 03 79 92 11 a7 94 72 c5 0b 3e ca 17 a6 a9 1f
- [51] 25 84 8d 55 33 32 42 be 46 58 ab 06 51 18 43 92 89 07 17 b0 f5 fc 1e b6 99
- [76] 46 b3 23 88 f1 38 4a 06 0d 91 fe 60 74 74 0f 6a 81 5a 45 e0 78 52 f0 7e 21
-[101] 34 60 2e 75 25 35 e3 f2 2d c6 72 f3 98 da aa f8 8c b0 05 37 f1 82 00 85 7a
-[126] c5 6d 16 12 0e 9b f0 38 ad 50 24 08 47 d9 80 a0 9c b3 85 77 d9 3f fb ce 62
-[151] 6f 13 b3 5d f9 b2 52 50 a7 57 d0 8d 6a 70 ef 3a fc c2 ed 84 fd 12 ad e5 1d
-[176] fa 0c 16 01 ae ec 44 78 66 d9 4c 5a 63 fc 0d 13 ba 94 94 11 50 3f 85 15 71
-[201] d2 6b 08 87 6c 3d f3 88 d9 02 f1 3d 40 8d 1d 9c 74 fe d9 5c 4b e5 a9 43 59
-[226] 77 11 38 d4 29 25 d4 3c 58 91 c5 6c 70 18 95 16 5e a7 05 73 b2 bc 3a d0 d1
-[251] 33 57 66 13 d7 42</code></pre>
+<pre><code>  [1] 5a e2 0f 98 83 b7 32 df 59 99 fa d4 00 1a 02 70 c9 6a f3 d7 e9 0e 61 f9 5f
+ [26] 84 fc 34 0d 86 35 ce 76 f6 96 3e 08 ed 43 c8 ac 0c c2 67 a6 4e 96 c2 f1 f2
+ [51] a0 e8 d8 a5 73 9b 0b d3 7b 8b 83 7b 1d 06 c2 12 86 f1 2e 16 98 a8 6d d5 1a
+ [76] 05 3e 23 2d 47 b1 ac 6f 95 e6 77 e4 bc f8 84 3e 56 ca fa 7f 8e 5a 90 fd 59
+[101] 72 a2 13 c3 01 f9 58 32 1e 4b 8b 0a 6f 29 70 7f d5 ae 01 51 02 84 9e bd d1
+[126] ef b4 c5 5b 77 61 ae d2 5f 49 9c 30 9e b9 38 3d 94 db ac ca 0d 69 20 d3 6b
+[151] f9 0e f6 67 d0 16 52 62 da 0a df 1f 5b d1 f8 44 80 16 08 14 4c c6 63 c0 4a
+[176] bc 8d ea 44 88 84 cc 34 a6 8f 1d 5d 8b b7 9b e7 6c 04 1c 5d ef e6 c5 15 13
+[201] d6 83 2e 48 fd 4f 06 74 7c ba 10 2c 31 1e 4f 12 61 40 c5 d3 6b 82 e8 20 83
+[226] 38 69 9a d3 85 89 13 a0 61 4f 40 b9 21 32 2b 9d 81 f4 aa 24 78 88 51 67 b3
+[251] 1e b3 49 da 0f e0</code></pre>
 </div>
 </div>
 <p>The new object <tt><code>sig</code></tt> has not only the translated transaction, it has been also signed by the sender. With the function <tt><code>signature_verify()</code></tt>, anyone could verify that the sender of the transaction is the owner of the <tt><code>pubkey</code></tt>.</p>
@@ -4748,17 +4748,17 @@ $amount
 <span id="cb294-3"><a href="#cb294-3"></a>ciphermsg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 9b 30 8f e6 ba 93 63 2d 40 9e b5 ff ed 4f 02 9f 1a ec 8e 7e eb fc ef 70 28
- [26] 81 3e 07 58 4d 6f 91 53 8a 15 80 e7 45 a4 12 19 6a 02 68 95 a6 fb a4 5a 65
- [51] e2 47 3a bb 2d 82 a6 7f 93 71 07 26 2c 26 c0 2d 60 b9 d0 54 46 6d c5 11 cb
- [76] ea 74 00 97 99 ea 22 6a 71 75 2d 22 ce c6 a7 7b 50 e8 72 ee 4d 76 01 09 97
-[101] 84 b3 c5 23 cf c0 55 df 7d d2 43 d8 a6 ad 6a 1c ce 18 db 2c 0e 19 8b b7 5d
-[126] 50 61 15 c4 87 b7 02 58 7b 28 61 bb a0 c3 62 50 8a a0 82 e7 df db 02 db 56
-[151] 52 cd 50 29 92 89 03 8d 42 1e 7f 54 ab 3b d2 5a 7c df 42 14 fd 8f 58 c8 b0
-[176] b2 da ac 5b 9e e1 c7 e4 2e b7 95 90 c1 61 43 f0 18 a2 d0 ca 18 e9 24 79 6a
-[201] 5a 57 30 f4 21 6e 92 4b 68 75 c5 ae d1 65 67 63 fc e0 f9 8b 93 d0 b3 97 99
-[226] 55 1f 03 12 3d b1 9f 75 88 24 11 9d 19 da a4 00 b8 67 6c eb 67 ef 15 de 74
-[251] 17 22 db 0a 3d f3</code></pre>
+<pre><code>  [1] 1b 71 bd 41 c8 4e 10 fc c1 86 bf 3a 23 d3 b8 2b 40 63 33 51 6e 7f 0c 6d 56
+ [26] 32 52 09 92 d6 6a 4a 05 98 96 f0 42 ef 9a 48 ec d7 34 7b 1c 1f f1 64 31 8a
+ [51] d3 cb 64 0c 92 29 eb eb 2b 71 c9 29 a3 cd 87 5c a6 54 e8 9e 03 77 b8 be 67
+ [76] 33 9f cc 57 a2 77 2e bb f0 dd 0f 11 31 0f 25 d3 3a 0a 94 cf 97 d4 5e 6d 81
+[101] 6f 08 3c f5 b5 a6 b0 26 6f a8 95 c9 52 d1 f3 51 28 eb 21 39 8c 22 41 e0 3d
+[126] e0 9a 5a 0e c2 a3 ad 66 47 51 68 2d a4 69 2a 2e a6 d5 25 54 7d 4a b8 21 62
+[151] ef 3b 90 f9 fe 31 5c 12 0d 8c 13 ba 8a 21 ef 2a 5d 28 2e b2 09 5b 19 30 36
+[176] f1 4d 0e 63 9a 96 8d 23 6e 28 24 81 ae c4 f1 da e8 09 16 66 9f 16 6c d5 af
+[201] fd 15 c9 95 bb 9a 38 f9 c9 04 08 ed 52 76 cc f3 66 5f 40 bd f7 65 bc 4f 34
+[226] ad 47 b6 55 36 38 64 a7 ed 4e 21 d0 49 7e ee 19 56 f0 59 3f 3d 55 8c 34 54
+[251] b6 c7 5b 7b a1 76</code></pre>
 </div>
 </div>
 <p>The transaction is translated, signed by the sender and now encrypted with the sender’s <tt><code>pubkey</code></tt>. To recover the original transaction we would need to decrypt the serialized message with the private key <tt><code>key</code></tt>, and then unserialize the result.</p>
@@ -4819,7 +4819,7 @@ $amount
 <!-- WEB: https://sites.google.com/site/mlozanoqf/ -->
 <!-- GitHub: https://mlozanoqf.github.io/ -->
 <!-- Zoom: https://us02web.zoom.us/j/9209945512 -->
-<p>This document took 4.73 minutes to compile in Quarto version 1.3.450, and R version 4.3.2 (2023-10-31 ucrt).</p>
+<p>This document took 3.58 minutes to compile in Quarto version 1.3.450, and R version 4.3.2 (2023-10-31 ucrt).</p>
 </section>
 <section id="references." class="level1 unnumbered">
 <h1 class="unnumbered">References.</h1>
