@@ -35,3 +35,7 @@ Tectutorial.log
 /index.html
 /index_files/
 /libs/
+
+# Local editorial/conversion instruction materials
+/FORMATO_QUARTO_ARF_A_EMF.txt
+/quarto_format_template/
