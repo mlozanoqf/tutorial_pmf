@@ -25,14 +25,19 @@ write_book_dates()
 ::: {.home-panel}
 This book introduces financial modeling with R for readers who want to extract,
 visualize, and analyze financial data while keeping the financial idea and the
-computation together. The chapters connect data workflows, prices and returns,
-asset pricing, portfolio allocation, risk-return reasoning, and blockchain
-examples through reproducible code, figures, tables, equations, and
+computation together. The reading path starts with financial data, then moves
+to prices and returns, trading rules, asset pricing, portfolio allocation, and
+market risk measurement. The final blockchain chapter works as a special
+application that extends the financial modeling toolkit toward distributed
+records, cryptographic validation, and transaction design. Throughout the book,
+the emphasis is on reproducible code, figures, tables, equations, and careful
 interpretation.
 :::
 
 ## What's new in this edition {.unnumbered}
 
 - **Book-based reading path:** The material is now organized as a Quarto book with independent chapters and a clear reading sequence.
+- **Applied trading workflow:** The book now includes a robo trader chapter that connects prices, returns, technical indicators, classification, and simple trading rules.
+- **Portfolio risk measurement:** Value at Risk is now part of the financial modeling path, linking portfolio allocation with market risk and loss scenarios.
 - **Clearer navigation:** The sidebar, chapter sections, local page menu, progress bar, and back-to-top control make it easier to move through the financial examples.
 - **Reproducible publication:** The site is ready to render into `_book` and publish from GitHub Actions while keeping generated HTML out of the repository root.

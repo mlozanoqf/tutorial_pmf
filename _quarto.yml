@@ -22,10 +22,12 @@ book:
     - 01-introduction.qmd
     - 02-financial-data.qmd
     - 03-prices-and-returns.qmd
-    - 04-asset-pricing.qmd
-    - 05-asset-allocation.qmd
-    - 06-blockchain.qmd
-    - 07-conclusion.qmd
+    - 04-robotrader-in-r.qmd
+    - 05-asset-pricing.qmd
+    - 06-asset-allocation.qmd
+    - 07-value-at-risk.qmd
+    - 08-blockchain.qmd
+    - 09-conclusion.qmd
     - references.qmd
 
 bibliography: references.bib
