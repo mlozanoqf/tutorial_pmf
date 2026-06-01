@@ -31,3 +31,7 @@ XBRL_cache/
 Tectutorial.log
 
 /.quarto/
+/_book/
+/index.html
+/index_files/
+/libs/
