@@ -1,17 +1,34 @@
-# Conclusion.
+# Conclusion
 
-Finance covers much more than making money. It studies how to find and use resources, and how to assign them into
-projects. This is not an easy task as resources are limited and projects are
-risky. Moreover, sometimes the financial markets do not work well: bad projects
-are financed and good projects are not. However, if we rely on finance theory,
-quantitative models, and data analysis, we increase the chances to make good and
-informed decisions. Making money is a necessary step that allows us to pursue
-superior objectives like making firms growth, create better jobs, stimulate
-innovation, economic growth, and hopefully improve the standard of living of the
-population.
+Finance covers much more than making money. It studies how to find and use
+resources, how to assign them to projects, and how to evaluate uncertain
+outcomes. This book followed that idea through a reproducible R workflow:
+financial data, prices and returns, trading rules, asset pricing, asset
+allocation, Value at Risk, and blockchain as a focused technical application.
 
-We have made some progress at implementing financial and economic models to
-achieve these superior objectives but we cannot say we have succeeded. Poverty
-levels in some countries are high, and income inequality leads not only to
-economic but also social problems. Fortunately, there is an increasing and
-genuine interest in learning finance principles by good people around the world.
+The central thread is that every financial object becomes clearer when the
+concept, the formula, the data, and the code are kept together. Prices become
+returns. Returns become distributions, regressions, trading signals, portfolio
+weights, and loss scenarios. Portfolio allocation helps decide how capital can
+be distributed across assets. Value at Risk translates those portfolio choices
+into a statement about potential losses under explicit assumptions. Blockchain
+then extends the computational toolkit toward distributed records,
+cryptographic validation, and transaction design.
+
+The variety of topics is deliberate. The book treats financial modeling as a
+practice that moves across data sources, market instruments, statistical
+summaries, trading rules, allocation methods, risk measures, and computational
+infrastructure. What holds the sequence together is the repeated discipline of
+asking a financial question, defining the mathematical object, implementing the
+calculation in R, and reading the result carefully.
+
+The examples in the book are intentionally compact. They are designed to show
+how financial reasoning can be made reproducible and auditable. In practice,
+professional decisions require better data governance, broader validation,
+stress testing, economic interpretation, and ethical judgment. R helps organize
+that work because scripts, equations, tables, and figures can be reviewed,
+rerun, and improved as assumptions change.
+
+Good financial modeling is therefore a disciplined way to connect uncertainty
+with decisions. The goal is to make better, more transparent choices about
+investment, financing, risk, and innovation.

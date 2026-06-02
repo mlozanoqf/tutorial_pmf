@@ -1,5 +1,5 @@
 
-# Financial data.
+# Financial data
 
 ```{r include=FALSE}
 rm(list = ls())
@@ -12,11 +12,13 @@ library(quantmod)
 library(lubridate)
 ```
 
-Data is everywhere and finance has always been about data.[^3] Industries perceive data as an essential commodity and fuel to take decisions under uncertainty. As a matter of fact, data science and finance go hand in hand. Even before the term data science was coined, finance was using it. Data Science is widely used in areas like risk analytics, credit risk, fraud detection, risk management, pricing, and algorithmic trading. Financial institutions were among the earliest users and presumably pioneers of data analytics. We need data to perform financial analysis, estimate financial models, forecast financial variables, take financing and investment decisions, and more. The alternative of data is to listen to your guts, your intuition, or experience. This alternative is not bad by itself, but it would not be our main approach here.
+Financial modeling starts with a data question: which observations are needed, where do they come from, and how should they be transformed before any model is estimated? Finance has always been data-intensive.[^3] Prices, volume, interest rates, exchange rates, macroeconomic indicators, balance-sheet items, and market indexes are the raw material for valuation, trading, portfolio construction, and risk measurement.
 
 [^3]: According to market intelligence company IDC, the 'Global Datasphere' in 2018 reached 18 zettabytes. The vast majority of the world's data has been created in the last few years and this astonishing growth of data shows no sign of slowing down. In fact, IDC predicts the world's data will grow to 175 zettabytes in 2025. One zettabyte is 1000000000000000000000 bytes. In scientific notation this is 1e+21 or 1 with 21 zeros at the right, we call it one sextillion.
 
-Financial data is usually free and available in electronic sources for downloading. There are exemptions as private firms are not obligated to make their financial information public. Also, there are some kind of financial information that public firms are not obligated to make public given the international regulations. Sometimes, financial data is not fully available but we have summary statistics that can be quite useful to simulate the data by ourselves. Financial markets are a great source of financial information like exchange rates, commodities, financial instruments, etc. Public institutions and international organizations are useful sources of financial information as well. In any case, we have more financial data than time and resources to analyze it, and the gap is getting bigger and bigger.
+The chapter builds the first part of the book's workflow. We download market and economic data, inspect the structure of the returned objects, visualize prices, and introduce simple indicators such as trading range, moving averages, and Bollinger Bands. The emphasis is practical: before returns, signals, asset pricing, allocation, or VaR can be computed, the data must be obtained and understood.
+
+Some financial data is public and easy to download; other data is private, delayed, licensed, incomplete, or available only as summaries. That distinction matters because a model inherits the limitations of its data source. In this chapter, we work with public examples that can be reproduced directly in R.
 
 <!-- ## Financial statements. -->
 
@@ -108,7 +110,7 @@ Financial data is usually free and available in electronic sources for downloadi
 
 <!-- In the following section we move from a financial statement analysis to the analysis of stock prices. Note that both are linked by the equity and overall performance of public firms. -->
 
-## Stock prices and other financial data.
+## Stock prices and other financial data
 
 Financial markets not only facilitate financial transactions between sellers and buyers, they also represent a rich source of financial data. Here, we show how to use R to download stock price data from financial markets by using a few examples.
 
@@ -120,9 +122,9 @@ There are plenty of YouTube tutorials showing how to install packages in R. This
 embed_url("https://youtu.be/JBcVi-fAT_k")
 ```
 
-In the past, when we were interested in performing a financial analysis in a rudimentary statistical software, we had to open the financial market site, download the data in Excel or text format, and then convert it to a compatible format given the statistical software requirements. In ancient times, people had to gather financial data from the newspaper. Fortunately for us, now we have R packages to make this process not only easy but also free, extremely efficient and immediate.
+In the past, financial analysis often required visiting a market-data site, downloading files in Excel or text format, and converting them into a compatible structure. Earlier workflows relied on printed sources. R packages now make this process faster, reproducible, and easier to document.
 
-Let's download Apple stock prices in one step using the <tt>`tq_get()`</tt> function available in the <tt>`tidyquant`</tt> package.
+The first market-data example downloads Apple stock prices in one step with the <tt>`tq_get()`</tt> function from <tt>`tidyquant`</tt>.
 
 ```{r}
 # Get stock prices for Apple stock from Yahoo! finance site.
@@ -138,7 +140,7 @@ To see what it is inside the <tt>`aapl_stock_prices`</tt> object we can do the f
 str(aapl_stock_prices)
 ```
 
-According to the <tt>`str()`</tt> function output, <tt>`aapl_stock_prices`</tt>, we have `r nrow(aapl_stock_prices)` daily observations for 7 variables. As you can see, we have not only prices but also volume. Let's consider a different way to see and have a grasp of what it is inside <tt>`aapl_stock_prices`</tt>. In particular, we can see the first and the last part of this lengthy daily database.
+According to the <tt>`str()`</tt> output, <tt>`aapl_stock_prices`</tt> contains `r nrow(aapl_stock_prices)` daily observations and 7 variables. The object includes prices and volume. A compact inspection of the first and last rows helps verify the date range and the available columns.
 
 The first observations.
 
@@ -153,7 +155,7 @@ The last observations.
 tail(aapl_stock_prices)
 ```
 
-By default, the <tt>`tq_get()`</tt> function downloads the latest set of data available. You can verify that the last date of <tt>`aapl_stock_prices`</tt> above approximately corresponds to the production date of this tutorial. If there is a difference it is simply because the stock market is still close or we are running the code in a weekend. In this case:
+By default, the <tt>`tq_get()`</tt> function downloads the latest set of data available. The last date of <tt>`aapl_stock_prices`</tt> should approximately correspond to the production date of this tutorial. Differences can occur when the market is closed or the code is run during a weekend. In this case:
 
 -   Last <tt>`aapl_stock_prices`</tt> observation: `r aapl_stock_prices$date[length(aapl_stock_prices$date)]`.
 -   Today is: `r Sys.Date()`.
@@ -202,7 +204,11 @@ legend("topleft",
        lty = 1, col = c("red", "black"))
 ```
 
-Let's continue with the Apple stock analysis. Stock prices change throughout the trading day. This is, the open price changes every minute (sometimes in milliseconds), so the open price is normally different from the closing price. We can calculate the difference between the high and low price of each day and then show the result in a plot.
+The Apple example can also be used to study intraday variation. Stock prices change throughout the trading day, so the open, high, low, and close prices summarize different pieces of the trading session. For day $t$, the intraday range is:
+
+$$
+\Delta_t = High_t - Low_t.
+$$
 
 Create a new variable <tt>`aapl_diff`</tt>.
 
@@ -221,7 +227,11 @@ plot(aapl_stock_prices$date, aapl_diff, type = "h", xlab = "Date",
 
 The difference between high and low prices show that the stock price changes during a trading day. These changes can be considerably high. Moreover, this volatility has increased in recent times. Is it possible to know the exact date in which this difference is the highest? One alternative is to sort all observations, but there is a simpler approach.
 
-Which observation has the maximum value of <tt>`aapl_diff`</tt>?
+Which observation has the maximum value of <tt>`aapl_diff`</tt>? Mathematically, we look for the index:
+
+$$
+t^\*=\arg\max_t \Delta_t.
+$$
 
 ```{r}
 highest_change = which.max(aapl_diff)
@@ -255,7 +265,7 @@ plot(aapl_stock_prices$date, aapl_diff, type = "h", xlab = "Date",
 points(when, top, pch = 19, col = "red", cex = 1.5)
 ```
 
-Up to know, we have been using default options as we simply ask for stock prices of Apple without any other kind of instruction. As a result, we get data starting from 2010: <tt>`tq_get("AAPL")`</tt>. However, we can change default options if needed to get data back to 1990. I will take some online available examples developed by the author of <tt>`tidyquant`</tt> Matt Dancho.
+So far, the examples have used default download options. A call such as <tt>`tq_get("AAPL")`</tt> returns the default historical range available through the data source. The next example changes the start date to request a longer Apple history, following examples developed by Matt Dancho, the author of <tt>`tidyquant`</tt>.
 
 Download Apple stock prices.
 
@@ -266,9 +276,9 @@ aapl_prices  <- tq_get("AAPL", get = "stock.prices",
 aapl_prices
 ```
 
-Sometimes we are interested in periodicity aggregation from daily to monthly. We cannot transform from monthly to daily, but we can always transform from daily to monthly, monthly to yearly and so on. FANG is a dataset containing the daily historical stock prices for the FANG tech stocks, META, AMZN, NFLX, and GOOG, spanning from the beginning of 2013 through the end of 2016.
+Sometimes the analysis requires aggregation from daily to monthly frequency. Aggregating from a higher-frequency series to a lower-frequency series is straightforward; the reverse direction would require additional assumptions. FANG is a dataset containing the daily historical stock prices for the FANG tech stocks, META, AMZN, NFLX, and GOOG, spanning from the beginning of 2013 through the end of 2016.
 
-Let's aggregate the pre-loaded data from daily to monthly frequency.
+The next step aggregates the pre-loaded data from daily to monthly frequency.
 
 ```{r}
 data("FANG")
@@ -337,7 +347,7 @@ ggplot(exchange_rate, aes(x = USD.MXN)) +
   scale_fill_tq()
 ```
 
-We can also create some interesting visualizations about US employment and the US recessions (in the shaded area) over time. The code below is not so compact but it works.
+We can also visualize US employment together with NBER recession periods shown as shaded areas. The code below prepares the recession shading and the employment series.
 
 ```{r}
 # NBER Recession indicator and US nonfarm payroll employment
@@ -400,17 +410,15 @@ ggplot(data = df41, aes(x = date, y = PAYEMS)) +
         plot.title = element_text(face = "bold", size = 14))
 ```
 
-Here we can see the magnitude of the current and upcoming financial and economic crisis. The fall in the US employment is impressive as you can see. Note how recessions (gray bars) are very closely related with falls in the employment over time.
+The shaded areas identify NBER recession periods, and the red line shows employment growth. The plot makes the economic-data workflow useful: a time series becomes more informative when it is aligned with an external event indicator. Recessions are associated with visible pressure on employment growth, although the magnitude and timing differ across episodes.
 
-Given the recent health crisis many sectors and firms in the US economy stopped or reduced operations as a way to reduce the spread of the virus. As firms produce less (or nothing), they sell less (or nothing). Firms face two kinds of costs, variable and fixed. Variable costs depend on production, so if production decreases the variable costs decreases as well. The problem here is fixed costs because they never disappear, they are fixed and they have to be paid no matter what. Some firms might have the possibility to pay fixed costs with reduced or null revenues for a while (days, weeks, probably a little bit more), but definitely not for long. I believe it is clear what happen next. Some firms did not make it, they could not survive and they simply went bankrupt and definitely closed operations. These firms had employees and now they are unemployed. Even those firms who are still operating, in some cases they had to reduce the payroll, and some employees are now unemployed. Less aggregate production and more families without an income reduce the aggregate supply and demand. This is why this current-next economic crisis has no precedent.
+Access to financial and economic data is only the first step. The analyst also has to align dates, check definitions, transform units, and communicate the result in a way that supports a financial or economic question. The same discipline will be used in later chapters when prices become returns, returns become signals, and portfolio returns become risk measures.
 
-Having easy access to financial and economic data is important to facilitate the data analysis. However, it is even more important to be able to manipulate the financial and economic data correctly to communicate facts and discover new insights to make better decisions.
-
-## Technical analysis.
+## Technical analysis
 
 Technical analysis is the forecasting of future financial price movements based on an examination of past price movements and volume of trading. Technical analysis is applicable to stocks, indexes, commodities, futures or any tradable instrument where the price is influenced by the forces of supply and demand. This analysis is limited because it fails to incorporate other forces and factors that can influence the price of the security. Although this analysis is limited, it is still quite popular, and given that we now know how to get financial prices, it seems convenient to illustrate the basics of technical analysis.
 
-Let's use FANG data again.
+We now return to the FANG data.
 
 ```{r}
 # Get AAPL and AMZN stock prices.
@@ -418,7 +426,7 @@ AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01",
                to = "2016-12-31")
 ```
 
-Let's begin with one plot.
+The first plot shows adjusted prices.
 
 ```{r}
 #| label: fig-alc
@@ -444,7 +452,7 @@ AAPL |>
 
 There are some blank spaces. This is simply because the close price of yesterday is not always exactly the same as the open price of today. Local stock markets close on weekends and holidays.
 
-These kinds of charts are difficult to read when we have many observations. Let's do a zoom:
+These charts are difficult to read when there are many observations. A zoomed view helps inspect the recent pattern:
 
 ```{r}
 #| label: fig-accz
@@ -463,9 +471,15 @@ A formal interpretation is difficult given the limitations of this analysis. How
 
 [^4]: The logic behind this is not very different from what we have heard about *flatten the curve* in the context of the 2020 pandemic. As the curve increases, the high speed of increase is captured by big vertical blue bars. It is expected that the speed of increase slows down before the curve is flat, and this slowing down is captured by smaller vertical blue lines. So, before the curve is flat and starts to decrease, the blue vertical lines become smaller and smaller.
 
-Could you guess what will happen with the price given the chart above? Seems difficult as the last four observations are consecutive blue-red-blue-red. Then, this indicator alone, without any complementary analysis, does not seem to deliver a clear trading signal.
+A short sequence of alternating blue and red bars is difficult to convert into a reliable forecast. This indicator alone, without complementary analysis, does not deliver a clear trading signal.
 
-Moving averages are often used as trend-following indicators. We have two line plots, one is the original evolution of the price chart in black and the second is the moving average in blue. In this case we have a 30-day moving average. The blue line is simply the average of the last 30-day stock prices. In the code below, this value is easily modified by changing the value of $n$, in this case $n=30$. A crossover can be read as a possible change in momentum, but it is a heuristic signal and can generate false positives.
+Moving averages are often used as trend-following indicators. We have two line plots, one is the original evolution of the price chart in black and the second is the moving average in blue. In this case we have a 30-day moving average. The blue line is simply the average of the last 30-day stock prices:
+
+$$
+SMA_{t,n}=\frac{1}{n}\sum_{j=0}^{n-1}P_{t-j}.
+$$
+
+In the code below, this value is easily modified by changing the value of $n$, in this case $n=30$. A crossover can be read as a possible change in momentum, but it is a heuristic signal and can generate false positives.
 
 If the black line crosses the blue from down to top, then the chart suggests a possible increase in momentum. The signal is stronger when the black line crosses the blue line showing a steeper slope. What happens in practice is that the value of $n$ should be calibrated and validated with historical data before using the indicator as part of a trading rule.
 
@@ -488,7 +502,15 @@ AAPL_recent <- tq_get("AAPL", get = "stock.prices",
 AAPL_recent
 ```
 
-The Bollinger Bands are envelopes plotted at a standard deviation level above and below a simple moving average of the price. Because the distance of the bands is based on standard deviation, they are supposed to adjust to volatility swings in the underlying price. This indicator can help us to understand the size of the expected change in the future. If the Bollinger Bands become wider then we should expect drastic changes in the stock price.
+The Bollinger Bands are envelopes plotted at a standard deviation level above and below a simple moving average of the price. Because the distance of the bands is based on standard deviation, they are supposed to adjust to volatility swings in the underlying price. With $k=2$ and a rolling standard deviation $s_{t,n}$, the bands are:
+
+$$
+Upper_{t,n}=SMA_{t,n}+k s_{t,n},
+\qquad
+Lower_{t,n}=SMA_{t,n}-k s_{t,n}.
+$$
+
+This indicator can help us to understand the size of the expected change in the future. If the Bollinger Bands become wider then we should expect drastic changes in the stock price.
 
 ```{r}
 #| label: fig-abbasma
@@ -506,9 +528,9 @@ AAPL |>
   theme_tq()
 ```
 
-Let's look at the very last observation. The price line is above the moving average (now in red, dotted line). The last price sits above the moving average and near the upper band. This suggests recent upward momentum and a price near the upper part of its rolling volatility envelope. The bands are descriptive; using them as a trading rule would require formal backtesting.
+The last observation has the price line above the moving average, now shown as a red dotted line. The last price sits above the moving average and near the upper band. This suggests recent upward momentum and a price near the upper part of its rolling volatility envelope. The bands are descriptive; using them as a trading rule would require formal backtesting.
 
-In case you may have a different view or concerns about the previous interpretation then you now realize the pitfalls and the disadvantages of this kind of analysis when it is conducted as a simple chart read. Although, the technical analysis is popular, it could lead to different interpretations easily when we interpret one or two indicators by eye. This does not mean we have to ignore this kind of analysis because we can always incorporate formal techniques to try to validate buy and sell signals to help traders and conduct short-run investment strategies. In fact, there are very serious developments like the <tt>`quantstrat`</tt> package, which provides a generic infrastructure to model and backtest signal-based quantitative strategies.
+The lesson is methodological. Technical indicators can be useful descriptive tools, but a visual reading is fragile when it depends on one or two signals by eye. A stronger workflow defines the signal, fixes the timing, evaluates the rule on historical data, and accounts for trading costs. Packages such as <tt>`quantstrat`</tt> provide infrastructure for formal backtesting of signal-based strategies.
 
 We can show the simple moving average for Meta.
 
@@ -532,4 +554,4 @@ FANG |>
   filter(date >= "2014-01-01" & date <= "2014-02-01")
 ```
 
-In this historical example, the realized price path moved in the direction suggested by the moving-average signal.
+In this historical example, the realized price path moved in the direction suggested by the moving-average signal. The next chapter turns this idea into an explicit trading workflow: prices are transformed into indicators, indicators become predictors, and predictions are evaluated as trading positions.

@@ -32,6 +32,13 @@ application that extends the financial modeling toolkit toward distributed
 records, cryptographic validation, and transaction design. Throughout the book,
 the emphasis is on reproducible code, figures, tables, equations, and careful
 interpretation.
+
+The style is deliberately explicit. Financial modeling requires many small
+choices: which data source to use, how prices become returns, how a signal is
+timed, how portfolio weights are computed, how risk is summarized, and how a
+result should be read. For that reason, the book keeps the financial question,
+the mathematical object, the R implementation, and the reading of the output in
+the same workflow.
 :::
 
 ## What's new in this edition {.unnumbered}

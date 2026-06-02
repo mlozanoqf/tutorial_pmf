@@ -9,9 +9,23 @@ library(vembedr)
 
 The previous chapter focused on how to allocate capital across assets. This chapter asks a complementary question: once a portfolio exists, how large could a short-run market loss be? Value at Risk (VaR) provides a compact answer by combining a time horizon, a confidence level, portfolio weights, and a loss distribution.
 
-Here, we develop and extend the example called *Investment in Four Stock Indices* in Chapters 22 and 23 of @Hull. In this book, the example is used as a market-risk and portfolio-risk exercise within the broader Financial Modeling with R path. The database used in this example <tt>`dataR.txt`</tt> is available [here](https://github.com/mlozanoqf/tutorial_if/blob/main/dataR.txt).
+If $L$ is the portfolio loss over the chosen horizon and $\alpha$ is the confidence level, VaR is the loss threshold such that losses exceed it with probability $1-\alpha$:
 
-Suppose that we want to calculate VaR for a portfolio using a one-day time horizon, a 99% confidence level, and 501 days of data, from Monday August 7, 2006 to Thursday September 25, 2008.
+$$
+P(L > VaR_\alpha)=1-\alpha.
+$$
+
+Equivalently, when losses are sorted from low to high:
+
+$$
+VaR_\alpha = Q_\alpha(L),
+$$
+
+where $Q_\alpha(L)$ is the $\alpha$ quantile of the loss distribution.
+
+Here, we develop and extend the example called *Investment in Four Stock Indices* in Chapters 22 and 23 of @Hull. In this book, the example is used as an integrative market-risk exercise within the broader Financial Modeling with R path. It combines several ideas already used in the book: data preparation, currency adjustment, returns, portfolio weights, optimization, scenario generation, quantiles, and realized-outcome evaluation. The database used in this example <tt>`dataR.txt`</tt> is available [here](https://github.com/mlozanoqf/tutorial_if/blob/main/dataR.txt).
+
+The working question is specific: calculate VaR for a portfolio using a one-day time horizon, a 99% confidence level, and 501 days of data, from Monday August 7, 2006 to Thursday September 25, 2008. The chapter then compares historical simulation, model-building approaches, and optimal weights.
 
 ## Prepare the data
 
@@ -21,7 +35,7 @@ Load and prepare the database.
 df <- read.table("dataR.txt", sep = "", header = TRUE)
 ```
 
-Take a look of the database.
+Inspect the first rows of the database.
 
 ```{r}
 head(df)
@@ -138,7 +152,7 @@ df.Adj.S %>%
   slice(2, 3, 4, 500, 501)
 ```
 
-This is similar to Table 22.3, @Hull. Let's see the scenarios above in a plot, including the actual values for September 26, 2008:
+This is similar to Table 22.3 in @Hull. The next plot shows the scenarios together with the actual values for September 26, 2008:
 
 ```{r}
 levels(tomorrow$IX) <- list(SCAC40 = "ACAC40", SDJIA = "DJIA",
@@ -228,7 +242,7 @@ legend("bottomleft", legend = c("Gains", "Losses", "Historic VaR: 253.385"),
        col = c("blue", "red", "green"), lty = 1, bg = "white", lwd = 2)
 ```
 
-Now, a histogram of losses.
+The loss distribution can also be summarized with a histogram.
 
 ```{r}
 #| label: fig-holftscbs2a22ah
@@ -240,7 +254,7 @@ legend("topleft", legend = c("Historic VaR: 253.385"), col = "red",
        bg = "white", lwd = 2)
 ```
 
-The point refers to what really happened, and the red line is the VaR following a historic approach. Now, the same information but now using a density plot.
+The point refers to what really happened, and the red line is the VaR following a historical approach. The same information can also be shown with a density plot.
 
 ```{r}
 #| label: fig-holftscbs2a22adp
@@ -410,7 +424,7 @@ alpha <- c(4000, 3000, 1000, 2000)
 (Pvar <- t(alpha) %*% Rcov %*% alpha) # equation in page 506 (chapter 22)
 ```
 
-This is slightly different as in @Hull: 8,761.833. The standard deviation is the square root of this:
+This is slightly different from [@Hull]: 8,761.833. The standard deviation is the square root of this:
 
 ```{r}
 (Psd <- Pvar^0.5)
@@ -469,7 +483,7 @@ covEWMA <-
   }
 ```
 
-Let's implement this approach to our problem. Covariance matrix on September 25, 2008, calculated using the EWMA method with $\lambda=0.94$.
+We now implement this approach for the same portfolio problem. The covariance matrix on September 25, 2008 is calculated using the EWMA method with $\lambda=0.94$.
 
 ```{r}
 Rdf <- as.data.frame(R)
@@ -506,7 +520,7 @@ Results.updated <- Results.updated %>%
 Results.updated
 ```
 
-Let's replicate Table 23.8. Volatilities (% per day) using equal weighting and EWMA.
+The next table replicates Table 23.8: volatilities (% per day) using equal weighting and EWMA.
 
 ```{r}
 Table23.8 <- data.frame(Rsd * 100, diag(C)^0.5 * 100)
@@ -589,7 +603,7 @@ rownames(W_hullt) <- c("DJIA", "FTSE 100", "CAC 40", "Nikkei 225")
 t(W_hullt)
 ```
 
-Let's calculate optimal weights.
+The next step calculates optimal weights.
 
 ```{r}
 R <- R * 100
@@ -626,7 +640,7 @@ S_cac40 <- c(t(W.cac40) %*% sigma %*% W.cac40)^0.5
 R_hull.realized = c(t(W_hull) %*% E.tomorrow)
 ```
 
-Now we have four different portfolio weights alternatives. Two of them are optimal. *Can we reduce the VaR by using optimal weights?*
+We now have four portfolio-weight alternatives, two of which are optimized. The risk-management question is whether optimized weights reduce VaR under the same data and horizon.
 
 ```{r}
 W <- data.frame(W_hull, W_min, W.cac40, c(0.25, 0.25, 0.25, 0.25))
@@ -649,7 +663,7 @@ And a similar exercise but now with 10 US industry sorted portfolios:
 embed_url("https://youtu.be/DyjQbKm-NdE")
 ```
 
-Let's go back to the main @Hull example and see the results graphically.
+We return to the main @Hull example and compare the results graphically.
 
 ```{r}
 #| label: fig-haistroiabaawner
@@ -685,7 +699,7 @@ The figure suggests that the (optimal) minimum variance alternative reduces the 
 (R_hull.realized = c(t(W_hull) %*% E.tomorrow))
 ```
 
-This is interesting as it suggests that the sub-optimal allocation would lead to a realized return on Friday September 26, 2008 of -0.5583249%. On the other hand, following the optimal minimum variance allocation would lead to a portfolio gain of 0.2629549%. Hull's sub-optimal portfolio allocation turns out to be problematic.
+The comparison suggests that the original allocation would have produced a realized return of -0.5583249% on Friday September 26, 2008, while the minimum-variance allocation would have produced a portfolio gain of 0.2629549%. The example shows why portfolio weights matter before VaR is computed: the loss distribution changes when the allocation changes.
 
 ```{r}
 #| label: fig-haistroiabaawner2
@@ -780,7 +794,7 @@ abline(v = quantile(Ca, 0.025), lty = 2)
 abline(v = quantile(Ca, 0.975), lty = 2)
 ```
 
-Let's see the portfolio that targets the CAC 40 expected return in a mean-variance plot:
+The portfolio that targets the CAC 40 expected return can also be located in mean-variance space:
 
 ```{r}
 #| label: fig-eoanoarce
@@ -877,7 +891,7 @@ Results.updated
 
 ## Historic approach with optimal weights
 
-Let's go back to the historic approach. Now we can incorporate a comparison with the optimal weights.
+We now return to the historical approach and incorporate the comparison with optimal weights.
 
 ```{r}
 df.Adj.S <- df.Adj.S %>%
@@ -938,7 +952,7 @@ The one-day 99% value at risk can be estimated as the fifth-worst loss.
 sort(l)[496]
 ```
 
-Now, let's see the historical approach but with minimum variance optimal weights.
+The next calculation applies the historical approach with minimum-variance optimal weights.
 
 ```{r}
 #| label: fig-lwhsadfcn2
@@ -953,12 +967,12 @@ abline(h = max(l2), lty = 2)
 abline(h = min(l2), lty = 2)
 ```
 
-See how the range of losses and gains is now reduced. The one-day 99% value at risk can be estimated as the fifth-worst loss.
+The range of losses and gains is now reduced. The one-day 99% Value at Risk can be estimated as the fifth-worst loss.
 
 ```{r}
 sort(l2)[496]
 ```
-Let's update our table of results.
+The results table is updated with this case.
 
 ```{r}
 Results.updated <- Results.updated %>%
@@ -983,12 +997,12 @@ abline(h = max(l3), lty = 2)
 abline(h = min(l3), lty = 2)
 ```
 
-Note that the range is reduced but allows for a higher gains. Let's see these three together. The one-day 99% value at risk can be estimated as the fifth-worst loss.
+The range is reduced while still allowing larger gains in some scenarios. The one-day 99% Value at Risk can be estimated as the fifth-worst loss.
 
 ```{r}
 sort(l3)[496]
 ```
-Let's update the table of results.
+The results table is updated again.
 
 ```{r}
 Results.updated <- Results.updated %>%
@@ -998,7 +1012,7 @@ Results.updated <- Results.updated %>%
 Results.updated
 ```
 
-Let's see the three historical approaches together.
+The three historical approaches can now be compared side by side.
 
 ```{r}
 #| label: fig-hsaoaoa
@@ -1050,3 +1064,12 @@ legend("topleft", c("Hull original","Optimal minvar",
                     "Replicating CAC40 ER"), cex = 1.3, bty = "n",
        fill = colours)
 ```
+
+The chapter's main value is integration. The VaR number is only the final
+summary. Before that summary, the analyst had to prepare international index
+data, convert foreign values into US dollars, define portfolio weights,
+generate loss scenarios, estimate volatility and covariance inputs, compare
+allocation choices, and read the realized outcome. This is why VaR belongs in
+the Financial Modeling with R path: it turns data, returns, allocation, and
+market-risk assumptions into a single loss statement that can be audited and
+recomputed.

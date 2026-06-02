@@ -151,6 +151,11 @@ prices %>%
   scale_y_continuous(labels = scales::dollar)
 ```
 
+The series has a clear change in tone after the visual split: the test window
+starts during a weaker price environment. This matters because the
+buy-and-hold benchmark will be exposed to that decline, while the robo trader
+can reduce or reverse exposure when it predicts `Down`.
+
 These are the corresponding daily returns.
 
 ```{r}
@@ -170,6 +175,11 @@ prices %>%
   labs(x = "Return", y = "Density")
 ```
 
+Most daily returns are concentrated close to zero, which is typical for daily
+stock data. The wider parts of the density show that a small number of days can
+produce meaningfully larger gains or losses. A directional model has to work in
+this noisy environment, where many observations are small and hard to classify.
+
 Compared with a normal distribution:
 
 ```{r}
@@ -188,6 +198,11 @@ ggplot() +
   labs(x = "Return", y = "Density", fill = "")
 ```
 
+The empirical return distribution is more irregular than the simulated normal
+benchmark. This visual comparison is a reminder that daily returns can have
+asymmetry and tail behavior that a simple normal approximation may smooth away.
+For trading, those tail days can dominate cumulative performance.
+
 Positive and negative daily returns in the training and test periods.
 
 ```{r}
@@ -202,7 +217,12 @@ prices %>%
   labs(x = "Date", y = "Return", fill = "")
 ```
 
-Let's isolate the test set daily returns using the visual split and calculate
+The bars show that positive and negative days arrive in clusters and alternate
+frequently. The test period includes several negative stretches, which creates
+an environment where avoiding exposure, or taking short exposure, can matter
+more than slightly improving average classification accuracy.
+
+We isolate the test set daily returns using the visual split and calculate
 cumulative returns assuming that we invest one dollar and reinvest gains and
 losses.
 
@@ -237,12 +257,15 @@ test_returns_visual %>%
   labs(x = "Date", y = "Cumulative return")
 ```
 
+The buy-and-hold benchmark loses value during the test window. This gives the
+robo trader a concrete benchmark: a useful rule should either avoid part of the
+decline or benefit from correctly identified down days.
+
 ## Simple moving averages
 
 As technical analysis suggests, simple moving averages can be used as a tool to
-summarize recent price behavior. A moving average is not magic. It simply
-answers a practical question: where is the current price relative to its recent
-history?
+summarize recent price behavior. A moving average answers a practical question:
+where is the current price relative to its recent history?
 
 For a window length $n$, the simple moving average is
 
@@ -307,6 +330,11 @@ trading_tbl %>%
   scale_y_continuous(labels = scales::dollar)
 ```
 
+The short moving average follows the closing price more closely than the long
+moving average. When the short and long averages separate or cross, they
+summarize recent momentum changes. These signals are useful as inputs, but they
+remain noisy because price reversals can happen quickly.
+
 A zoom view:
 
 ```{r}
@@ -323,6 +351,11 @@ tail(trading_tbl, 30) %>%
   labs(x = "Date", y = "Price", color = "") +
   scale_y_continuous(labels = scales::dollar)
 ```
+
+The zoom makes the timing problem visible. The 5-day average reacts first,
+while the 20-day average moves more slowly. The classifier uses lagged versions
+of these curves, so the trading decision is based on information available
+before the return being evaluated.
 
 ## Preliminaries to classify returns
 
@@ -611,7 +644,7 @@ rule_map <- tibble(
       "c_{short}\\text{ if }p_t=-1\\)"
     )
   ),
-  `Interpretation` = c(
+  `Reading` = c(
     "Conservative timing rule: participate only when the model expects an up day.",
     "Aggressive directional rule: be long on expected up days and short on expected down days.",
     "Same long/short exposure, but reduced by trading frictions and short-borrow cost."
@@ -620,7 +653,7 @@ rule_map <- tibble(
 
 kable(rule_map,
       format = "html",
-      caption = "Economic interpretation of the three robo trader rules.",
+      caption = "Economic reading of the three robo trader rules.",
       escape = FALSE,
       row.names = FALSE) %>%
   kable_styling(latex_options = "HOLD_position")
@@ -656,7 +689,7 @@ cost_assumptions <- tibble(
     "Every unit of long/short position change",
     "Every day the long/short rule is short"
   ),
-  interpretation = c(
+  reading = c(
     "Commission, bid-ask spread and slippage haircut.",
     "Daily stock-borrow cost; 1 bp per day is about 2.52% per year."
   )
@@ -732,7 +765,14 @@ test_strategy %>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
-This is the final return comparison over the test period.
+This is the final return comparison over the test period. For a strategy return
+series $r^s_1,\ldots,r^s_T$, the final value and total return are:
+
+$$
+F_T=\prod_{t=1}^{T}(1+r^s_t),
+\qquad
+TR=F_T-1.
+$$
 
 ```{r strategy-summary}
 strategy_summary <- tibble(
@@ -752,6 +792,10 @@ strategy_summary <- tibble(
   mutate(total_return = final_value - 1)
 
 strategy_summary %>%
+  mutate(total_return = scales::percent(total_return, accuracy = 0.01)) %>%
+  rename("Strategy" = strategy,
+         "Final Value" = final_value,
+         "Total Return" = total_return) %>%
   kable(caption = "Final cumulative return comparison.",
         digits = 4) %>%
   kable_styling(latex_options = "HOLD_position")
@@ -760,7 +804,14 @@ strategy_summary %>%
 The net result uses the base cost assumptions above. To check whether that
 conclusion depends too much on one cost number, we also evaluate three cost
 scenarios. The signal and the positions are unchanged; only the cost haircut
-changes.
+changes. The net daily return is:
+
+$$
+r^{net}_t
+= r^{long/short}_t
+- c^{trade}\Delta position_t
+- c^{short}\mathbf{1}(position_t=-1).
+$$
 
 ```{r cost-sensitivity}
 cost_scenarios <- tibble(
@@ -786,10 +837,18 @@ cost_sensitivity <- cost_scenarios %>%
 cost_sensitivity %>%
   mutate(
     trade_cost_bps = trade_cost * 10000,
-    short_cost_daily_bps = short_cost_daily * 10000
+    short_cost_daily_bps = short_cost_daily * 10000,
+    annual_short_cost = scales::percent(annual_short_cost, accuracy = 0.01),
+    total_return = scales::percent(total_return, accuracy = 0.01)
   ) %>%
   select(scenario, trade_cost_bps, short_cost_daily_bps,
          annual_short_cost, final_value, total_return) %>%
+  rename("Scenario" = scenario,
+         "Trade Cost (bps)" = trade_cost_bps,
+         "Daily Short Cost (bps)" = short_cost_daily_bps,
+         "Annual Short Cost" = annual_short_cost,
+         "Final Value" = final_value,
+         "Total Return" = total_return) %>%
   kable(caption = "Cost sensitivity for the long/short rule.",
         digits = 4,
         row.names = FALSE) %>%
@@ -801,7 +860,7 @@ the long/short result is not created entirely by ignoring basic costs. A more
 serious trading study would test many assets, many periods and broker-specific
 cost assumptions.
 
-The long/cash rule is the safest interpretation of the classifier because a
+The long/cash rule is the most conservative reading of the classifier because a
 `Down` prediction simply removes market exposure. The long/short rule is more
 powerful in a falling market because a `Down` prediction becomes a short
 position. That is why its gross cumulative return is much higher in this test
@@ -889,6 +948,14 @@ strategy_long %>%
   labs(x = "Date", y = "Cumulative return", color = "")
 ```
 
+The buy-and-hold line declines through the test window. The long/cash rule is
+more defensive because it can step out of the market after a `Down` prediction.
+The long/short rule performs best in this historical window because many
+`Down` predictions coincide with negative AAPL returns. Costs reduce the
+long/short value, which is why the net line is below the gross line. The figure
+therefore separates three ideas: prediction, position choice, and implementation
+cost.
+
 The conclusion is deliberately narrow. The chapter shows how to translate a
 classification model into a trading rule and how to compute the resulting
 cumulative return under a clear timing convention. The net long/short rule also
@@ -897,3 +964,9 @@ does not establish a profitable trading strategy. To make that stronger claim,
 the evaluation would also need broader cost sensitivity, position limits, risk
 measures, drawdowns, alternative train/test splits and live out-of-sample
 monitoring.
+
+The next chapter changes the question from short-run direction to systematic
+return exposure. Instead of asking whether a rule predicts tomorrow's up or
+down movement, we ask how much of an asset's return can be associated with
+market movements and other risk factors. That shift takes us from trading
+signals to asset pricing.
