@@ -26,7 +26,7 @@ write_book_dates()
 This book introduces financial modeling with R for readers who want to extract,
 visualize, and analyze financial data while keeping the financial idea and the
 computation together. The reading path starts with financial data, then moves
-to prices and returns, trading rules, asset pricing, portfolio allocation, and
+to prices and returns, trading rules, return co-movement and beta, portfolio allocation, and
 market risk measurement. The final blockchain chapter works as a special
 application that extends the financial modeling toolkit toward distributed
 records, cryptographic validation, and transaction design. Throughout the book,

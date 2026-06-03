@@ -14,9 +14,9 @@ library(lubridate)
 
 Financial modeling starts with a data question: which observations are needed, where do they come from, and how should they be transformed before any model is estimated? Finance has always been data-intensive.[^3] Prices, volume, interest rates, exchange rates, macroeconomic indicators, balance-sheet items, and market indexes are the raw material for valuation, trading, portfolio construction, and risk measurement.
 
-[^3]: According to market intelligence company IDC, the 'Global Datasphere' in 2018 reached 18 zettabytes. The vast majority of the world's data has been created in the last few years and this astonishing growth of data shows no sign of slowing down. In fact, IDC predicts the world's data will grow to 175 zettabytes in 2025. One zettabyte is 1000000000000000000000 bytes. In scientific notation this is 1e+21 or 1 with 21 zeros at the right, we call it one sextillion.
+[^3]: According to market intelligence company IDC, the 'Global Datasphere' in 2018 reached 18 zettabytes. The vast majority of the world's data has been created in the last few years and this astonishing growth of data shows no sign of slowing down. In fact, IDC predicts the world's data will grow to 175 zettabytes in 2025. One zettabyte is 1000000000000000000000 bytes. In scientific notation this is 1e+21, or 1 with 21 zeros at the right, also called one sextillion.
 
-The chapter builds the first part of the book's workflow. We download market and economic data, inspect the structure of the returned objects, visualize prices, and introduce simple indicators such as trading range, moving averages, and Bollinger Bands. The emphasis is practical: before returns, signals, asset pricing, allocation, or VaR can be computed, the data must be obtained and understood.
+The chapter builds the first part of the book's workflow. It downloads market and economic data, inspects the structure of the returned objects, visualizes prices, and introduces simple indicators such as trading range, moving averages, and Bollinger Bands. The emphasis is practical: before returns, signals, beta regressions, allocation, or VaR can be computed, the data must be obtained and understood.
 
 Some financial data is public and easy to download; other data is private, delayed, licensed, incomplete, or available only as summaries. That distinction matters because a model inherits the limitations of its data source. In this chapter, we work with public examples that can be reproduced directly in R.
 
@@ -112,11 +112,11 @@ Some financial data is public and easy to download; other data is private, delay
 
 ## Stock prices and other financial data
 
-Financial markets not only facilitate financial transactions between sellers and buyers, they also represent a rich source of financial data. Here, we show how to use R to download stock price data from financial markets by using a few examples.
+Financial markets facilitate transactions between buyers and sellers and generate a rich source of financial data. The examples below show how R can download and organize stock price data for analysis. The goal at this stage is modest and important: create clean objects whose dates, variables, units, and source can be checked before any return or model is calculated.
 
-R packages like <tt>`quantmod`</tt> and <tt>`tidyquant`</tt> make the process of downloading financial data to perform financial analysis very straightforward. The <tt>`quantmod`</tt> package for R is designed to assist the quantitative trader in the development, testing, and deployment of statistically based trading models. The <tt>`tidyquant`</tt> package is part of the so-called <tt>`tidyverse`</tt>, an opinionated collection of R packages introduced by Hadley Wickham and designed for data science. All <tt>`tidyverse`</tt> packages share an underlying design philosophy, grammar, and data structures.
+Packages such as <tt>`quantmod`</tt> and <tt>`tidyquant`</tt> reduce the friction of downloading market data. <tt>`quantmod`</tt> provides classic tools for quantitative financial analysis, while <tt>`tidyquant`</tt> connects financial data retrieval with tidy data structures. The chapter uses both packages as data-access tools, leaving model evaluation and strategy testing for later chapters.
 
-There are plenty of YouTube tutorials showing how to install packages in R. This is one of them:
+The following optional resource shows the mechanics of installing packages in R.
 
 ```{r}
 embed_url("https://youtu.be/JBcVi-fAT_k")
@@ -131,36 +131,33 @@ The first market-data example downloads Apple stock prices in one step with the 
 aapl_stock_prices <- tq_get("AAPL")
 ```
 
-We are done. The variable <tt>`aapl_stock_prices`</tt> contains Apple stock prices and other relevant information. Many things happened here in a very few steps. First, we need to have Internet access, R and R Studio working on our computer. Then, we load the <tt>`tidyquant`</tt> package. This package presumably integrates the best resources for collecting and analyzing financial data in R. The <tt>`tq_get()`</tt> function belongs to the <tt>`tidyquant`</tt> package, and <tt>`tidyquant`</tt> belongs to the <tt>`tidyverse`</tt> packages. Specifically, <tt>`tq_get()`</tt> connects to a default financial site, which in this case is the finance.yahoo.com and looks for the "AAPL" symbol which corresponds to Apple Inc. Finally, we store the data into <tt>`aapl_stock_prices`</tt>.
+The object <tt>`aapl_stock_prices`</tt> now contains Apple prices and related market information. The call to <tt>`tq_get()`</tt> comes from <tt>`tidyquant`</tt>, connects to the selected data provider, retrieves the "AAPL" symbol, and stores the result in a reproducible R object.
 
-To see what it is inside the <tt>`aapl_stock_prices`</tt> object we can do the following.
+The structure of the object shows the available variables and their data types.
 
 ```{r}
 # str function is a way to display the structure of an R object.
 str(aapl_stock_prices)
 ```
 
-According to the <tt>`str()`</tt> output, <tt>`aapl_stock_prices`</tt> contains `r nrow(aapl_stock_prices)` daily observations and 7 variables. The object includes prices and volume. A compact inspection of the first and last rows helps verify the date range and the available columns.
+According to the <tt>`str()`</tt> output, <tt>`aapl_stock_prices`</tt> contains daily observations and 7 variables. The object includes prices and volume. A compact inspection of the first and last rows helps verify the date range and the available columns.
 
-The first observations.
+The first rows show how the time series begins.
 
 ```{r}
 # See the first observations of aapl_stock_prices.
 head(aapl_stock_prices)
 ```
 
-The last observations.
+The last rows show the most recent observations retrieved by the data provider.
 
 ```{r}
 tail(aapl_stock_prices)
 ```
 
-By default, the <tt>`tq_get()`</tt> function downloads the latest set of data available. The last date of <tt>`aapl_stock_prices`</tt> should approximately correspond to the production date of this tutorial. Differences can occur when the market is closed or the code is run during a weekend. In this case:
+By default, the <tt>`tq_get()`</tt> function downloads the latest set of data available. The last date of <tt>`aapl_stock_prices`</tt> should approximately correspond to the date when the code is executed. Differences can occur when the market is closed, when the code is run during a weekend, or when the data provider updates with a delay.
 
--   Last <tt>`aapl_stock_prices`</tt> observation: `r aapl_stock_prices$date[length(aapl_stock_prices$date)]`.
--   Today is: `r Sys.Date()`.
-
-We also like to show the data in a plot.
+The same data can be inspected graphically. A price plot is usually the first diagnostic check: it reveals the date span, large splits or jumps, missing segments, and long-run price scale.
 
 ```{r}
 #| label: fig-asp
@@ -169,7 +166,7 @@ plot(aapl_stock_prices$date, aapl_stock_prices$adjusted,
      type = "l")
 ```
 
-We can add a few instructions to improve the format of our plot. In particular, $x$ and $y$ labels, the title, and the color of the line.
+Adding labels, a title, and a line color makes the plot easier to read.
 
 ```{r}
 #| label: fig-aspif
@@ -179,13 +176,13 @@ plot(aapl_stock_prices$date, aapl_stock_prices$adjusted,
      main = "Apple stock price", col = "blue")
 ```
 
-We can compare Apple versus a stock index like S&P500. Download the S&P500 index:
+Apple can also be compared with a broad market index such as the S&P 500. The comparison is useful because individual stock prices are often interpreted relative to a broad market benchmark.
 
 ```{r}
 SP <- tq_get("^GSPC")
 ```
 
-Plot both assets together.
+The two series are plotted together with separate vertical axes because Apple and the S&P 500 are measured on different price scales. Later chapters use indexed prices and returns to make comparisons more systematic.
 
 ```{r}
 #| label: fig-aspas
@@ -204,33 +201,33 @@ legend("topleft",
        lty = 1, col = c("red", "black"))
 ```
 
-The Apple example can also be used to study intraday variation. Stock prices change throughout the trading day, so the open, high, low, and close prices summarize different pieces of the trading session. For day $t$, the intraday range is:
+The Apple example can also be used to study intraday variation. Stock prices change throughout the trading day, so the open, high, low, and close prices summarize different pieces of the trading session. For day $t$, the intraday range is
 
 $$
-\Delta_t = High_t - Low_t.
+\Delta_t = \text{High}_t - \text{Low}_t.
 $$
 
-Create a new variable <tt>`aapl_diff`</tt>.
+The code creates <tt>`aapl_diff`</tt>, the daily high-low range.
 
 ```{r}
 aapl_diff = aapl_stock_prices$high - aapl_stock_prices$low
 ```
 
-Plot the new variable.
+The daily range can be plotted directly.
 
 ```{r}
 #| label: fig-astv
-#| fig-cap: "Apple stock trading volume."
+#| fig-cap: "Apple daily high-low range."
 plot(aapl_stock_prices$date, aapl_diff, type = "h", xlab = "Date",
      ylab = "Difference between high and low prices", col = "blue")
 ```
 
-The difference between high and low prices show that the stock price changes during a trading day. These changes can be considerably high. Moreover, this volatility has increased in recent times. Is it possible to know the exact date in which this difference is the highest? One alternative is to sort all observations, but there is a simpler approach.
+The difference between high and low prices shows that the stock price changes during a trading day. Larger bars identify days with wider intraday movement. The next calculation locates the date with the largest high-low range without sorting the full data set.
 
-Which observation has the maximum value of <tt>`aapl_diff`</tt>? Mathematically, we look for the index:
+Mathematically, the task is to find the observation index where the daily range is largest.
 
 $$
-t^\*=\arg\max_t \Delta_t.
+t^{\star}=\operatorname*{arg\,max}_{t}\Delta_t.
 $$
 
 ```{r}
@@ -238,9 +235,9 @@ highest_change = which.max(aapl_diff)
 highest_change
 ```
 
-Consider the value of <tt>`highest_change`</tt> as an index. This is, the number of the row that contains the highest <tt>`aapl_diff`</tt> value. We can use this index to extract the date and the actual <tt>`aapl_diff`</tt> value.
+The value of <tt>`highest_change`</tt> is the row index containing the highest <tt>`aapl_diff`</tt> value. This index extracts the corresponding date and range value.
 
-Extract the date and the actual value of <tt>`aapl_diff`</tt>.
+The date and the actual value of <tt>`aapl_diff`</tt> are extracted from the same row index.
 
 ```{r}
 # The brackets [] are used to extract a single row value.
@@ -254,11 +251,11 @@ top = aapl_diff[highest_change]
 top
 ```
 
-The output above shows <tt>`when`</tt> Apple stock had its highest price change <tt>`top`</tt> in one day. We can use when and top variables to improve our plot.
+The output above identifies the date <tt>`when`</tt> Apple had its largest daily high-low range <tt>`top`</tt>. These values can be added to the plot.
 
 ```{r}
 #| label: fig-astvafa
-#| fig-cap: "Apple stock trading volume a further analysis."
+#| fig-cap: "Apple daily high-low range and maximum observation."
 plot(aapl_stock_prices$date, aapl_diff, type = "h", xlab = "Date",
      ylab = "Difference between high and low prices", col = "blue")
 # Here, we add the red point.
@@ -267,7 +264,7 @@ points(when, top, pch = 19, col = "red", cex = 1.5)
 
 So far, the examples have used default download options. A call such as <tt>`tq_get("AAPL")`</tt> returns the default historical range available through the data source. The next example changes the start date to request a longer Apple history, following examples developed by Matt Dancho, the author of <tt>`tidyquant`</tt>.
 
-Download Apple stock prices.
+The call below requests Apple stock prices starting in 1990.
 
 ```{r}
 aapl_prices  <- tq_get("AAPL", get = "stock.prices",
@@ -278,7 +275,13 @@ aapl_prices
 
 Sometimes the analysis requires aggregation from daily to monthly frequency. Aggregating from a higher-frequency series to a lower-frequency series is straightforward; the reverse direction would require additional assumptions. FANG is a dataset containing the daily historical stock prices for the FANG tech stocks, META, AMZN, NFLX, and GOOG, spanning from the beginning of 2013 through the end of 2016.
 
-The next step aggregates the pre-loaded data from daily to monthly frequency.
+For month $m$, the monthly adjusted price used here is the last available adjusted price in that month:
+
+$$
+P_m^{monthly}=P_{\max(t \in m)}^{adjusted}.
+$$
+
+The pre-loaded data are then aggregated from daily to monthly frequency.
 
 ```{r}
 data("FANG")
@@ -288,20 +291,96 @@ FANG |>
                  indexAt = "lastof")
 ```
 
-The <tt>`tidyquant`</tt> package can also access other kinds of data from diverse sources like the Federal Reserve Economic Data (FRED). Federal Reserve Economic Data is a database maintained by the Research division of the Federal Reserve Bank of St. Louis that has more than 819,000 US and international time series from 110 sources. Consider the WTI Crude Oil Prices.
+The <tt>`tidyquant`</tt> package can also access other kinds of data from sources such as Federal Reserve Economic Data (FRED). FRED is maintained by the Research division of the Federal Reserve Bank of St. Louis and contains US and international time series. The next example uses WTI crude oil prices to show that economic data can contain unusual market episodes.
 
-Download oil prices from FRED.
+The call below downloads WTI oil prices from FRED. For reproducibility, the code also includes a compact stored FRED excerpt around the April 2020 episode, which keeps the example executable when the data provider is temporarily unavailable during rendering.
 
 ```{r}
 # See https://fred.stlouisfed.org/series/DCOILWTICO
-wti_price_usd <- tq_get("DCOILWTICO", get = "economic.data")
+wti_price_usd <- tryCatch({
+  wti_price_raw <- quantmod::getSymbols("DCOILWTICO",
+                                        src = "FRED",
+                                        auto.assign = FALSE)
+
+  data.frame(
+    date = as.Date(rownames(as.data.frame(wti_price_raw))),
+    price = as.numeric(wti_price_raw[, 1])
+  )
+}, error = function(e) {
+  # Stored excerpt from FRED/ALFRED DCOILWTICO around April 2020.
+  read.csv(text = "date,price
+2020-02-21,53.36
+2020-02-24,51.36
+2020-02-25,49.78
+2020-02-26,48.67
+2020-02-27,47.17
+2020-02-28,44.83
+2020-03-02,46.78
+2020-03-03,47.27
+2020-03-04,46.78
+2020-03-05,45.90
+2020-03-06,41.14
+2020-03-09,31.05
+2020-03-10,34.47
+2020-03-11,33.13
+2020-03-12,31.56
+2020-03-13,31.72
+2020-03-16,28.96
+2020-03-17,26.96
+2020-03-18,20.48
+2020-03-19,25.09
+2020-03-20,19.48
+2020-03-23,23.33
+2020-03-24,21.03
+2020-03-25,20.75
+2020-03-26,16.60
+2020-03-27,15.48
+2020-03-30,14.10
+2020-03-31,20.51
+2020-04-01,20.28
+2020-04-02,25.18
+2020-04-03,28.36
+2020-04-06,26.21
+2020-04-07,23.54
+2020-04-08,24.97
+2020-04-09,22.90
+2020-04-13,22.36
+2020-04-14,20.15
+2020-04-15,19.96
+2020-04-16,19.82
+2020-04-17,18.31
+2020-04-20,-36.98
+2020-04-21,8.91
+2020-04-22,13.64
+2020-04-23,15.06
+2020-04-24,15.99
+2020-04-27,12.17
+2020-04-28,12.40
+2020-04-29,15.04
+2020-04-30,19.23
+2020-05-01,19.72
+2020-05-04,20.47
+2020-05-05,24.56
+2020-05-06,23.88
+2020-05-07,23.68
+2020-05-08,24.73
+2020-05-11,24.02
+2020-05-12,25.76
+2020-05-13,25.37
+2020-05-14,27.40
+2020-05-15,29.44
+2020-05-18,31.83")
+})
+
+wti_price_usd$date <- as.Date(wti_price_usd$date)
+wti_price_usd <- wti_price_usd[complete.cases(wti_price_usd), ]
 # Show results.
 wti_price_usd
 ```
 
-Now that we have oil prices in basically one single step, we can plot them. It is interesting because recently the oil prices have turned negative in one day. Negative prices are rare but not impossible, especially in commodities.
+Oil prices can be plotted directly after the data are retrieved. The series includes the unusual episode of negative oil prices, a rare event that can occur in commodity markets under extreme storage and delivery pressure.
 
-Create a simple line plot to show the oil price evolution.
+The line plot shows the evolution of oil prices through time.
 
 ```{r}
 #| label: fig-op
@@ -311,17 +390,21 @@ ggplot(wti_price_usd, aes(date, price)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red")
 ```
 
-It is easy to find out the exact day when the oil price was negative. Extract one row given a <tt>`price`</tt> condition.
+The exact day with a negative oil price is found by filtering observations that satisfy:
+
+$$
+Price_t < 0.
+$$
 
 ```{r}
 subset(wti_price_usd, price < 0)
 ```
 
-Without going into technical arguments, we can interpret negative prices as the following. Imagine, as it actually happened, that storing oil is expensive, not only that, imagine oil producers have no further physical space to store oil, so they are desperate to get rid of the oil production. On the other hand, oil buyers realize that the economic perspectives in the world look bad. If the economic activity suddenly stops, then we expect a lower demand for fuel including oil as firms are producing less. Then, producers want to sell and buyers are not interested to buy as they do not need as countries have more than enough inventories. This could go to the extreme in which producers are (sadly) willing to pay people in exchange of taking the oil out of their hands. This is why commodity prices can be negative.
+Without going into technical arguments, negative prices can be interpreted through storage pressure and contract delivery. Imagine, as it actually happened, that storing oil is expensive and producers have no further physical space to store production. At the same time, buyers see weak economic conditions and expect lower demand for fuel. Producers want to sell, while many buyers already have enough inventory or lack storage capacity. Under extreme pressure, producers may be willing to pay others to take oil delivery. This is why commodity prices can be negative.
 
 There are other explanations, for example one related to the maturity of oil futures contracts. The price that went negative on Monday 2020-04-20 was for futures contracts to be delivered in May. Those contracts expired on Tuesday 2020-04-21. Upon expiration of the futures contract, the clearinghouse matches the holder of a long contract against the holder of a short position. The short position delivers the underlying asset to the long position. So, on Monday, traders --- who were not equipped to take physical deliveries --- were rushing to sell them to buyers who have booked storage.
 
-The <tt>`quantmod`</tt> package can retrieve exchange rates as well.
+Exchange rates are another core data type in financial modeling because foreign assets must often be converted into a common currency before returns, portfolio values, or risk measures are computed. The <tt>`quantmod`</tt> package can retrieve exchange rates as well.
 
 ```{r}
 #| label: fig-uer
@@ -333,7 +416,7 @@ exchange_rate <- getSymbols("USD/MXN", src = "oanda",
 plot(exchange_rate)
 ```
 
-We can show the time series information into a density plot.
+The same exchange-rate series can be summarized with a density plot. The density shows where the exchange rate has spent more time historically and gives a compact view of the empirical distribution.
 
 ```{r}
 #| label: fig-ueradp
@@ -347,12 +430,17 @@ ggplot(exchange_rate, aes(x = USD.MXN)) +
   scale_fill_tq()
 ```
 
-We can also visualize US employment together with NBER recession periods shown as shaded areas. The code below prepares the recession shading and the employment series.
+Macroeconomic series provide context for financial analysis because asset prices react to economic conditions, policy expectations, and business-cycle risk. The next example visualizes US employment together with NBER recession periods shown as shaded areas. Employment growth is computed as a three-period percentage change:
+
+$$
+g_t^{(3)} = 100\left(\frac{E_t}{E_{t-3}}-1\right).
+$$
+
+The code below prepares the recession shading and the employment series.
 
 ```{r}
-# NBER Recession indicator and US nonfarm payroll employment
-tickers<- c("USREC", "PAYEMS")
-df <- tq_get(tickers, get = "economic.data", from = "1948-01-01")
+# US nonfarm payroll employment
+df <- tq_get("PAYEMS", get = "economic.data", from = "1948-01-01")
 # recession df (for plotting)
 recessions.df = read.table(textConnection(
   "Peak, Trough
@@ -377,19 +465,12 @@ my_trans <- function(in.data,transform = "pctdiff3") {
         logdiff3 = c(rep(NA, 3), diff(log(in.data), 3)))
 }
 
-vlist <- c("PAYEMS")
-df2 <- df |>
-  group_by(symbol) |>
-  mutate(x = ifelse(symbol %in% vlist, my_trans(price), price))
-
-df2 |> select(-price) |>
-  spread(symbol, x) |>
-  mutate(REC12 = lead(USREC, 12)) -> df3
-
-df41 <- filter(df3, year(date) > 1945)
+df41 <- df |>
+  transmute(date, PAYEMS = my_trans(price)) |>
+  filter(year(date) > 1945)
 ```
 
-We have the data, now we can plot.
+With the data prepared, employment growth can be plotted together with recession periods.
 
 ```{r}
 ggplot(data = df41, aes(x = date, y = PAYEMS)) +
@@ -400,8 +481,8 @@ ggplot(data = df41, aes(x = date, y = PAYEMS)) +
   theme_minimal() +
   geom_line(color = "red", size = 1, alpha = 0.8) +
   labs(x = "", y = "",
-       title = "US employment growth and recessions.",
-       subtitle = "Shaded area are NBER recessions.",
+       title = "US employment growth and recessions",
+       subtitle = "Shaded areas are NBER recessions",
        caption = "Source: US Bureau of Labor Statistics.
        \nRetrieved from FRED, Federal Reserve Bank of St. Louis.") +
   geom_hline(yintercept = 0) +
@@ -416,9 +497,9 @@ Access to financial and economic data is only the first step. The analyst also h
 
 ## Technical analysis
 
-Technical analysis is the forecasting of future financial price movements based on an examination of past price movements and volume of trading. Technical analysis is applicable to stocks, indexes, commodities, futures or any tradable instrument where the price is influenced by the forces of supply and demand. This analysis is limited because it fails to incorporate other forces and factors that can influence the price of the security. Although this analysis is limited, it is still quite popular, and given that we now know how to get financial prices, it seems convenient to illustrate the basics of technical analysis.
+Technical analysis studies price and volume patterns in an attempt to describe trend, momentum, and possible turning points. It can be applied to stocks, indexes, commodities, futures, and other traded instruments. The approach is useful in this book for a specific reason: it converts raw prices into indicators, and those indicators can later become inputs for explicit trading rules. Its limitations should remain visible. A chart pattern does not control for fundamentals, macroeconomic shocks, liquidity, transaction costs, or model validation.
 
-We now return to the FANG data.
+The chapter now returns to stock prices and builds a few basic indicators.
 
 ```{r}
 # Get AAPL and AMZN stock prices.
@@ -426,7 +507,7 @@ AAPL <- tq_get("AAPL", get = "stock.prices", from = "2015-09-01",
                to = "2016-12-31")
 ```
 
-The first plot shows adjusted prices.
+The first plot shows Apple closing prices. This line chart is the baseline against which the later indicators will be compared.
 
 ```{r}
 #| label: fig-alc
@@ -437,7 +518,7 @@ AAPL |>
     theme_tq()
 ```
 
-The plot above represents closing prices. However, we also have open and close prices per day. We could take advantage of this by plotting vertical lines per day. The length of the daily vertical lines represents the difference between the open and close prices. To make it more informative, blue lines are those cases when the close price is greater than the open price, and red lines are those cases when the close price is lower than the open price.
+The previous plot represents closing prices. The data also contain open, high, low, and close prices for each day. A candlestick chart uses that information in a compact format: the vertical range shows the daily high and low, while the body summarizes the open-close movement. Blue candles indicate days when the close is above the open, and red candles indicate days when the close is below the open.
 
 ```{r}
 #| label: fig-acc
@@ -452,7 +533,7 @@ AAPL |>
 
 There are some blank spaces. This is simply because the close price of yesterday is not always exactly the same as the open price of today. Local stock markets close on weekends and holidays.
 
-These charts are difficult to read when there are many observations. A zoomed view helps inspect the recent pattern:
+These charts are difficult to read when there are many observations. A zoomed view helps inspect the recent pattern.
 
 ```{r}
 #| label: fig-accz
@@ -467,13 +548,13 @@ AAPL |>
   theme_tq()
 ```
 
-A formal interpretation is difficult given the limitations of this analysis. However, the main idea is the following. Consider the stock is increasing quickly, then it is believed that before a fall in the price, the stock will increase at a lower speed. Big blue bars are eventually followed by smaller blue bars before exhibiting a price fall (a red bar).[^4] The same logic can be applied the other way around. A dramatic fall in the price eventually reach a floor. This is, big red bars are eventually followed by smaller red bars before experiencing a price increase.
+Candlesticks are descriptive signals. A sequence of large blue candles followed by smaller blue candles may suggest fading upward momentum, while a sequence of large red candles followed by smaller red candles may suggest fading downward pressure.[^4] These readings are useful for organizing visual evidence, but they require formal validation before becoming a trading rule.
 
-[^4]: The logic behind this is not very different from what we have heard about *flatten the curve* in the context of the 2020 pandemic. As the curve increases, the high speed of increase is captured by big vertical blue bars. It is expected that the speed of increase slows down before the curve is flat, and this slowing down is captured by smaller vertical blue lines. So, before the curve is flat and starts to decrease, the blue vertical lines become smaller and smaller.
+[^4]: The analogy is similar to *flatten the curve* in the context of the 2020 pandemic. As the curve increases, the high speed of increase is captured by big vertical blue bars. A slowdown appears as smaller vertical blue bars before the curve becomes flat and eventually decreases.
 
 A short sequence of alternating blue and red bars is difficult to convert into a reliable forecast. This indicator alone, without complementary analysis, does not deliver a clear trading signal.
 
-Moving averages are often used as trend-following indicators. We have two line plots, one is the original evolution of the price chart in black and the second is the moving average in blue. In this case we have a 30-day moving average. The blue line is simply the average of the last 30-day stock prices:
+Moving averages are often used as trend-following indicators. The black line is the original price series, and the blue line is the moving average. In this case, the indicator is a 30-day simple moving average, calculated as the average of the last 30 closing prices:
 
 $$
 SMA_{t,n}=\frac{1}{n}\sum_{j=0}^{n-1}P_{t-j}.
@@ -481,7 +562,7 @@ $$
 
 In the code below, this value is easily modified by changing the value of $n$, in this case $n=30$. A crossover can be read as a possible change in momentum, but it is a heuristic signal and can generate false positives.
 
-If the black line crosses the blue from down to top, then the chart suggests a possible increase in momentum. The signal is stronger when the black line crosses the blue line showing a steeper slope. What happens in practice is that the value of $n$ should be calibrated and validated with historical data before using the indicator as part of a trading rule.
+If the black line crosses the blue line from below, the chart suggests a possible increase in momentum. If it crosses from above, the chart suggests weakening momentum. In practice, the value of $n$ should be calibrated and validated with historical data before using the indicator as part of a trading rule.
 
 ```{r}
 #| label: fig-a3dmac
@@ -502,7 +583,7 @@ AAPL_recent <- tq_get("AAPL", get = "stock.prices",
 AAPL_recent
 ```
 
-The Bollinger Bands are envelopes plotted at a standard deviation level above and below a simple moving average of the price. Because the distance of the bands is based on standard deviation, they are supposed to adjust to volatility swings in the underlying price. With $k=2$ and a rolling standard deviation $s_{t,n}$, the bands are:
+Bollinger Bands are envelopes plotted at a standard deviation level above and below a simple moving average of the price. Because the distance of the bands is based on standard deviation, they adjust to volatility swings in the underlying price. With $k=2$ and a rolling standard deviation $s_{t,n}$, the bands are:
 
 $$
 Upper_{t,n}=SMA_{t,n}+k s_{t,n},
@@ -510,7 +591,7 @@ Upper_{t,n}=SMA_{t,n}+k s_{t,n},
 Lower_{t,n}=SMA_{t,n}-k s_{t,n}.
 $$
 
-This indicator can help us to understand the size of the expected change in the future. If the Bollinger Bands become wider then we should expect drastic changes in the stock price.
+Wider bands indicate a wider recent volatility envelope. Narrower bands indicate a quieter recent price range. The indicator describes the size of recent price fluctuations and should be tested before being interpreted as a forecast.
 
 ```{r}
 #| label: fig-abbasma
@@ -532,7 +613,7 @@ The last observation has the price line above the moving average, now shown as a
 
 The lesson is methodological. Technical indicators can be useful descriptive tools, but a visual reading is fragile when it depends on one or two signals by eye. A stronger workflow defines the signal, fixes the timing, evaluates the rule on historical data, and accounts for trading costs. Packages such as <tt>`quantstrat`</tt> provide infrastructure for formal backtesting of signal-based strategies.
 
-We can show the simple moving average for Meta.
+The simple moving average for Meta is computed in the same way.
 
 ```{r}
 #| label: fig-f6dmac
@@ -546,7 +627,7 @@ FANG |>
   theme_tq()
 ```
 
-This produces a bearish-looking moving-average signal. The next step is to compare it with the realized price path and treat it as an ex-post signal check.
+This produces a bearish-looking moving-average signal. The realized price path can be compared with the signal as an ex-post check.
 
 ```{r}
 FANG |>

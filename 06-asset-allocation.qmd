@@ -1,4 +1,4 @@
-# Asset allocation
+# Portfolio allocation
 
 ```{r include=FALSE}
 rm(list = ls())
@@ -13,28 +13,28 @@ library(ggplot2)
 library(MASS)
 ```
 
-The previous chapter estimated return exposures one asset at a time. Asset allocation turns those individual assets into a portfolio decision. The practical question is how much capital should be assigned to each asset when expected returns, risk, correlations, and investment constraints are considered together.
+The previous chapter estimated return exposures one asset at a time. Portfolio allocation turns those individual assets into a portfolio decision. The practical question is how much capital should be assigned to each asset when expected returns, risk, correlations, and investment constraints are considered together.
 
-Optimization chooses the best feasible solution under a set of constraints. In this chapter, the feasible solution is a vector of portfolio weights. The objective can be low risk, high expected return, a strong return-risk ratio, or a benchmark comparison. The constraints can require full investment, long-only positions, maximum weights, minimum weights, or rebalancing rules. R is useful because the calculation combines data transformation, matrix operations, optimization, and performance evaluation.
+Optimization selects a feasible solution under an explicit objective and a set of constraints. In this chapter, the feasible solution is a vector of portfolio weights. The objective can be low risk, high expected return, a strong return-risk ratio, or a benchmark comparison. The constraints can require full investment, long-only positions, maximum weights, minimum weights, or rebalancing rules. R is useful because the calculation combines data transformation, matrix operations, optimization, and performance evaluation.
 
 Diversification is the central idea. If all assets move together, portfolio risk remains close to single-asset risk. If assets respond differently to common shocks, portfolio volatility can fall even when expected return remains attractive. The correlation examples from earlier chapters prepare this point: co-movement determines how much risk can be reduced by combining assets.
 
-We call the combined investment a portfolio, and each percentage invested in an individual asset is a portfolio weight. Asset allocation models estimate or test these weights. The chapter starts with a single-period FANG portfolio, then compares optimization methods, examines an equally weighted benchmark, introduces synthetic assets to isolate diversification, and finishes with rebalancing and performance evaluation.
+The combined investment is a portfolio, and each percentage invested in an individual asset is a portfolio weight. Portfolio allocation models estimate or test these weights. The chapter separates four tasks: estimate returns and covariances, optimize weights under constraints, compare benchmarks, and evaluate realized performance. It starts with a single-period FANG portfolio, then compares optimization methods, examines an equally weighted benchmark, introduces synthetic assets to isolate diversification, and finishes with rebalancing and performance evaluation.
 
 
 ## The single-period problem
 
-The single-period problem is the simplest framework for asset allocation. At $t=0$, the investor observes historical information, chooses portfolio weights, and then realizes a portfolio return at $t=1$.
+The single-period problem is the simplest framework for portfolio allocation. At $t=0$, the investor observes historical information, chooses portfolio weights, and then realizes a portfolio return at $t=1$.
 
-We use the <tt>`PortfolioAnalytics`</tt> package to distribute 100% of available capital across four stocks. For convenience, the example uses monthly returns from the <tt>`FANG`</tt> database.
+The example uses the <tt>`PortfolioAnalytics`</tt> package to distribute 100% of available capital across four stocks. For convenience, the example uses monthly returns from the <tt>`FANG`</tt> database.
 
-If $w_i$ is the portfolio weight of asset $i$ and $R_i$ is its return, the portfolio return is:
+If $w_i$ is the portfolio weight of asset $i$ and $R_i$ is its return, the portfolio return is defined as
 
 $$
 R_p=\sum_{i=1}^{N}w_iR_i.
 $$
 
-The portfolio expected return and variance are:
+The portfolio expected return and variance are
 
 $$
 E(R_p)=w'\mu,
@@ -53,7 +53,7 @@ FANG_monthly_returns <- FANG |>
 FANG_monthly_returns
 ```
 
-The format of <tt>`FANG_monthly_returns`</tt> is not compatible with the <tt>`PortfolioAnalytics`</tt> package as the data is currently tidy. So, we have to transform the way our database looks. Originally, we have a column called <tt>`symbol`</tt> and we need each stock to have their corresponding name in different columns. We can implement this change easily.
+The <tt>`PortfolioAnalytics`</tt> package expects returns in a wide format, with one column per asset. The <tt>`FANG_monthly_returns`</tt> object is tidy, with a <tt>`symbol`</tt> column identifying the stock. The following transformation reshapes the data so each stock has its own return column.
 
 ```{r}
 fang <- FANG_monthly_returns |>
@@ -62,17 +62,17 @@ fang <- FANG_monthly_returns |>
 head(fang)
 ```
 
-The <tt>`FANG`</tt> information is the same, but the format now matches the requirements of the portfolio functions. The next step is to calculate the correlation matrix for the 4 stocks.
+The <tt>`FANG`</tt> information is the same, but the format now matches the requirements of the portfolio functions. The correlation matrix summarizes how the four stock returns move together.
 
 ```{r}
 cor(fang)
 ```
 
-The lowest correlation is between META and AMZN (0.1846197). This means that both firms exhibit a weak linear relationship. On the other hand, we have GOOG and AMZN with a correlation of 0.6171376, which suggest a stronger linear relationship between these stock returns. In principle, the lower the correlation of our assets, the greater the diversification possibilities when forming a portfolio. Remember the ice cream and the hot chocolate shop example, we assumed a correlation of −0.9 and we were supposed to decrease the volatility of our sales. In practice, it is not very easy to find negative correlated assets. However, we can achieve diversification gains as long as the correlation value is less than +1.
+The lowest correlation is between META and AMZN (0.1846197), which indicates a weak linear relationship. GOOG and AMZN have a correlation of 0.6171376, suggesting a stronger linear relationship between those stock returns. In principle, lower correlation creates greater diversification possibilities when forming a portfolio. The ice-cream and hot-chocolate example used a correlation of -0.9 to illustrate a strong volatility-reduction effect. In practice, strongly negative correlations are difficult to find, although diversification gains can arise whenever correlation is below +1.
 
-The investment recommendation is a vector of weights: how much to invest in each of the four assets.
+The model output is a vector of weights, which indicates how much capital is assigned to each of the four assets.
 
-We first define a portfolio specification with the help of <tt>`portfolio.spec()`</tt> function.
+The portfolio specification is defined with <tt>`portfolio.spec()`</tt>.
 
 ```{r}
 # Create the portfolio specification
@@ -80,13 +80,13 @@ port_spec <- portfolio.spec(colnames(fang))
 port_spec
 ```
 
-Given the portfolio specification, we are interested in four assets. Now, add a full investment constraint such that the weights sum to 1. In practical terms, a sum exactly equal to 1 is too restrictive for the optimization, so we allow weights to sum between 0.99 and 1.01. The constraint is:
+The portfolio specification uses four assets. A full-investment constraint keeps the weights close to a total of 1. In practical terms, requiring an exact sum of 1 can be too restrictive for numerical optimization, so the allowed range is 0.99 to 1.01.
 
 $$
 0.99 \leq \sum_{i=1}^{N}w_i \leq 1.01.
 $$
 
-We use the <tt>`add.constraint()`</tt> function.
+The <tt>`add.constraint()`</tt> function inserts this restriction into the portfolio specification.
 
 ```{r}
 port_spec <- add.constraint(portfolio = port_spec, type = "weight_sum",
@@ -94,7 +94,7 @@ port_spec <- add.constraint(portfolio = port_spec, type = "weight_sum",
 port_spec
 ```
 
-Add a box constraint such that the portfolio optimal weights are between 0 and 1. This is equivalent as a *long only* constraint:
+A box constraint keeps the optimal portfolio weights between 0 and 1. This is equivalent to a *long-only* constraint.
 
 $$
 0 \leq w_i \leq 1.
@@ -106,11 +106,11 @@ port_spec <- add.constraint(portfolio = port_spec, type = "box",
 port_spec
 ```
 
-We are interested in risk and return. The optimization problem can be read as searching for weights that improve the risk-return trade-off under the constraints above:
+The chapter focuses on risk and return as a joint portfolio problem. The optimization setup adds objectives for expected return and standard deviation. The return per unit of risk used to compare portfolios is
 
 $$
-\max_w \frac{E(R_p)}{\sigma_p}
-\quad \text{subject to the weight constraints.}
+SR(w)=\frac{E(R_p)}{\sigma_p},
+\quad \text{with } w \text{ subject to the constraints above.}
 $$
 
 ```{r}
@@ -124,11 +124,11 @@ port_spec <- add.objective(portfolio = port_spec,
 port_spec
 ```
 
-The portfolio specification indicates that we have four assets available, these are: META, AMZN, NFLX and GOOG. Constraints indicates that we are expected to spend 100% of the funds available, or very close to that. The constraint long refers that individual portfolio weights have to be positive.
+The portfolio specification indicates that four assets are available: META, AMZN, NFLX, and GOOG. The constraints require the portfolio to invest 100% of the available funds, or very close to that value, and to keep individual weights nonnegative.
 
-The alternative of the box constraint is to allow the model to deliver negative portfolio weights. Negative portfolio weights represent short sales. Short selling is an investment strategy that speculates on the decline in a stock. Sometimes short selling is not allowed so the box constraint will deliver only positive portfolio weights.
+Removing the box constraint would allow the model to deliver negative portfolio weights. Negative portfolio weights represent short sales, which are positions that benefit when an asset price declines. Many investment mandates restrict short selling, so the box constraint makes the exercise closer to a long-only portfolio decision.
 
-The <tt>`optimize.portfolio()`</tt> function can solve the portfolio problem with several methods, constraints, and objectives. The next examples compare the random and ROI methods.
+The <tt>`optimize.portfolio()`</tt> function can solve the portfolio problem with several methods, constraints, and objectives. The examples below compare the random and ROI methods.
 
 ```{r}
 # Solve the optimization problem.
@@ -144,9 +144,9 @@ opt_roi
 
 
 
-The output above shows the portfolio weights, return and risk of the two optimal portfolios. Before plotting the optimized results, we inspect the initial situation: the individual assets before considering any portfolio.
+The output above shows the portfolio weights, return, and risk of the two optimized portfolios. Before plotting the optimized results, the initial situation is inspected: the individual assets before considering any portfolio.
 
-First, the relevant <tt>`FANG`</tt> data.
+The relevant <tt>`FANG`</tt> data provide the individual monthly returns used to estimate the allocation.
 
 ```{r}
 FANG_monthly_returns <- FANG |>
@@ -180,11 +180,11 @@ ggplot(FANG_stats, aes(x = sd, y = mean, color = symbol)) +
   theme(legend.position = "none", legend.title = element_blank())
 ```
 
-This plot shows the four individual assets in mean-variance space. Asset allocation adds a portfolio perspective: combine assets so the joint risk-return profile can improve over a single-asset choice. The optimization process searches for the allocation that best satisfies the objective and constraints.
+The plot places the four individual assets in mean-variance space. Portfolio allocation adds a portfolio perspective by combining assets so the joint risk-return profile can improve over a single-asset choice. The optimization process searches for the allocation that satisfies the objective and constraints.
 
 For example, a portfolio with 3.5% monthly expected return and 15% standard deviation is dominated by alternatives with similar return and lower risk. A portfolio with 4% expected return and 5% risk would have a stronger return per unit of risk. This is the kind of comparison the optimizer formalizes.
 
-The random technique (Random Portfolios Optimization) evaluates many investment recommendation alternatives, each one is one portfolio. In principle, the technique should recommend a portfolio which leads to a more attractive return per unit of risk alternative than investing in individual assets.
+Random portfolio optimization evaluates many candidate portfolios. Under the selected objective, the method searches for a combination with a more attractive return per unit of risk than the individual assets.
 
 ```{r}
 #| label: fig-frmop
@@ -199,11 +199,11 @@ legend("bottomright", legend = c("opt_rand", "equally_weighted"),
        col = c("blue", "orange"), pch = 19, cex = 0.9)
 ```
 
-According to our portfolio specification and assets, gray circles represent feasible portfolios in the sense that they are possible combinations given the individual assets. Note that there are some available portfolios with a lower risk than GOOG. In fact, the algorithm suggests the blue portfolio as the optimal portfolio. This blue portfolio is attractive because it has the same risk than GOOG, but it has higher expected return. Moreover, our optimal blue portfolio has a similar return as AMZN, but with less risk. So, apparently the blue alternative is an attractive investment recommendation. Note that the gray portfolios form a kind of frontier in this mean-variance plot. This frontier suggests that it is not possible to invest in a portfolio at the left of this frontier. The optimal portfolio lies just in the frontier.
+According to the portfolio specification and asset universe, the gray circles represent feasible combinations of the individual assets. Some feasible portfolios have lower risk than GOOG. The algorithm selects the blue portfolio as the optimum under the chosen objective and constraints. This portfolio has approximately the same risk as GOOG with higher expected return, and a similar expected return to AMZN with lower risk. The gray portfolios form a mean-variance frontier. Portfolios to the left of that boundary are unavailable under the current data and constraints, and the selected optimum lies on the frontier.
 
-See the blue optimal portfolio again. We would prefer any other portfolio located in the top (higher return) or at the left (lower risk), but that is impossible given the data. On the other hand, it is possible to achieve a portfolio located below (low return) or at the right (high risk), but that is not optimal. This is why optimal portfolios are those that lie in the frontier, those are the portfolios located in the extreme high and left of this mean-variance plot.
+The blue point marks the strongest available trade-off under the optimization setup. A point above it would offer higher return for the same risk, and a point to the left would offer lower risk for the same return. Those alternatives are outside the feasible set. Points below or to the right are feasible, although they offer a weaker trade-off. Efficient portfolios are therefore located on the upper-left boundary of the mean-variance cloud.
 
-Then, what can we do to invest in the blue optimal portfolio?
+The corresponding weights translate the blue point into an implementable allocation.
 
 
 ```{r}
@@ -212,7 +212,7 @@ Then, what can we do to invest in the blue optimal portfolio?
 chart.Weights(opt_rand)
 ```
 
-According to the <tt>`opt_rand`</tt> portfolio, we have to invest:
+The <tt>`opt_rand`</tt> weights define the implementable allocation.
 
 ```{r}
 extractWeights(opt_rand)
@@ -233,7 +233,7 @@ FANG_stats |>
   arrange(-sr)
 ```
 
-The optimal portfolio <tt>`opt_rand`</tt> has a 0.4555797 return per unit of risk. This is clearly a better alternative compared with investing in individual assets as we show below.
+The optimal portfolio <tt>`opt_rand`</tt> has a 0.4555797 return per unit of risk. Under this sample and criterion, it improves on the individual assets shown below.
 
 A second criterion is to optimize according to ROI (R Optimization Infrastructure for linear and quadratic programming solvers).
 
@@ -245,12 +245,12 @@ A second criterion is to optimize according to ROI (R Optimization Infrastructur
 chart.RiskReward(opt_roi, risk.col = "StdDev",
                  xlim = c(0.05, 0.18),
                  return.col = "mean", rp = TRUE, chart.assets = TRUE)
-points(0.05807856, 0.02645942, pch = 19, cex = 1.5, col = "black")
+points(0.05807126, 0.02606294, pch = 19, cex = 1.5, col = "black")
 legend("bottomright", legend = c("ROI", "opt_rand"),
        col = c("blue", "black"), pch = 19, cex = 0.9)
 ```
 
-A different optimization criterion leads to a different optimal portfolio. However, they are both optimal as they are in the efficient frontier.
+A different optimization method leads to a different portfolio. Both selected portfolios lie on the efficient frontier under the current data, constraints, and objective specification.
 
 
 ```{r}
@@ -259,7 +259,7 @@ A different optimization criterion leads to a different optimal portfolio. Howev
 chart.Weights(opt_roi)
 ```
 
-According to the <tt>`opt_roi`</tt> portfolio, we have to invest:
+The <tt>`opt_roi`</tt> weights define the allocation under the ROI method.
 
 ```{r}
 extractWeights(opt_roi)
@@ -281,11 +281,11 @@ FANG_stats |>
   add_row(symbol = "opt_roi", opt_roi_summary) |>
   arrange(-sr)
 ```
-The optimal portfolio <tt>`opt_roi`</tt> has a 0.4244362 return per unit of risk. This is higher than the individual assets but lower than the <tt>`opt_rand`</tt> portfolio. According to this return-risk ratio, <tt>`opt_rand`</tt> is the strongest portfolio in this comparison, with 0.4555797 return per unit of risk. The optimization process therefore produces a portfolio that improves on the individual assets in this historical sample. In practice, an allocation such as 28.2% in META, 16.2% in AMZN, 7.4% in NFLX, and 47.2% in GOOG would still require additional checks before implementation: estimation stability, transaction costs, liquidity, constraints, and investor suitability.
+The optimal portfolio <tt>`opt_roi`</tt> has a 0.4244362 return per unit of risk. The value exceeds the individual assets and remains below the <tt>`opt_rand`</tt> portfolio. According to this return-risk ratio, <tt>`opt_rand`</tt> ranks first in this comparison, with 0.4555797 return per unit of risk. The optimization process therefore produces a portfolio that improves on the individual assets in this historical sample. In practice, an allocation such as 28.2% in META, 16.2% in AMZN, 7.4% in NFLX, and 47.2% in GOOG would still require additional checks before implementation, including estimation stability, transaction costs, liquidity, constraints, and investor suitability.
 
-The orange portfolio represents an equally weighted benchmark: 25% in each asset. With $N=4$, the weight is $1/N=1/4$. This benchmark requires no optimization and still offers a diversified comparison point. In this example, it is close to the optimized alternatives, while the optimized portfolios remain stronger under the chosen criterion.
+The orange portfolio represents an equally weighted benchmark with 25% in each asset. With $N=4$, the weight is $1/N=1/4$. This benchmark requires no optimization and still offers a diversified comparison point. In this example, it is close to the optimized alternatives and provides a useful check on whether optimization adds value under the selected assumptions.
 
-We now define a benchmark portfolio specification <tt>`port_naive`</tt> to force each weight to be exactly 0.25.
+A benchmark portfolio specification <tt>`port_naive`</tt> forces each weight to be exactly 0.25.
 
 ```{r}
 port_naive <- portfolio.spec(colnames(fang))
@@ -301,7 +301,7 @@ port_naive <- add.objective(portfolio = port_naive,
                            name = "mean")
 ```
 
-Now, compare the naïve portfolio with the rest.
+The comparison table adds the equal-weight benchmark to the optimized alternatives.
 
 ```{r}
 opt_naive <- equal.weight(fang, portfolio = port_naive)
@@ -319,7 +319,11 @@ FANG_stats |>
   add_row(symbol = "opt_naive", opt_naive_summary) |>
   arrange(-sr)
 ```
-The benchmark portfolio <tt>`port_naive`</tt> has the highest Sharpe ratio in this comparison, including the optimized alternatives. This result is informative: optimization depends on the objective, constraints, method, and sample estimates. We can add a target return constraint to search for an optimized portfolio that targets the benchmark portfolio's expected return.
+The benchmark portfolio <tt>`port_naive`</tt> has the highest Sharpe ratio in this comparison, including the optimized alternatives. This result is informative: optimization depends on the objective, constraints, method, and sample estimates. A target-return constraint can search for an optimized portfolio that matches the benchmark portfolio's expected return.
+
+$$
+w'\mu = R_{\text{target}}.
+$$
 
 ```{r}
 port_spec2 <- add.constraint(portfolio = port_spec, type = "return",
@@ -333,11 +337,11 @@ opt_roi2 <- optimize.portfolio(fang, portfolio = port_spec2,
 
 ```{r}
 #| label: fig-frmowtttnper
-#| fig-cap: "FANG, ROI method optimal weights that targets the naïve portfolio expected return."
+#| fig-cap: "FANG, ROI method optimal weights targeting the equal-weight benchmark expected return."
 chart.Weights(opt_roi2)
 ```
 
-According to the <tt>`opt_roi2`</tt> portfolio, we have to invest:
+The <tt>`opt_roi2`</tt> weights show the allocation that targets the benchmark expected return.
 
 ```{r}
 extractWeights(opt_roi2)
@@ -345,7 +349,7 @@ extractWeights(opt_roi2)
 
 ```{r}
 #| label: fig-frmtttnper
-#| fig-cap: "FANG, ROI method that targets the naïve portfolio expected return."
+#| fig-cap: "FANG, ROI method targeting the equal-weight benchmark expected return."
 # Plot results.
 chart.RiskReward(opt_roi2, risk.col = "StdDev",
 xlim = c(0.07, 0.073),
@@ -356,7 +360,7 @@ legend("bottomright", legend = c("opt_roi", "equally_weighted"),
 col = c("blue", "orange"), pch = 19, cex = 0.8)
 ```
 
-Now, compare the <tt>`opt_roi2`</tt> portfolio with the rest.
+The <tt>`opt_roi2`</tt> portfolio is compared with the previous alternatives.
 
 ```{r}
 opt_roi2_mean <- as.numeric(extractObjectiveMeasures(opt_roi2)$mean)
@@ -376,11 +380,18 @@ FANG_stats |>
 ```
 
 
-The expected return in $t=0$ of the <tt>`opt_rand`</tt> portfolio is 0.02645942. The value of 0.02606294 is the sum of the <tt>`opt_rand`</tt> portfolio weights multiplied by the individual asset returns. The realized return at $t=1$ remains uncertain, so the next step uses a simple simulation to illustrate possible outcomes.
+The expected return in $t=0$ of the <tt>`opt_rand`</tt> portfolio is read from the optimizer output. It is the sum of the <tt>`opt_rand`</tt> portfolio weights multiplied by the individual expected returns. The realized return at $t=1$ remains uncertain, so a simple simulation illustrates possible outcomes.
 
 In this case, $t=0$ is 2016-12-30 and $t=1$ is 2017-01-31. The simulation uses the historical mean and standard deviation information available at $t=0$.
 
-The simulation generates 1,000 observations for each individual asset and portfolio. This simulation is a simple teaching device. It treats each investment alternative as normally distributed using the historical mean and standard deviation shown above. It ignores time dependence, changing volatility, tail events, and the full correlation structure. The result is useful for intuition and should be read as a simplified risk model.
+The simulation generates 1,000 observations for each individual asset and portfolio. This simulation is a simple teaching device. It treats each investment alternative as normally distributed using the historical mean and standard deviation shown above.
+
+$$
+\tilde{R}_{i,b}=\hat{\mu}_i+\hat{\sigma}_i z_b,
+\qquad z_b\sim N(0,1).
+$$
+
+It ignores time dependence, changing volatility, tail events, and the full correlation structure. The result is useful for intuition and works as a simplified risk model.
 
 ```{r}
 # Number of simulations.
@@ -395,7 +406,7 @@ s_ran <- rnorm(sim, opt_rand$opt_values$mean, opt_rand$opt_values$StdDev)
 s_roi <- rnorm(sim, opt_roi$opt_values$mean, opt_roi$opt_values$StdDev)
 ```
 
-The simulation is done. A boxplot summarizes the simulated outcomes by showing the minimum, maximum, median, first quartile, and third quartile.
+The simulated outcomes are summarized with a boxplot showing the minimum, maximum, median, first quartile, and third quartile.
 
 ```{r}
 #| label: fig-fsroia
@@ -406,9 +417,9 @@ boxplot(b, las = 2)
 abline(h = 0, lty = 2)
 ```
 
-The <tt>`opt_rand`</tt> portfolio appears well diversified and <tt>`opt_roi`</tt> is more risky under this simplified simulation. Real returns can have heavier tails, changing volatility, and co-movement across assets, so this should be read as a first approximation. Because the historical period is known, the realized returns on 2017-01-31 can be compared with the simulated distribution.
+The <tt>`opt_rand`</tt> portfolio has a narrower simulated dispersion than several individual stocks, while <tt>`opt_roi`</tt> has a wider simulated dispersion. Real returns can have heavier tails, changing volatility, and co-movement across assets, so this simulation works as a first approximation. Because the historical period is known, the realized returns on 2017-01-31 can be compared with the simulated distribution.
 
-First, we need the 2017-01-31 actual or realized returns. The <tt>`FANG`</tt> database ends at 2016-12-30, and these historical returns are fixed observations. We store them directly here to avoid depending on the Meta ticker change or on current data-provider availability for old symbols.
+The 2017-01-31 realized returns provide the out-of-sample check. The <tt>`FANG`</tt> database ends at 2016-12-30, and these historical returns are fixed observations. They are stored directly here to avoid depending on the Meta ticker change or on current data-provider availability for old symbols.
 
 ```{r}
 # 2017-01-31 realized individual asset returns.
@@ -420,7 +431,11 @@ r_stocks <- c(META = 0.1208283,
 r_stocks
 ```
 
-These are the realized monthly returns at $t=1$. Please note that we have not introduced these returns before. Our model and portfolios ignores these returns. Now, we need to evaluate the realized return of both optimal portfolios. This is done by adding the multiplication of weights and individual realized returns. This approach is commonly known as out-of-sample evaluation.
+These are the realized monthly returns at $t=1$. They were unavailable when the portfolios were formed at $t=0$, so they provide an out-of-sample check. The realized portfolio return is calculated as the weighted sum of realized individual returns.
+
+$$
+R_{p,t+1}^{\text{realized}}=\sum_{i=1}^{N}w_iR_{i,t+1}.
+$$
 
 ```{r}
 # Calculate realized portfolio returns.
@@ -433,13 +448,13 @@ expected_ret <- c(opt_rand = opt_rand$opt_values$mean,
 data.frame(cbind(realized_ret, expected_ret))
 ```
 
-In sum, the expected monthly return in $t=0$ of <tt>`opt_rand`</tt> portfolio is 0.02606294, and the realized monthly return in $t=1$ is 0.06958923. Not bad. The expected monthly return in $t=0$ of <tt>`opt_roi`</tt> is 0.04999645, and the realized monthly return in $t=1$ is 0.11390269.
+The expected monthly return at $t=0$ for the <tt>`opt_rand`</tt> portfolio is 0.02606294, and its realized monthly return at $t=1$ is 0.06958923. For the <tt>`opt_roi`</tt> portfolio, the expected monthly return at $t=0$ is 0.04999645, and the realized monthly return at $t=1$ is 0.11390269. In this historical check, both realized returns exceeded their estimated values.
 
-The next plot combines the simulated distribution with the realized returns shown in red.
+The plot below combines the simulated distribution with the realized returns shown in red.
 
 ```{r}
 #| label: fig-fsroiawrhb2ir
-#| fig-cap: "FANG, simulated returns of investment alternatives. What really happened by 2017-01-30 in red."
+#| fig-cap: "FANG, simulated returns of investment alternatives with realized returns in red."
 # The simulation.
 boxplot(b, las = 2)
 abline(h = 0, lty = 2)
@@ -454,12 +469,9 @@ points(6, sum(opt_roi$weights * r_stocks),  col = "red",
        pch = 19, cex = 2)
 ```
 
-The realized returns can be quite different from the simulated or expected returns. This difference depends on the method, the model, the database length, the ability of the portfolio designer, and also depends on a random component. Portfolio models produce estimates under assumptions; realized returns can land far away from those estimates. In our <tt>`FANG`</tt> example, the optimal investment recommendations were good alternatives.
+The realized returns can be quite different from the simulated or expected returns. This difference depends on the method, the model, the sample length, the portfolio design, and the random component of returns. Portfolio models produce estimates under assumptions; realized returns can land far away from those estimates. In this <tt>`FANG`</tt> example, the optimized allocations performed well in the realized month.
 
-The same allocation workflow can be replicated with the 10-stock data used in the previous asset-pricing example. This shows the value of reproducible code: once the data structure is consistent, the same modeling sequence can be reused with a different asset universe.
-
-The data.
-The set keeps the same broad sector logic used before: <tt>`VTR`</tt> represents healthcare real estate exposure and <tt>`VOD`</tt> represents telecommunications exposure.
+The same allocation workflow is applied to the 10-stock data used in the previous asset-pricing example. The value of reproducible code is practical because once the data structure is consistent, the same modeling sequence can be reused with a different asset universe. The set keeps the same broad sector logic used before, where <tt>`VTR`</tt> represents healthcare real estate exposure and <tt>`VOD`</tt> represents telecommunications exposure.
 
 ```{r}
 # Download individual asset returns.
@@ -475,7 +487,7 @@ R_stocks <- c("NEM", "AMCR", "CLX", "VTR", "KR", "TXN", "F", "TXT",
 R_stocks
 ```
 
-The portfolio specification.
+The portfolio specification uses the 10-asset return matrix.
 
 ```{r}
 capm_stocks <- R_stocks |>
@@ -496,7 +508,7 @@ port_spec <- add.objective(portfolio = port_spec,
 port_spec
 ```
 
-The random method.
+The random method searches feasible allocations in the 10-asset universe.
 
 ```{r}
 #| label: fig-tarmop
@@ -512,7 +524,7 @@ abline(0, opt_rand$objective_measures$mean /
          opt_rand$objective_measures$StdDev, lwd = 2, col = "red")
 ```
 
-Here, the slope of the red line corresponds to the optimal portfolio return per unit of risk. This means that the optimal portfolio has a similar return per unit of risk compared with KR. Note how the rest of the assets have a lower return per unit of risk.
+Here, the slope of the red line corresponds to the optimal portfolio return per unit of risk. The optimal portfolio has a similar return per unit of risk to KR, while the rest of the assets have lower return per unit of risk in this sample.
 
 ```{r}
 extractWeights(opt_rand)
@@ -524,7 +536,7 @@ extractWeights(opt_rand)
 chart.Weights(opt_rand)
 ```
 
-Finally the ROI method.
+The ROI method provides a second optimization comparison for the same 10 assets.
 
 ```{r}
 #| label: fig-tarmop2
@@ -553,9 +565,9 @@ chart.Weights(opt_roi)
 
 ## Diversification
 
-In finance, diversification is the process of allocating capital (or creating a portfolio) in a way that reduces the exposure to any one particular asset or risk factor. We usually recommend to invest in a variety of assets to achieve an overall risk reduction of our portfolio. However, if those assets are as correlated as Visa and Mastercard (as discussed before), then our diversification efforts would not be so effective. In this section, we propose an experiment to illustrate the role of diversification in asset allocation. The experiment is to artificially generate two assets and add them to the <tt>`FANG`</tt> database, so we end up with 6 assets. The special characteristic of these two new assets $X$ and $Y$ is that they both have a very extreme negative correlation value. Once we add these two assets, we will repeat the portfolio optimization and see if we could do better than before.
+In finance, diversification is the process of allocating capital in a way that reduces exposure to any single asset or risk factor. Holding several assets can reduce portfolio risk when their returns are imperfectly correlated. If the assets move almost together, as Visa and Mastercard did in the previous chapter, diversification gains are limited. This section uses a controlled experiment: two artificial assets, $X$ and $Y$, are added to the <tt>`FANG`</tt> database to create a six-asset universe. Their strong negative correlation isolates the mechanism through which diversification can reduce portfolio volatility.
 
-First, we generate the returns of these two assets. The new assets $X$ and $Y$ do not exist in the real world; they are created with a simulation technique to isolate the diversification mechanism.
+The returns of the two new assets are simulated. The assets $X$ and $Y$ do not exist in the real world; they are created to isolate the diversification mechanism.
 
 ```{r}
 set.seed(13)
@@ -572,24 +584,37 @@ fang_xy$Y <- Y
 head(fang_xy)
 ```
 
-The next calculation verifies that the two new assets are negatively correlated.
+The correlation matrix verifies that the two new assets are negatively correlated.
 
 ```{r}
 cor(fang_xy)
 ```
 
-The correlation of $X$ and $Y$ is −0.98994949, this is very close to −1, so they are strongly negatively correlated. This is just what we wanted. In fact, the correlation of these two new assets and the rest are also negative. In principle, we should expect a new optimal portfolio with a greater return per unit of risk.
+The correlation of $X$ and $Y$ is -0.98994949, very close to -1, so they are strongly negatively correlated. Their correlations with the original assets are also negative. Under the same objective, this expanded universe creates room for a portfolio with a stronger return per unit of risk.
 
-Some may argue that investing in two inversely correlated assets would lead to a zero expected return. This is not the case as shown below.
+Negative correlation reduces the covariance component of portfolio variance. Expected return is still the weighted average of the individual expected returns, so it does not mechanically become zero.
 
-The next step creates a sequence of $X$ and $Y$ portfolio weights.
+A sequence of $X$ and $Y$ portfolio weights is created.
 
 ```{r}
 w_x <- seq(0, 1, 0.01)
 w_y <- 1 - w_x
 ```
 
-Then, the two assets portfolio expected return and risk.
+For a two-asset portfolio, expected return remains a weighted average and risk depends on variances plus covariance.
+
+$$
+E(R_p)=w_X\mu_X+w_Y\mu_Y,
+$$
+
+$$
+\sigma_p =
+\sqrt{
+w_X^2\sigma_X^2+
+w_Y^2\sigma_Y^2+
+2w_Xw_Y\rho_{XY}\sigma_X\sigma_Y
+}.
+$$
 
 ```{r}
 ret_xy <- w_x * mean(fang_xy$X) + w_y * mean(fang_xy$Y)
@@ -611,12 +636,12 @@ points(sd(fang_xy$Y), mean(fang_xy$Y), cex = 2, pch = 19, col = "blue")
 legend("bottomright", legend = c("X", "Y"),
        col = c("red", "blue"), pch = 19, cex = 1)
 ```
-Which is the minimum portfolio risk?
+The minimum portfolio risk from this grid is shown below.
 
 ```{r}
 min(sd_xy)
 ```
-Which is the observation that match the minimum portfolio risk?
+The observation that matches the minimum portfolio risk identifies the point on the grid where the diversification benefit is strongest.
 
 ```{r}
 which.min(sd_xy)
@@ -635,14 +660,14 @@ points(sd_xy[60], ret_xy[60], cex = 2, pch = 19)
 legend("bottomright", legend = c("X", "Y"),
        col = c("red", "blue"), pch = 19, cex = 1)
 ```
-Which are the minimum variance portfolio weights?
+The minimum-variance portfolio weights are shown below.
 
 ```{r}
 w_x[60]
 w_y[60]
 ```
 
-Now consider the <tt>`FANG`</tt> database plus the two artificial assets $X$ and $Y$. The portfolio specification and optimization are rebuilt with this expanded asset universe.
+The <tt>`FANG`</tt> database is then combined with the two artificial assets $X$ and $Y$. The portfolio specification and optimization are rebuilt with this expanded asset universe.
 
 ```{r}
 # Create the portfolio specification
@@ -662,7 +687,7 @@ opt_xy <- optimize.portfolio(fang_xy, portfolio = port_spec,
                           optimize_method = "random", trace = TRUE)
 ```
 
-The results can now be visualized.
+The expanded asset universe is visualized in mean-variance space.
 
 ```{r}
 #| label: fig-fpxayrp
@@ -678,7 +703,7 @@ legend("topleft", legend = c("opt_xy (FANG+X+Y)",
        col = c("blue", "black", "red", "orange"), pch = 19, cex = 0.9)
 ```
 
-This looks great as the new assets contribute to the optimization process to deliver a less risky portfolio. Now, the optimal portfolio has almost the same return as Meta but with a significant reduced risk. Then, correlation value plays a determinant role in the diversification process. This is why investors are looking for low, or even better, negatively correlated assets.
+The new assets materially change the optimization because their negative correlation creates a diversification opportunity. The optimal portfolio has almost the same expected return as Meta with substantially lower risk. Correlation therefore plays a central role in diversification: assets with low or negative correlation can reduce portfolio volatility when combined with the rest of the investment universe.
 
 The details of the new portfolio show how the optimizer uses the artificial diversification opportunity.
 
@@ -704,22 +729,22 @@ FANG_stats |>
   arrange(-sr)
 ```
 
-Note that the portfolio assigns high weights to $X$ and $Y$ with values of 52.2% and 43.4%. The rest is 0.2% in META, 2.8% in AMZN, 0% in NFLX, and 1.4% in GOOG.
+The portfolio assigns high weights to $X$ and $Y$, with values of 52.2% and 43.4%. The rest is 0.2% in META, 2.8% in AMZN, 0% in NFLX, and 1.4% in GOOG.
 
 
-The <tt>`opt_xy`</tt> portfolio shows a large improvement because the artificial assets combine high average returns with a very strong negative correlation. This example is designed to isolate the diversification mechanism, so it should be interpreted as a controlled experiment. In practice, investors evaluate return together with volatility, correlation, liquidity, estimation error, and implementation constraints. Low or negatively correlated assets can reduce portfolio volatility and improve the return per unit of risk, while realized returns remain uncertain.
+The <tt>`opt_xy`</tt> portfolio shows a large improvement because the artificial assets combine high average returns with a very strong negative correlation. This controlled experiment isolates the diversification mechanism. In practice, investors evaluate return together with volatility, correlation, liquidity, estimation error, and implementation constraints. Low or negatively correlated assets can reduce portfolio volatility and improve the return per unit of risk, while realized returns remain uncertain.
 
-The next step for a dissatisfied investor would be to search for assets with different exposures to risk factors, estimate their joint behavior, and rerun the optimization with realistic constraints. Sector, geography, currency, liquidity, and macroeconomic exposure are natural places to start that search.
+A practical extension is to search for assets with different exposures to risk factors, estimate their joint behavior, and rerun the optimization with realistic constraints. Sector, geography, currency, liquidity, and macroeconomic exposure are natural places to start that search.
 
-## Rebalancing portfolio and evaluation
+## Portfolio rebalancing and evaluation
 
-In the previous section we calculate portfolio weights once. We changed the optimization criteria and we added new assets, but we only calculate the portfolio weights once. Rebalancing is something very common in finance, it means to calculate portfolio weights as time passes. This makes sense because as time passes we have access to new information (stock returns) and we should re-balance our portfolio in order to take into account this new information. Evaluation is also a very common task in finance. We are interested to know what is the annualized return of an investment strategy in a period of time. In this section we are going to extend the asset allocation problem to incorporate rebalancing portfolio and evaluation. We are going to use a different database to illustrate our results.
+The previous sections estimate portfolio weights once. The optimization criterion changed and new assets were added, while the allocation was still selected at a single point in time. Rebalancing extends the problem by recalculating portfolio weights as new returns become available. Evaluation then asks how the resulting strategy performs over a full investment period. This section incorporates both ideas with a different database.
 
 Consider the following investment process. At $t=0$, the investor has access to 60 months of historical information for a set of individual assets. The data from $t=-60$ to $t=0$ is used to estimate portfolio weights and form the portfolio at $t=0$. Returns are then realized for $t=1$, $t=2$, and $t=3$. At $t=3$, the portfolio is re-estimated using the rolling window from $t=-57$ to $t=3$. The same procedure continues through the investment period. The evaluation question is whether the rebalanced strategy produces stronger annualized return and return per unit of risk than a benchmark.
 
-This process requires repeated data transformation, optimization, implementation, and evaluation. R makes the workflow reproducible because each rebalance date follows the same script. That automation is important in finance: the analyst can focus on assumptions, constraints, risk controls, and interpretation while the computer performs the repeated calculations.
+The process requires repeated data transformation, optimization, implementation, and evaluation. R makes the workflow reproducible because each rebalance date follows the same script. That automation is important in finance: the analyst can focus on assumptions, constraints, risk controls, and interpretation while the computer performs the repeated calculations.
 
-We start with the data needed for the rebalancing exercise.
+The rebalancing exercise starts with the asset-return data.
 
 
 ```{r}
@@ -729,15 +754,15 @@ returns <- indexes[, 1:4]
 tail(returns)
 ```
 
-The database goes from 1980-01-31 to 2009-12-31. The set of assets are: US Bonds, US Equities, Int'l Equities and Commodities. This means that the first investment recommendation is calculated with information from 1980-01-31 to 1985-01-31 (60 monthly observations), the second from 1980-05-31 to 1985-09-31, and so on until the last period that goes from 2009-09-31 to 2009-12-31. The first monthly return will be the one on 1985-01-31 and the last on 2009-12-31, these are 300 monthly portfolio returns.
+The database goes from 1980-01-31 to 2009-12-31. The assets are US Bonds, US Equities, International Equities, and Commodities. The first allocation is calculated with the initial 60 monthly observations, and later allocations are updated according to the quarterly rebalancing schedule. The realized evaluation period starts after the training window and ends on 2009-12-31.
 
-Before calculating optimal portfolios, we calculate a benchmark portfolio. This allows the optimized portfolio to be compared with a simple alternative. In this case, the benchmark is an equally weighted portfolio, investing 25% in each asset for all periods. With $N=4$ assets:
+Before calculating optimal portfolios, a benchmark portfolio is created. This allows the optimized portfolio to be compared with a simple alternative. In this case, the benchmark is an equally weighted portfolio, investing 25% in each asset for all periods. With $N=4$ assets
 
 $$
 w_i=\frac{1}{4}=0.25.
 $$
 
-This equally weighted portfolio implies that we will not conduct any optimization. It is like investing 25% in each asset (or index in this case) and doing nothing until the end of the investment period.
+This equally weighted portfolio requires no optimization. It invests 25% in each asset, or index in this case, and keeps that benchmark rule through the investment period.
 
 ```{r}
 # Equal weight benchmark.
@@ -751,9 +776,9 @@ colnames(benchmark_returns) <- "benchmark"
 table.AnnualizedReturns(benchmark_returns)
 ```
 
-We are interested in a benchmark because it would facilitate our evaluation task.
+The benchmark gives the optimized strategy a simple comparison point.
 
-Now we define the portfolio specification as we did in the section before.
+The portfolio specification follows the same structure used in the previous section.
 
 ```{r}
 # Base portfolio specification.
@@ -771,7 +796,11 @@ base_port_spec <- add.objective(portfolio = base_port_spec,
                                 type = "risk", name = "StdDev")
 ```
 
-We are ready to implement the investment process described before.
+The investment process is implemented with quarterly rebalancing. At each rebalance date, the portfolio return for the next period is determined by the weights chosen from the prior information set.
+
+$$
+R_{p,t}=\sum_{i=1}^{N}w_{i,t-1}R_{i,t}.
+$$
 
 ```{r}
 # Run the optimization with periodic rebalancing.
@@ -784,7 +813,7 @@ base_returns <- Return.portfolio(returns, extractWeights(opt_base))
 colnames(base_returns) <- "base"
 ```
 
-The rebalancing and evaluation calculations are complete. The next output shows the results.
+The rebalancing and evaluation calculations are complete, so the allocation path can be inspected.
 
 ```{r}
 #| label: fig-iow
@@ -793,7 +822,7 @@ The rebalancing and evaluation calculations are complete. The next output shows 
 chart.Weights(opt_base)
 ```
 
-The chart shows the contribution of each asset through the rebalancing process. US bonds dominate the allocation in this run, which reflects the optimization objective and historical inputs. The next output reports annualized performance.
+The chart shows the weight assigned to each asset through the rebalancing process. US bonds dominate the allocation in this run, which reflects the optimization objective and historical inputs. The annualized performance table reports the realized backtest comparison.
 
 ```{r}
 # Merge benchmark and portfolio returns.
@@ -802,7 +831,7 @@ ret <- cbind(benchmark_returns, base_returns)
 table.AnnualizedReturns(ret)
 ```
 
-We did better than our benchmark portfolio, that is good.
+The optimized strategy produced a higher annualized return than the benchmark in this historical backtest. As a sample result, it is read together with the assumptions, constraints, and historical window used to generate it.
 
 Investment mandates often impose limits on individual assets. Suppose the portfolio is not allowed to invest more than 40% in US bonds. This constraint can be incorporated directly before rerunning the rebalancing exercise.
 
@@ -825,14 +854,14 @@ box_returns <- Return.portfolio(returns, extractWeights(opt_box))
 colnames(box_returns) <- "box"
 ```
 
-In principle, more constraints will lead to a worse solution. The optimization algorithm works better as long as it can freely choose portfolio weights.
+Additional constraints reduce the feasible set available to the optimizer. They may be necessary for mandate, liquidity, or risk-control reasons, although they can reduce performance under the selected objective.
 
 ```{r fig.cap="Indexes, optimal weights with box constraint."}
 # Chart the optimal weights.
 chart.Weights(opt_box)
 ```
 
-Now, the rest of the assets have a more significant role in our portfolio.
+The constraint forces the allocation to spread more weight across the remaining assets.
 
 ```{r}
 # Merge box portfolio returns.
@@ -841,9 +870,9 @@ ret <- cbind(ret, box_returns)
 table.AnnualizedReturns(ret)
 ```
 
-As expected, more constraints negatively impact the possibilities to get a higher annualized return.
+In this backtest, the box constraint reduces the annualized return relative to the unconstrained optimized strategy.
 
-Most of these activities including providing investment recommendations in a regular manner are services offered by private firms. People looking to invest part of their money are supposed to receive assistance and guidance and many times it is in the form of an investment recommendation like the ones we calculate here. In the past, these services were provided only by those firms with access to the knowledge, capital, experience, and technology. Nowadays, there are an increasing number of fintechs that provide financial services because now we have access to powerful software and improved computational capabilities. In any case, functions like <tt>`optimize.portfolio()`</tt> are expected to be used as a tool by professionals and not as a pure source of investment recommendation.
+Private firms often provide recurring portfolio analysis, monitoring, and rebalancing services. Software has reduced the cost of producing this kind of analysis, and fintech firms can now offer tools that were previously available only to institutions with specialized teams and infrastructure. Even so, functions such as <tt>`optimize.portfolio()`</tt> are professional modeling tools. They support the decision process, while the final portfolio decision still requires data validation, risk controls, costs, constraints, and suitability analysis.
 
 ```{r}
 #| label: fig-ipp
@@ -851,4 +880,4 @@ Most of these activities including providing investment recommendations in a reg
 charts.PerformanceSummary(R = ret)
 ```
 
-Portfolio allocation gives us weights, realized returns, and benchmark comparisons. The next step is to express the same portfolio problem in terms of possible losses. Value at Risk provides a compact way to ask how large a one-day portfolio loss could be under a chosen confidence level and a specific modeling assumption.
+Portfolio allocation produces weights, realized returns, and benchmark comparisons. The following chapter expresses the same portfolio problem in terms of possible losses. Value at Risk provides a compact way to ask how large a one-day portfolio loss could be under a chosen confidence level and a specific modeling assumption.

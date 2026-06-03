@@ -1,4 +1,4 @@
-# Value at risk
+# Value at Risk
 
 ```{r var-setup, include=FALSE}
 library(dplyr)
@@ -7,15 +7,15 @@ library(tidyr)
 library(vembedr)
 ```
 
-The previous chapter focused on how to allocate capital across assets. This chapter asks a complementary question: once a portfolio exists, how large could a short-run market loss be? Value at Risk (VaR) provides a compact answer by combining a time horizon, a confidence level, portfolio weights, and a loss distribution.
+The previous chapter focused on how to allocate capital across assets. The complementary risk-management task is to estimate how large a short-run market loss could be once a portfolio exists. Value at Risk (VaR) provides a compact answer by combining a time horizon, a confidence level, portfolio weights, and a loss distribution.
 
-If $L$ is the portfolio loss over the chosen horizon and $\alpha$ is the confidence level, VaR is the loss threshold such that losses exceed it with probability $1-\alpha$:
+If $L$ is the portfolio loss over the chosen horizon and $\alpha$ is the confidence level, VaR is the loss threshold such that losses are below or equal to it with probability $\alpha$.
 
 $$
-P(L > VaR_\alpha)=1-\alpha.
+P(L \leq VaR_\alpha)=\alpha.
 $$
 
-Equivalently, when losses are sorted from low to high:
+Equivalently, when losses are sorted from low to high, VaR is the corresponding loss quantile.
 
 $$
 VaR_\alpha = Q_\alpha(L),
@@ -23,26 +23,26 @@ $$
 
 where $Q_\alpha(L)$ is the $\alpha$ quantile of the loss distribution.
 
-Here, we develop and extend the example called *Investment in Four Stock Indices* in Chapters 22 and 23 of @Hull. In this book, the example is used as an integrative market-risk exercise within the broader Financial Modeling with R path. It combines several ideas already used in the book: data preparation, currency adjustment, returns, portfolio weights, optimization, scenario generation, quantiles, and realized-outcome evaluation. The database used in this example <tt>`dataR.txt`</tt> is available [here](https://github.com/mlozanoqf/tutorial_if/blob/main/dataR.txt).
+This chapter develops and extends the example called *Investment in Four Stock Indices* in Chapters 22 and 23 of @Hull. In this book, the example is used as an integrative market-risk exercise within the broader Financial Modeling with R path. It combines several ideas already used in the book: data preparation, currency adjustment, returns, portfolio weights, optimization, scenario generation, quantiles, and realized-outcome evaluation. The database used in this example <tt>`dataR.txt`</tt> is available [here](https://github.com/mlozanoqf/tutorial_if/blob/main/dataR.txt).
 
-The working question is specific: calculate VaR for a portfolio using a one-day time horizon, a 99% confidence level, and 501 days of data, from Monday August 7, 2006 to Thursday September 25, 2008. The chapter then compares historical simulation, model-building approaches, and optimal weights.
+The working question is specific: calculate VaR for a portfolio using a one-day time horizon, a 99% confidence level, and 501 days of data, from Monday August 7, 2006 to Thursday September 25, 2008. The chapter follows four steps: express all index positions in US dollars, build one-day loss scenarios, estimate VaR with historical and model-building methods, and evaluate how portfolio weights change the loss distribution.
 
 ## Prepare the data
 
-Load and prepare the database.
+The data set contains the index levels and exchange rates needed to express all positions from the perspective of a US investor.
 
 ```{r}
 df <- read.table("dataR.txt", sep = "", header = TRUE)
 ```
 
-Inspect the first rows of the database.
+The first rows show the raw structure of the file before currency adjustment.
 
 ```{r}
 head(df)
 ```
 These are four international stock indices: Dow Jones Industrial Average (DJIA) in the US, the FTSE 100 in the UK, the CAC 40 in France, and the Nikkei 225 in Japan together with the corresponding exchange rates.
 
-Because we are considering a US investor in this example, the value of the FTSE 100, CAC 40, and Nikkei 225 must be measured in US dollars. The *adjusted* US dollar equivalent of stock indices are calculated as:
+Because the example uses the perspective of a US investor, the values of the FTSE 100, CAC 40, and Nikkei 225 must be measured in US dollars. The *adjusted* US dollar equivalents of the stock indices follow these conversions.
 
 $FTSE_{USD}=FTSE_{GBP}\times\frac{USD}{GBP}$.
 
@@ -59,14 +59,14 @@ df.Adj <- df %>%
   mutate(ANikkei = Nikkei / YENUSD)
 ```
 
-The following is the US dollar equivalent of stock indices for historical simulation. This is the same as @Hull, Table 22.2:
+The following table shows the US dollar equivalent of the stock indices used for historical simulation.
 
 ```{r}
 df.Adj %>%
   select(Day, DJIA, AFTSE100, ACAC40, ANikkei) %>%
   slice(1, 2, 3, 4, 500, 501)
 ```
-The VaR estimation uses 501 observations because we count from day zero through day 500. The *A* before the index name stands for *adjusted*. A graphical representation of the table above:
+The VaR estimation uses 501 observations because the sample counts from day zero through day 500. The *A* before the index name stands for *adjusted*. The figure shows the common dollar-based scale that will be used for scenario construction.
 
 ```{r}
 #| label: fig-aivnn
@@ -83,7 +83,7 @@ df.Adj %>%
   labs(y = "US dollar equivalent of stock indices", x = "") +
   theme(legend.position = "bottom")
 ```
-The time-series starts on Monday August 7, 2006 and ends on Thursday September 25, 2008. These are 501 daily past observations. In the plot below, we also show the value of Friday September 26, 2008 as a dot, this is observation 502 and we call it <tt>`tomorrow`</tt>. This observation 502 is excluded from the VaR estimation because it represents an unknown future value, and it will be useful for us to evaluate our estimations.
+The time series starts on Monday August 7, 2006 and ends on Thursday September 25, 2008. These are 501 past daily observations. The plot below also shows the value of Friday September 26, 2008 as a dot. This is observation 502, stored as <tt>`tomorrow`</tt>. Observation 502 is excluded from the VaR estimation because it represents the future value being evaluated.
 
 ```{r}
 #| label: fig-aivnnzv
@@ -110,7 +110,7 @@ df.Adj %>%
   labs(y = "US dollar equivalent of stock indices", x = "") +
   theme(legend.position = "bottom")
 ```
-The stock indices values of Friday September 26, 2008 are:
+The stock index values for Friday September 26, 2008 provide the realized values used later for evaluation.
 
 ```{r}
 tomorrow
@@ -118,16 +118,33 @@ tomorrow
 
 ## Historical simulation
 
-The historical simulation method requires scenarios of the possible stock indices values for Friday September 26, 2008. In particular, we constructed 500 scenarios for Friday September 26, 2008 with 501 past observations. The historical simulation assumes that the stock index value of Friday September 26 2008 depends on the value of Thursday September 25 2008 times a percentage change (which could be positive or negative). The percentage changes are calculated as follows. The first percentage change is from Monday August 7 2006 to Tuesday August 8 2006. The second percentage change is from Tuesday August 8 2006 to Wednesday August 9 2006, and so on. In sum, we assume that tomorrow may behave as the past 500 days.
+The historical simulation method requires scenarios for the possible stock-index values on Friday September 26, 2008. The calculation constructs 500 scenarios from 501 past observations. The method assumes that the index value on Friday September 26, 2008 can be represented by the value observed on Thursday September 25, 2008 multiplied by one historical percentage change. The first percentage change goes from Monday August 7, 2006 to Tuesday August 8, 2006. The second goes from Tuesday August 8, 2006 to Wednesday August 9, 2006, and the sequence continues through the historical window.
 
-Take the adjusted values as a reference:
+For index $j$ and historical scenario $k$, the generated value is defined by applying a past daily relative change to the last observed value.
+
+$$
+S_{j,k}^{scenario}=S_{j,T}\frac{S_{j,k}}{S_{j,k-1}},
+\qquad k=1,\dots,500.
+$$
+
+The portfolio value and loss for scenario $k$ combine those scenario index levels with the dollar allocations.
+
+$$
+p_k=\sum_{j=1}^{4} a_j \frac{S_{j,k}^{scenario}}{S_{j,T}},
+\qquad
+l_k=10{,}000-p_k,
+$$
+
+where $a_j$ is the dollar allocation to index $j$ in thousands of US dollars.
+
+The adjusted values provide the reference levels for the scenario ratios.
 
 ```{r}
 df.Adj %>%
   select(Day, DJIA, AFTSE100, ACAC40, ANikkei) %>%
   slice(1, 2, 3, 4, 500, 501)
 ```
-The first three Dow Jones scenarios $SDJIA$ are:
+The first three Dow Jones scenarios $SDJIA$ illustrate the calculation.
 
 $SDJIA_1 = 11022.06 \times \frac{11173.59}{11219.38} \rightarrow SDJIA_1 = 10977.08$.
 
@@ -135,9 +152,9 @@ $SDJIA_2 = 11022.06 \times \frac{11076.18}{11173.59} \rightarrow SDJIA_2 = 10925
 
 $SDJIA_3 = 11022.06 \times \frac{11124.37}{11076.18} \rightarrow SDJIA_3 = 11070.01$
 
-The three Dow Jones possible values according to the historical approach for September 26, 2008 are: 10977.08, 10925.97 and 11070.01. We know the actual value is 11143.130, but this is only for evaluation purposes.
+The first three possible Dow Jones values according to the historical approach for September 26, 2008 are 10977.08, 10925.97, and 11070.01. The actual value, 11143.130, is reserved for evaluation, so it does not enter the VaR estimate.
 
-Scenarios generated for September 26, 2008:
+The generated scenario table gives the first simulated values and the last historical rows in the scenario window.
 
 ```{r}
 df.Adj.S <- df.Adj %>%
@@ -152,7 +169,7 @@ df.Adj.S %>%
   slice(2, 3, 4, 500, 501)
 ```
 
-This is similar to Table 22.3 in @Hull. The next plot shows the scenarios together with the actual values for September 26, 2008:
+The violin plot shows the generated scenarios together with the actual values for September 26, 2008. The dot is useful for evaluation because it shows where the realized next-day value landed relative to the historical scenario range.
 
 ```{r}
 levels(tomorrow$IX) <- list(SCAC40 = "ACAC40", SDJIA = "DJIA",
@@ -174,21 +191,21 @@ df.Adj.S %>%
 
 ```
 
-According to the example, an investor in the United States owns, on September 25, 2008, a portfolio worth \$10 million consisting of 40% in the DJIA, 30% in the FTSE, 10% in the CAC, and 20% in the Nikkei. We can calculate the correspondent 500 scenarios of the possible portfolio value $p$ for September 26, 2008:
+According to the example, an investor in the United States owns, on September 25, 2008, a portfolio worth \$10 million consisting of 40% in the DJIA, 30% in the FTSE, 10% in the CAC, and 20% in the Nikkei. The calculations below express portfolio values and losses in thousands of US dollars. The corresponding 500 scenarios for the possible portfolio value $p$ on September 26, 2008 use the same allocation formula.
 
 $p_1 = 4000 \frac{SDJIA_1}{DJIA_{sept.25.2008}} + 3000 \frac{SFTSE_1}{FTSE_{sept.25.2008}} + 1000 \frac{SCAC_1}{CAC_{sept.25.2008}} + 2000  \frac{SNikkei_1}{Nikkei_{sept.25.2008}}$,
 
 $p_1 = 4000 \frac{10977.08}{11022.06} + 3000 \frac{9569.230}{9599.898} + 1000 \frac{6204.547}{6200.396} + 2000  \frac{115.0545}{112.8221}$,
 
-$p_1 = \$10,014.334$.
+$p_1 = 10{,}014.334$ thousand dollars.
 
 $p_2 = 4000 \frac{SDJIA_2}{DJIA_{sept.25.2008}} + 3000 \frac{SFTSE_2}{FTSE_{sept.25.2008}} + 1000 \frac{SCAC_2}{CAC_{sept.25.2008}} + 2000  \frac{SNikkei_2}{Nikkei_{sept.25.2008}}$,
 
 $p_2 = 4000 \frac{10925.97}{11022.06} + 3000 \frac{9676.957}{9599.898} + 1000 \frac{6293.603}{6200.396} + 2000  \frac{114.1331}{112.8221}$,
 
-$p_2 = \$10,027.481$.
+$p_2 = 10{,}027.481$ thousand dollars.
 
-And so on.
+The same scenario formula is applied to the remaining historical changes.
 
 
 ```{r}
@@ -204,9 +221,9 @@ df.Adj.S %>%
   slice(2, 3, 4, 500, 501)
 ```
 
-The $l$ stands for portfolio losses, it is $l = \$10,000 - p$. Note that a negative loss represents a portfolio gain. Values above are exactly the same as in @Hull Table 22.3.
+The variable $l$ represents portfolio losses, with $l = 10{,}000 - p$ in thousands of US dollars. A negative loss represents a portfolio gain. The values reproduce the numerical structure of the historical-simulation example in @Hull.
 
-Visually.
+The scenario-loss plot preserves the historical ordering of the 500 daily changes. Positive bars are losses and negative bars are gains, so the picture gives a quick sense of the downside tail before selecting a VaR threshold.
 
 ```{r}
 l <- df.Adj.S %>%
@@ -227,7 +244,7 @@ l.tomorrow <- df.Adj.S %>%
 
 ```{r}
 #| label: fig-tis22witwtchtmpt
-#| fig-cap: "Today is September 25, 2008. What is the worst that can happen to my portfolio tomorrow?"
+#| fig-cap: "Scenario losses for the September 25, 2008 portfolio."
 plot(l, type = "h", lwd = 2,
      xlab = "500 scenarios (sorted by historical date)",
      ylab = "Portfolio gains (-) and losses (+)",
@@ -238,48 +255,48 @@ abline(v = 0)
 lines(seq(0, max(l, na.rm = TRUE), length.out = 500), lty = 2)
 lines(seq(0, min(l, na.rm = TRUE), length.out = 500), lty = 2)
 abline(h = 253.385, lwd = 2, col = "green")
-legend("bottomleft", legend = c("Gains", "Losses", "Historic VaR: 253.385"),
+legend("bottomleft", legend = c("Gains", "Losses", "Historical VaR: 253.385"),
        col = c("blue", "red", "green"), lty = 1, bg = "white", lwd = 2)
 ```
 
-The loss distribution can also be summarized with a histogram.
+The histogram compresses the same scenarios into a distribution of losses. Most scenarios are clustered around moderate gains or losses, while VaR is read from the right tail.
 
 ```{r}
 #| label: fig-holftscbs2a22ah
-#| fig-cap: "Histogram of losses for the scenarios considered between September 25 and 26, 2008: a histogram."
+#| fig-cap: "Histogram of scenario losses between September 25 and 26, 2008."
 hist(l, 15, xlab = "Portfolio losses (+) and gains (-)", main = NULL)
 points(l.tomorrow, 1, pch = 19, cex = 2)
 abline(v = 253.385, col = "red", lwd = 2)
-legend("topleft", legend = c("Historic VaR: 253.385"), col = "red",
+legend("topleft", legend = c("Historical VaR: 253.385"), col = "red",
        bg = "white", lwd = 2)
 ```
 
-The point refers to what really happened, and the red line is the VaR following a historical approach. The same information can also be shown with a density plot.
+The point marks the realized loss, and the red line marks the historical VaR estimate. The density plot smooths the same information and makes the shape of the empirical loss distribution easier to compare with the normal model used later.
 
 ```{r}
 #| label: fig-holftscbs2a22adp
-#| fig-cap: "Histogram of losses for the scenarios considered between September 25 and 26, 2008: a density plot."
+#| fig-cap: "Density plot of scenario losses between September 25 and 26, 2008."
 densi <- density(l, na.rm = TRUE)
 plot(densi, main = "", xlab = "Portfolio losses (+) and gains (-)")
 polygon(densi, col = "grey", border = "black")
 points(l.tomorrow, 0, pch = 19, cex = 2)
 abline(v = 253.385, col = "red", lwd = 2)
-legend("topleft", legend = c("Historic VaR: 253.385"), col = "red",
+legend("topleft", legend = c("Historical VaR: 253.385"), col = "red",
        bg = "white", lwd = 2)
 ```
 
-Here is a histogram that looks like the one in @Hull.
+The same loss distribution can be displayed with axes that match the original textbook presentation.
 
 ```{r}
 #| label: fig-f2holftscbs2a22
-#| fig-cap: "Figure 22.3. Histogram of losses for the scenarios considered between September 25 and 26, 2008."
+#| fig-cap: "Historical loss distribution with Hull-style axes."
 hist(l, 15, axes = F, lty = "blank", col = "grey", main = "",
      xlab = "Portfolio losses (+) and gains (-)")
 axis(1, pos = 0)
 axis(2, pos = 0, las = 1)
 ```
 
-A table for the losses ranked. In particular, losses ranked from highest to lowest for 500 scenarios (first 15 values).
+Ranking the 500 scenario losses from highest to lowest makes the tail selection explicit. At the 99% confidence level with 500 scenarios, 1% of the sample corresponds to five observations. The fifth-largest loss is therefore the discrete historical VaR used in the textbook example.
 
 ```{r}
 Table22.4 <- data.frame(scenario.number = order(l, decreasing = TRUE),
@@ -288,26 +305,26 @@ Table22.4 <- data.frame(scenario.number = order(l, decreasing = TRUE),
 head(Table22.4, 15)
 ```
 
-And the last values (not shown in Hull).
+The last values show the largest gains in the ranked loss table.
 
 ```{r}
 tail(Table22.4)
 ```
 
-Note that one of the highest gains happens in scenario 497, almost at the end.
+One of the highest gains happens in scenario 497, almost at the end of the historical window. The largest gains remain outside the VaR tail calculation and still help show that the historical window contains both downside and upside shocks.
 
 ```{r}
 VaR.hist <- 253.3850
-Results <- data.frame(VaR.method = "Historical simulation, sub-optimal weights",
+Results <- data.frame(VaR.method = "Historical simulation, original weights",
                       VaR = VaR.hist)
 Results
 ```
 
-We call sub-optimal weights because the allocation of 40% in the DJIA, 30% in the FTSE, 10% in the CAC, and 20% in the Nikkei is arbitrary. The VaR according to the historic approach is the highest 5th loss because the top 1% of 500 scenarios is the 5th scenario. We can view this in a barplot.
+The original weights are 40% in the DJIA, 30% in the FTSE, 10% in the CAC, and 20% in the Nikkei. They are treated as a benchmark allocation because they are assigned exogenously in the example. The ranked-loss barplot makes the 1% tail visible and separates the VaR estimate from the realized next-day outcome.
 
 ```{r}
 #| label: fig-eot2iagvha1p2wrhig
-#| fig-cap: "Extract of Table 22.4 in a graph: 1 percent historical VaR 253.385, realized loss in green."
+#| fig-cap: "Ranked scenario losses with 1 percent historical VaR and realized loss."
 barplot(l[order(l, decreasing = TRUE)],
         names.arg = order(l, decreasing = TRUE), ylim = c(0, 500),
         xlim = c(0, 20), las = 2, cex.names = 1, ylab = "Portfolio loss ($000s)",
@@ -315,35 +332,35 @@ barplot(l[order(l, decreasing = TRUE)],
 abline(h = 253.385, lwd = 3)
 abline(h = 0, lwd = 3)
 abline(h = l.tomorrow, lwd = 3, col = "green")
-legend("topright", legend = c("Historic VaR: 253.385",
-       "What really happened"), col = c("black", "green"),
+legend("topright", legend = c("Historical VaR: 253.385",
+       "Realized loss"), col = c("black", "green"),
        bg = "white", lwd = 2)
 ```
 
-The top 1% can also be explored with the <tt>`quantile()`</tt> function. R's default quantile estimator interpolates between order statistics, so its 99% value differs from Hull's fifth-worst-scenario historical VaR.
+The top 1% can also be explored with the <tt>`quantile()`</tt> function. R's default quantile estimator interpolates between order statistics, so its 99% value differs from Hull's fifth-worst-scenario historical VaR. The difference comes from a numerical convention for estimating sample quantiles.
 
 ```{r}
 VaR.hist.quantile <- quantile(l, 0.99)
 VaR.hist.quantile
 ```
 
-To reproduce Hull's discrete historical VaR, we can take the fifth largest loss directly:
+Hull's discrete historical VaR is reproduced by taking the fifth largest loss directly.
 
 ```{r}
 VaR.hist.discrete <- sort(l, decreasing = TRUE)[5]
 VaR.hist.discrete
 ```
 
-If we use the default <tt>`quantile()`</tt> function at the 99% level we end up with:
+The default <tt>`quantile()`</tt> function at the 99% level gives the interpolated estimate.
 
 ```{r}
 quantile(l, 0.99)
 ```
-A graphical approach:
+The quantile curve shows how the VaR estimate changes with the confidence level.
 
 ```{r}
 #| label: fig-aqa
-#| fig-cap: "A quantile approach."
+#| fig-cap: "VaR estimates across confidence levels."
 plot(seq(from = 0.902, to = 1, by = 0.002),
      quantile(l, seq(from = 0.902, to = 1, by = 0.002)), cex = 1.5,
      xlab = "Confidence level (vertical line at 99%)",
@@ -351,7 +368,7 @@ plot(seq(from = 0.902, to = 1, by = 0.002),
 abline(v = 0.99, lty = 2, lwd = 2)
 abline(h = quantile(l, 0.99), col = "blue", lty = 2, lwd = 2)
 abline(h = Table22.4[5, 2], col = "red", lty = 2, lwd = 2)
-legend("topleft", legend = c("99% level", "Historic VaR: 253.385",
+legend("topleft", legend = c("99% level", "Historical VaR: 253.385",
                              "99% quantile VaR: 218.3281"),
        col = c("black", "red", "blue"), lty = 2, bg = "white", lwd = 2)
 ```
@@ -364,13 +381,13 @@ tail(data.frame("quantile function" = quantile(l, ci),
                 "sort losses" = sort(l)))
 ```
 
-Summary of results.
+The results table stores the historical VaR estimates.
 
 
 ```{r}
 Results.updated <- Results %>%
   add_row(VaR.method =
-            "Historical approximate quantile(), sub-optimal weights",
+            "Historical approximate quantile(), original weights",
           VaR = VaR.hist.quantile) %>%
   arrange(VaR.method)
 Results.updated
@@ -378,8 +395,13 @@ Results.updated
 
 ## Model building approach
 
-The drawback of this method is that it assumes a normal distribution and we know $l$ is not normal. The advantage of this method is its simplicity.
-Transform adjusted indices to returns.
+The model-building approach assumes normality for portfolio losses. The historical loss distribution can deviate from that assumption, especially in the tails. Its main advantage is simplicity: once the covariance matrix and portfolio weights are defined, VaR follows from the normal quantile. The method is also useful as a benchmark against historical simulation because both methods use the same portfolio and horizon.
+
+The adjusted indices are first transformed into simple returns.
+
+$$
+R_{j,t}=\frac{S_{j,t}-S_{j,t-1}}{S_{j,t-1}}.
+$$
 
 ```{r}
 R <- df.Adj %>%
@@ -398,7 +420,7 @@ R <- R %>%
   slice(-501)
 ```
 
-Replicate Hull's table 23.5. This is the correlation matrix on September 25, 2008, calculated by giving equal weight to the last 500 daily returns.
+The correlation matrix on September 25, 2008 is calculated by giving equal weight to the last 500 daily returns.
 
 ```{r}
 Rcor <- cor(R)
@@ -406,7 +428,7 @@ Table23.5 <- Rcor
 Table23.5
 ```
 
-Replicate Hull's table 23.6. This is the covariance matrix on September 25, 2008, calculated by giving equal weight to the last 500 daily returns.
+The covariance matrix on September 25, 2008 is calculated by giving equal weight to the last 500 daily returns.
 
 ```{r}
 Rcov <- cov(R)
@@ -414,9 +436,13 @@ Table23.6 <- Rcov
 Table23.6
 ```
 
-This covariance matrix is quite similar to the one in @Hull. We are not taking round values this explains minor differences.
+This covariance matrix is close to the one in @Hull. Minor differences arise because the calculations here do not use rounded intermediate values.
 
-The variance of the portfolio losses ($000s) is:
+With dollar allocations $\alpha=(4000,3000,1000,2000)'$, the variance of portfolio losses in thousands of dollars follows the quadratic portfolio-risk expression.
+
+$$
+\sigma_p^2=\alpha'\Sigma\alpha.
+$$
 
 ```{r}
 Rsd <- apply(R, 2, sd)
@@ -424,31 +450,41 @@ alpha <- c(4000, 3000, 1000, 2000)
 (Pvar <- t(alpha) %*% Rcov %*% alpha) # equation in page 506 (chapter 22)
 ```
 
-This is slightly different from [@Hull]: 8,761.833. The standard deviation is the square root of this:
+Hull reports 8,761.833 for this variance. The value calculated here is slightly different because the code keeps more intermediate precision. Taking the square root gives the portfolio standard deviation.
 
 ```{r}
 (Psd <- Pvar^0.5)
 ```
 
-As expected, this is a bit different as in @Hull (93.60). The one-day 99% VaR in is therefore:
+The one-day 99% VaR under the normal model multiplies the portfolio standard deviation by the 99% normal quantile.
+
+$$
+VaR_{0.99}=z_{0.99}\sigma_p.
+$$
 
 ```{r}
 (VaR.ew <- qnorm(0.99, 0, 1) * Psd)
 ```
 
-In @Hull, this value is \$217,757, which compares with \$253,385, calculated using the historical simulation approach.
+Hull reports \$217,757. In the units used here, that is 217.757 in thousands of dollars, compared with 253.385 from the historical simulation approach. The model-building estimate is lower in this case because the normal approximation smooths the empirical tail.
 
 
 ```{r}
 Results.updated <- Results.updated %>%
   add_row(VaR.method =
-            "Model building equally weighted, sub-optimal weights",
+            "Model building equal observation weights, original weights",
           VaR = VaR.ew) %>%
   arrange(VaR.method)
 Results.updated
 ```
 
-We are interested to compare the equally weighted approach with the EWMA (exponentially weighted moving average method).
+The equal-observation-weight covariance estimate can be compared with the exponentially weighted moving average method (EWMA).
+
+With decay parameter $\lambda$ and demeaned return vector $u_t=r_t-\bar r$, the EWMA covariance update gives more weight to recent squared return innovations.
+
+$$
+\Sigma_t=\lambda\Sigma_{t-1}+(1-\lambda)u_{t-1}u_{t-1}'.
+$$
 
 ```{r}
 # Model building example -- EWMA
@@ -483,7 +519,7 @@ covEWMA <-
   }
 ```
 
-We now implement this approach for the same portfolio problem. The covariance matrix on September 25, 2008 is calculated using the EWMA method with $\lambda=0.94$.
+The covariance matrix on September 25, 2008 is also calculated using the EWMA method with $\lambda=0.94$. EWMA gives more weight to recent observations, so it responds more strongly when volatility rises near the end of the sample.
 
 ```{r}
 Rdf <- as.data.frame(R)
@@ -492,48 +528,48 @@ Table23.7 <- C
 Table23.7
 ```
 
-The variance of portfolio losses is:
+The variance of portfolio losses again follows the quadratic form $\alpha'\Sigma\alpha$.
 
 ```{r}
 (Pvar_EWMA <- t(alpha) %*% C %*% alpha)
 ```
 
-In @Hull, this value is 40,995.765. The standard deviation is the square root of this, or:
+Hull reports 40,995.765 for this value. Taking the square root gives the EWMA portfolio standard deviation.
 
 ```{r}
 (Psd_EWMA <- Pvar_EWMA^0.5)
 ```
 
-In @Hull, this value is 202.474. The one-day 99% VaR is therefore:
+Hull reports 202.474 for this value. The one-day 99% VaR is therefore calculated from the same normal-quantile expression used above.
 
 ```{r}
 (VaR.ewma <- qnorm(0.99, 0, 1) * Psd_EWMA)
 ```
 
-In @Hull, this value is 471,025, over twice as high as the value given when returns are equally weighted.
+Hull reports \$471,025, or 471.025 in thousands of dollars. This value is more than twice the VaR estimated with equal observation weights, which reflects the higher volatility near the end of the sample.
 
 ```{r}
 Results.updated <- Results.updated %>%
-  add_row(VaR.method = "Model building EWMA, sub-optimal weights",
+  add_row(VaR.method = "Model building EWMA, original weights",
           VaR = VaR.ewma) %>%
   arrange(VaR.method)
 Results.updated
 ```
 
-The next table replicates Table 23.8: volatilities (% per day) using equal weighting and EWMA.
+The table compares daily volatilities under equal observation weights and EWMA.
 
 ```{r}
 Table23.8 <- data.frame(Rsd * 100, diag(C)^0.5 * 100)
-colnames(Table23.8) <- c("Equal weighting", "EWMA")
+colnames(Table23.8) <- c("Equal obs. weights", "EWMA")
 rownames(Table23.8) <- c("DJIA", "FTSE 100", "CAC 40", "Nikkei 225")
 t(Table23.8)
 ```
 
-The estimated daily standard deviations are much higher when EWMA is used than when data are equally weighted. This is because volatilities were much higher during the period immediately preceding September 25, 2008, than during the rest of the 500 days covered by the data.
+The estimated daily standard deviations are much higher when EWMA is used than when data receive equal observation weights. This happens because volatilities were much higher during the period immediately preceding September 25, 2008, than during the rest of the 500 days covered by the data.
 
 ```{r eval=FALSE, include=FALSE}
 # Model building example -- EWMA -- INEFFICIENT BUT ACCURATE.
-# My approach based on Hull.
+# Verification implementation based on the textbook recurrence.
 lambda = 0.94
 Var.R.EWMA <- matrix(0, 501, 4)
 for(i in 1:501) {
@@ -590,20 +626,32 @@ VCV <- c(C11 ,C12, C13, C14, C12, C22, C23, C24,C13, C23,
 VCV <- matrix(VCV, 4, 4)
 ```
 
-The estimated daily standard deviations are much higher when EWMA is used than when data are equally weighted. This is because volatilities were much higher during the period immediately preceding September 25, 2008, than during the rest of the 500 days covered by the data.
-
 ## Optimal allocation
 
-The current sub-optimal portfolio weights are:
+VaR depends on the loss distribution, and the loss distribution depends on the weights. The current benchmark portfolio weights provide the reference allocation.
 
 ```{r}
-W_hull <- alpha / 10000
-W_hullt <- data.frame(W_hull)
-rownames(W_hullt) <- c("DJIA", "FTSE 100", "CAC 40", "Nikkei 225")
-t(W_hullt)
+W_benchmark <- alpha / 10000
+W_benchmarkt <- data.frame(W_benchmark)
+rownames(W_benchmarkt) <- c("DJIA", "FTSE 100", "CAC 40", "Nikkei 225")
+t(W_benchmarkt)
 ```
 
-The next step calculates optimal weights.
+The following calculation estimates three comparison portfolios: the benchmark allocation, a minimum-variance allocation, and an allocation that targets the expected return of the CAC 40. Returns are expressed in percent for the mean-variance exercise; the later VaR calculations continue to use dollar allocations and the unscaled covariance matrices.
+
+The minimum-variance allocation solves a constrained variance minimization problem.
+
+$$
+\min_w w'\Sigma w
+\quad \text{subject to} \quad \mathbf{1}'w=1.
+$$
+
+The CAC 40 target-return allocation adds a return constraint to the same variance minimization problem. This analytical Markowitz calculation is unconstrained, so a target-return solution can include negative weights. In portfolio language, a negative weight is a short position.
+
+$$
+\min_w w'\Sigma w
+\quad \text{subject to} \quad \mathbf{1}'w=1,\quad w'\mu=\mu_{CAC40}.
+$$
 
 ```{r}
 R <- R * 100
@@ -632,81 +680,81 @@ W_min <- (solve(sigma) %*% ones) / a
 R_min <- c(t(W_min) %*% E)
 R_min.realized <- c(t(W_min) %*% E.tomorrow)
 S_min <- c(t(W_min) %*% sigma %*% W_min)^0.5
-# Allocation to mimic the return of the CAC40 but with lower risk
+# Allocation targeting the CAC40 expected return with lower estimated variance.
 W.cac40 <- g + h * E[3]
 R_cac40 <- c(t(W.cac40) %*% E)
 R_cac40.realized <- c(t(W.cac40) %*% E.tomorrow)
 S_cac40 <- c(t(W.cac40) %*% sigma %*% W.cac40)^0.5
-R_hull.realized = c(t(W_hull) %*% E.tomorrow)
+R_benchmark.realized = c(t(W_benchmark) %*% E.tomorrow)
 ```
 
-We now have four portfolio-weight alternatives, two of which are optimized. The risk-management question is whether optimized weights reduce VaR under the same data and horizon.
+There are now four portfolio-weight alternatives, two of which are optimized. The risk-management comparison asks whether optimized weights reduce VaR under the same data and horizon.
 
 ```{r}
-W <- data.frame(W_hull, W_min, W.cac40, c(0.25, 0.25, 0.25, 0.25))
+W <- data.frame(W_benchmark, W_min, W.cac40, c(0.25, 0.25, 0.25, 0.25))
 rownames(W) <- c("DJIA", "FTSE 100", "CAC 40", "Nikkei 225")
-colnames(W) <- c("Hull, sub-optimal weights",
+colnames(W) <- c("Benchmark weights",
                  "minimum variance", "CAC40 target return",
-                 "naive 1/N")
+                 "equal 1/N")
 t(W)
 ```
 
-In this @Hull example we assume portfolio weights remains constant. However, we can rebalance portfolio weights. Here, we have the time evolution of minimum variance optimal weights when we consider 5 US industry portfolios as investment assets:
+The portfolio weights remain constant in this worked example. A dynamic implementation could rebalance weights as new data arrive. The following resource shows the time evolution of minimum-variance weights when five US industry portfolios are used as investment assets.
 
 ```{r}
 embed_url("https://youtu.be/paH1-bDPsA4")
 ```
 
-And a similar exercise but now with 10 US industry sorted portfolios:
+A similar exercise with 10 US industry-sorted portfolios extends the same idea.
 
 ```{r}
 embed_url("https://youtu.be/DyjQbKm-NdE")
 ```
 
-We return to the main @Hull example and compare the results graphically.
+The comparison now returns to the four-index portfolio.
 
 ```{r}
 #| label: fig-haistroiabaawner
-#| fig-cap: "Hull's allocation is sub-optimal, the red one is a better alternative, although with negative expected return."
-W_hull <- alpha / 10000
-R_hull <- c(t(W_hull) %*% E)
-S_hull <- c(t(W_hull) %*% sigma %*% W_hull)^0.5
+#| fig-cap: "Original allocation and minimum-variance alternative in mean-variance space."
+W_benchmark <- alpha / 10000
+R_benchmark <- c(t(W_benchmark) %*% E)
+S_benchmark <- c(t(W_benchmark) %*% sigma %*% W_benchmark)^0.5
 
 plot(S, ER, type = "l", lwd = 3, xlim = c(0.7, 1.6),
      ylim = c(-0.022, 0.005),
      ylab = "Expected return", xlab = "Standard deviation")
 points(diag(sigma)^0.5, E)
-abline(0, R_hull / S_hull, lty = 3, col = "blue")
+abline(0, R_benchmark / S_benchmark, lty = 3, col = "blue")
 abline(0, R_min / S_min, lty = 3, col = "red")
 points(S_min, R_min, col = "red", pch = 19, cex = 2)
 abline(0, 0, lty = 3)
 text(S_min, R_min, "Minimum
      variance", pos = 2, cex = 0.8)
 text(sd, E, stocks, adj = -0.5, cex = 0.8)
-points(S_hull, R_hull, col = "blue", pch = 19, cex = 2)
-text(S_hull, R_hull, "Hull's
-     sub-optimal allocation", adj = -0.3, cex = 0.8, pos = 1)
+points(S_benchmark, R_benchmark, col = "blue", pch = 19, cex = 2)
+text(S_benchmark, R_benchmark, "Benchmark
+     allocation", adj = -0.3, cex = 0.8, pos = 1)
 legend("bottomleft",
        legend = c("DJ=0.4,   FTSE=0.3,     CAC=0.1,     Nikkei=0.2",
                             "DJ=0.56, FTSE=0.038, CAC=0.022, Nikkei=0.38"),
        col = c("blue", "red"), pch = 19, bg = "white", cex = 1)
 ```
 
-The figure suggests that the (optimal) minimum variance alternative reduces the original portfolio risk. In fact, the minimum variance portfolio has a higher return and lower risk. This representation is an estimate of the future. We can evaluate what really happened by using the actual returns.
+The figure suggests that the minimum-variance alternative reduces estimated portfolio risk relative to the original allocation. In the estimated mean-variance space, the minimum-variance portfolio has higher expected return and lower estimated risk. The statement is in-sample and based on estimated means and covariances. The realized outcome can then be evaluated with the actual returns for September 26, 2008.
 
 ```{r}
 (R_min.realized <- c(t(W_min) %*% E.tomorrow))
-(R_hull.realized = c(t(W_hull) %*% E.tomorrow))
+(R_benchmark.realized = c(t(W_benchmark) %*% E.tomorrow))
 ```
 
-The comparison suggests that the original allocation would have produced a realized return of -0.5583249% on Friday September 26, 2008, while the minimum-variance allocation would have produced a portfolio gain of 0.2629549%. The example shows why portfolio weights matter before VaR is computed: the loss distribution changes when the allocation changes.
+The comparison suggests that the original allocation would have produced a realized return of -0.5583249% on Friday September 26, 2008. The minimum-variance allocation would have produced a portfolio gain of 0.2629549%. The example shows why portfolio weights matter before VaR is computed: the loss distribution changes when the allocation changes.
 
 ```{r}
 #| label: fig-haistroiabaawner2
-#| fig-cap: "Hull's allocation is sub-optimal, the red one is a better alternative, although with negative expected return."
-W_hull <- alpha / 10000
-R_hull <- c(t(W_hull) %*% E)
-S_hull <- c(t(W_hull) %*% sigma %*% W_hull)^0.5
+#| fig-cap: "Original allocation, minimum-variance alternative, and 1/N benchmark."
+W_benchmark <- alpha / 10000
+R_benchmark <- c(t(W_benchmark) %*% E)
+S_benchmark <- c(t(W_benchmark) %*% sigma %*% W_benchmark)^0.5
 
 W_1N <- c(0.25,0.25,0.25,0.25)
 R_1N <- c(t(W_1N) %*% E)
@@ -716,7 +764,7 @@ plot(S, ER, type = "l", lwd = 3, xlim = c(0.7, 1.6),
      ylim = c(-0.022, 0.005),
      ylab = "Expected return", xlab = "Standard deviation")
 points(diag(sigma)^0.5, E)
-abline(0, R_hull / S_hull, lty = 3, col = "blue")
+abline(0, R_benchmark / S_benchmark, lty = 3, col = "blue")
 abline(0, R_min / S_min, lty = 3, col = "red")
 abline(0, R_1N / S_1N, lty = 3, col = "purple")
 points(S_min, R_min, col = "red", pch = 19, cex = 2)
@@ -725,43 +773,43 @@ abline(0, 0, lty = 3)
 text(S_min, R_min, "Minimum
      variance", pos = 2, cex = 0.8)
 text(sd, E, stocks, adj = -0.5, cex = 0.8)
-points(S_hull, R_hull, col = "blue", pch = 19, cex = 2)
-text(S_hull, R_hull, "Hull's
-     sub-optimal allocation", adj = -0.3, cex = 0.8, pos = 1)
-text(S_1N, R_1N, "1/N alpha", adj = -0.3, cex = 0.8, pos = 3)
+points(S_benchmark, R_benchmark, col = "blue", pch = 19, cex = 2)
+text(S_benchmark, R_benchmark, "Benchmark
+     allocation", adj = -0.3, cex = 0.8, pos = 1)
+text(S_1N, R_1N, "1/N", adj = -0.3, cex = 0.8, pos = 3)
 legend("bottomleft",
        legend =
-         c("Hull:    DJ=0.4,   FTSE=0.3,     CAC=0.1,     Nikkei=0.2",
+         c("Bench.: DJ=0.4,   FTSE=0.3,     CAC=0.1,     Nikkei=0.2",
 "Minvar: DJ=0.56, FTSE=0.038, CAC=0.022, Nikkei=0.38",
 "1/N:      DJ=0.25,  FTSE=0.25,  CAC=0.25,  Nikkei=0.25"),
        col = c("blue","red", "purple"), pch = 19,
 bg = "white", cex = 0.9)
 ```
 
-This @Hull example is static. If we consider a dynamic approach, then optimal portfolio weights may change as new data is available. As a result, we end up with different mean-variance frontiers. This is the time evolution of the US efficient frontier assuming 5 industry sorted portfolio as investment assets:
+The efficient frontier also changes when the investable universe changes. The following resource shows the US efficient frontier using five industry-sorted portfolios as investment assets.
 
 ```{r}
 embed_url("https://youtu.be/Fq4UlUCneyI")
 ```
 
-In general, as we increase the number of investment assets, the mean-variance frontier expands. Here is the case of 10 versus 12 US industry sorted portfolios as investment assets:
+Increasing the number of investment assets can expand the mean-variance frontier when the added assets bring useful return, risk, or correlation characteristics. The following resource compares 10 versus 12 US industry-sorted portfolios.
 
 
 ```{r}
 embed_url("https://youtu.be/_GnJRviyYJI")
 ```
 
-We can simulate 10,000 possible values for Friday September 26, 2008 given the mean and standard deviation estimates. The following histograms are generated as in this video:
+The mean and standard deviation estimates can also be used to simulate 10,000 possible one-day returns for Friday September 26, 2008. The histograms below are model-based checks of where the realized return falls relative to the fitted normal distribution.
 
 ```{r}
 embed_url("https://youtu.be/P1Ky6-a8DE0")
 ```
 
-First, the minimum variance portfolio:
+The first simulated distribution corresponds to the minimum-variance portfolio.
 
 ```{r}
 #| label: fig-mvraroib
-#| fig-cap: "Minimum variance recommendation and realized outcome in blue."
+#| fig-cap: "Minimum-variance allocation and realized outcome."
 set.seed(1)
 M <- rnorm(10000, R_min, S_min)
 hist(M, 100, xlim = c(-4, 4), ylim = c(0, 450), main = "")
@@ -769,23 +817,29 @@ abline(v = R_min.realized, col = "blue", lwd = 3)
 abline(v = quantile(M, 0.025), lty = 2)
 abline(v = quantile(M, 0.975), lty = 2)
 ```
-Then, the sub-optimal allocation:
+
+The blue line falls on the gain side of the simulated distribution. For this particular day, the minimum-variance allocation produced a positive realized return under the observed market moves.
+
+The second simulated distribution corresponds to the original allocation.
 
 ```{r}
 #| label: fig-hsoraro
-#| fig-cap: "Hull sub-optimal recommendation and realized outcome."
+#| fig-cap: "Original allocation and realized outcome."
 set.seed(1)
-H = rnorm(10000, R_hull, S_hull)
+H = rnorm(10000, R_benchmark, S_benchmark)
 hist(H, 100, xlim = c(-4, 4), ylim = c(0, 450), main = "")
-abline(v = R_hull.realized, col = "blue", lwd = 3)
+abline(v = R_benchmark.realized, col = "blue", lwd = 3)
 abline(v = quantile(H, 0.025), lty = 2)
 abline(v = quantile(H, 0.975), lty = 2)
 ```
-And finally, the portfolio that targets the CAC 40 expected return:
+
+The blue line for the original allocation falls on the loss side. Comparing this histogram with the previous one shows that changing the weights changes both the center of the fitted distribution and the realized portfolio return.
+
+The portfolio that targets the CAC 40 expected return is evaluated in the same way.
 
 ```{r}
 #| label: fig-craro
-#| fig-cap: "CAC40 recommendation and realized outcome."
+#| fig-cap: "CAC40 target-return allocation and realized outcome."
 set.seed(1)
 Ca <- rnorm(10000, R_cac40, S_cac40)
 hist(Ca, 100, xlim = c(-4, 4), ylim = c(0, 450), main = "")
@@ -794,11 +848,13 @@ abline(v = quantile(Ca, 0.025), lty = 2)
 abline(v = quantile(Ca, 0.975), lty = 2)
 ```
 
-The portfolio that targets the CAC 40 expected return can also be located in mean-variance space:
+The CAC 40 target-return allocation also produces a positive realized return in this one-day evaluation. Because this allocation uses a negative FTSE weight, its apparent improvement has to be read together with short-selling feasibility and implementation constraints.
+
+The portfolio that targets the CAC 40 expected return can also be located in mean-variance space.
 
 ```{r}
 #| label: fig-eoanoarce
-#| fig-cap: "Estimation of a new optimal alpha: Replicate CAC40 ER."
+#| fig-cap: "CAC40 target-return allocation in mean-variance space."
 plot(S, ER, type = "l", lwd = 3, xlim = c(0.7, 1.6),
      ylim = c(-0.022, 0.007), ylab = "Expected return",
      xlab = "Standard deviation")
@@ -809,62 +865,66 @@ points(0.68, R_cac40.realized, col = "red", pch = 15, cex = 2)
 text(S_cac40, R_cac40, "CAC40
      expected return", pos = 2, cex = 0.8)
 text(sd,E,stocks,adj=-0.5,cex=0.8)
-W_hull = alpha / 10000
-R_hull = c(t(W_hull) %*% E)
-S_hull = c(t(W_hull) %*% sigma %*% W_hull)^0.5
-points(S_hull, R_hull, col = "blue", pch = 19, cex = 2)
-points(0.68, R_hull.realized, col = "blue", pch = 15, cex = 2)
-abline(0,R_hull / S_hull, lty = 3, col = "blue")
+W_benchmark = alpha / 10000
+R_benchmark = c(t(W_benchmark) %*% E)
+S_benchmark = c(t(W_benchmark) %*% sigma %*% W_benchmark)^0.5
+points(S_benchmark, R_benchmark, col = "blue", pch = 19, cex = 2)
+points(0.68, R_benchmark.realized, col = "blue", pch = 15, cex = 2)
+abline(0,R_benchmark / S_benchmark, lty = 3, col = "blue")
 abline(0,R_cac40 / S_cac40, lty = 3, col = "red")
 abline(0,E[3] / sd[3], lty = 3)
 abline(v = S_cac40, lty = 3)
-text(S_hull, R_hull, "Hull's
-     sub-optimal allocation", adj = -0.3, cex = 0.8, pos = 1)
+text(S_benchmark, R_benchmark, "Benchmark
+     allocation", adj = -0.3, cex = 0.8, pos = 1)
 legend("bottomleft",
        legend = c("DJ=0.4,     FTSE=0.3,      CAC=0.1,     Nikkei=0.2",
                           "DJ=0.607, FTSE=-0.403, CAC=0.459, Nikkei=0.336"), col = c("blue", "red"),
        pch = 19, bg = "white", cex = 0.9)
 ```
-These are the realized returns on Friday September 26, 2008.
+The realized returns on Friday September 26, 2008 are used to compare the three allocations.
 
 ```{r}
 (R_min.realized)
-(R_hull.realized)
+(R_benchmark.realized)
 (R_cac40.realized)
 ```
 
-As stated before, Hull's sub-optimal portfolio allocation turns out to be problematic. His recommendation would lead to a return of -0.558%, equivalent to a loss of 0.558%. The optimal minimum variance allocation would lead to a positive return of 0.2629%, and the optimal portfolio that targets the CAC 40 expected return leads to an even higher return of 0.518%.
+The original portfolio allocation produces a loss on the realized day. It would lead to a return of -0.558%, equivalent to a loss of 0.558%. The minimum-variance allocation would lead to a positive return of 0.2629%, and the portfolio that targets the CAC 40 expected return leads to a realized return of 0.518%. The last case uses a short FTSE position, so it requires additional feasibility checks before being interpreted as an implementable allocation.
 
 ## Model building approach with optimal weights
 
-Now that we have two additional optimal portfolios, we can compute the corresponding VaR for the model building approach. First, the equally weighted case.
+The two optimized portfolios are evaluated with the model-building VaR approach. This keeps the covariance estimate fixed and changes only the portfolio weights, which isolates the effect of allocation on VaR. For any weight vector $w$, the dollar allocation is $\alpha(w)=10{,}000w$ in thousands of dollars and the normal VaR is
+
+$$
+VaR_{0.99}(w)=z_{0.99}\sqrt{\alpha(w)'\Sigma\alpha(w)}.
+$$
 
 ```{r}
-# Model building approach, equally weighted.
+# Model-building approach with equal observation weights.
 alpha2 <- c(W_min * 10000)
 alpha3 <- c(W.cac40 * 10000)
-# This is the minimum variance optimal portfolio.
+# Minimum-variance optimal portfolio.
 Pvar2 <- t(alpha2) %*% Rcov %*% alpha2
 Psd2 <- Pvar2^0.5
 VaR.ew.optimal <- qnorm(0.99, 0, 1) * Psd2
-# This is optimal portfolio targeting the CAC 40 expected return.
+# CAC 40 target-return optimal portfolio.
 Pvar3 <- t(alpha3) %*% Rcov %*% alpha3
 Psd3 <- Pvar3^0.5
 VaR.ew.optimal.cac <- qnorm(0.99, 0, 1) * Psd3
 ```
 
-Summary of results:
+The results table includes the model-building VaR estimates with optimal weights.
 
 ```{r}
 Results.updated <- Results.updated %>%
   add_row(VaR.method =
-        c("Model building equally weighted, minimum variance weights",
-          "Model building equally weighted, targeting CAC40"),
+        c("Model building equal observation weights, minimum variance weights",
+          "Model building equal observation weights, targeting CAC40"),
           VaR = c(VaR.ew.optimal, VaR.ew.optimal.cac)) %>%
   arrange(VaR.method)
 Results.updated
 ```
-Second, the model building approach with EWMA.
+The second calculation uses the EWMA covariance matrix.
 
 ```{r}
 Pvar2_EWMA <- t(alpha2) %*% C %*% alpha2
@@ -877,7 +937,7 @@ VaR.ewma.optimal.cac <- qnorm(0.99, 0, 1) * Psd3_EWMA
 VaR.ewma.optimal.cac
 ```
 
-Summary of results.
+The results table includes the EWMA VaR estimates with optimal weights.
 
 ```{r}
 Results.updated <- Results.updated %>%
@@ -889,9 +949,15 @@ Results.updated <- Results.updated %>%
 Results.updated
 ```
 
-## Historic approach with optimal weights
+## Historical approach with optimal weights
 
-We now return to the historical approach and incorporate the comparison with optimal weights.
+The final comparison returns to historical simulation and applies the same scenario returns to the optimized weights. This keeps the market scenarios fixed and changes only the portfolio exposure. For 500 scenarios, the empirical 99% VaR is again the fifth-worst loss.
+
+$$
+VaR_{0.99}^{hist}(w)=l_{(5)}(w),
+$$
+
+where losses are sorted from largest to smallest.
 
 ```{r}
 df.Adj.S <- df.Adj.S %>%
@@ -907,7 +973,7 @@ df.Adj.S <- df.Adj.S %>%
   mutate(l3 = 10000 - p3) # Losses l
 ```
 
-Calculate the new portfolio losses for optimal weights.
+The new portfolio losses are calculated under the optimized weights.
 
 ```{r}
 l2 <- df.Adj.S %>%
@@ -931,11 +997,11 @@ l3.tomorrow <- df.Adj.S %>%
   unlist()
 ```
 
-As a reference, this is the @Hull original case.
+The benchmark allocation provides the reference distribution.
 
 ```{r}
 #| label: fig-lwhsadfcn
-#| fig-cap: "Losses with Hull's suboptimal alpha DJ=0.4, FTSE=0.3, CAC=0.1, Nikkei=0.2."
+#| fig-cap: "Losses with the original weights DJ=0.4, FTSE=0.3, CAC=0.1, Nikkei=0.2."
 plot(l, type = "h", ylim = c(-600, 600), lwd = 2,
      xlab = "500 scenarios (sorted by historical date)",
 ylab = "Portfolio gains (-) and losses (+)",
@@ -946,17 +1012,19 @@ abline(h = max(l), lty = 2)
 abline(h = min(l), lty = 2)
 ```
 
+The benchmark distribution contains several large downside scenarios, and the fifth-worst loss is the historical 99% VaR for the original allocation.
+
 The one-day 99% value at risk can be estimated as the fifth-worst loss.
 
 ```{r}
 sort(l)[496]
 ```
 
-The next calculation applies the historical approach with minimum-variance optimal weights.
+The historical approach is then applied with minimum-variance weights.
 
 ```{r}
 #| label: fig-lwhsadfcn2
-#| fig-cap: "Losses with optimal alpha DJ=0.56, FTSE=0.038, CAC=0.022, Nikkei=0.38."
+#| fig-cap: "Losses with minimum-variance weights DJ=0.56, FTSE=0.038, CAC=0.022, Nikkei=0.38."
 plot(l2, type = "h", ylim = c(-600, 600), lwd = 2,
      xlab = "500 scenarios (sorted by historical date)",
      ylab = "Portfolio gains (-) and losses (+)",
@@ -967,7 +1035,7 @@ abline(h = max(l2), lty = 2)
 abline(h = min(l2), lty = 2)
 ```
 
-The range of losses and gains is now reduced. The one-day 99% Value at Risk can be estimated as the fifth-worst loss.
+The range of losses and gains is reduced under the minimum-variance weights. The one-day 99% Value at Risk can be estimated as the fifth-worst loss.
 
 ```{r}
 sort(l2)[496]
@@ -982,11 +1050,11 @@ Results.updated <- Results.updated %>%
 Results.updated
 ```
 
-And this is the optimal portfolio targeting the CAC 40 expected return.
+The final case is the portfolio targeting the CAC 40 expected return.
 
 ```{r}
 #| label: fig-lwcoadfcn
-#| fig-cap: "Losses with CAC40 optimal alpha DJ=0.607, FTSE=-0.403, CAC=0.459, Nikkei=0.336."
+#| fig-cap: "Losses with CAC40 target-return weights DJ=0.607, FTSE=-0.403, CAC=0.459, Nikkei=0.336."
 plot(l3, type = "h", ylim = c(-600, 600), lwd = 2,
      xlab = "500 scenarios (sorted by historical date)",
      ylab = "Portfolio gains (-) and losses (+)",
@@ -997,7 +1065,7 @@ abline(h = max(l3), lty = 2)
 abline(h = min(l3), lty = 2)
 ```
 
-The range is reduced while still allowing larger gains in some scenarios. The one-day 99% Value at Risk can be estimated as the fifth-worst loss.
+The CAC 40 target-return allocation also compresses much of the loss range while still allowing larger gains in some scenarios. The one-day 99% Value at Risk can be estimated as the fifth-worst loss. Because this portfolio includes a short FTSE position, its risk reduction is linked to an exposure that may be constrained in practice.
 
 ```{r}
 sort(l3)[496]
@@ -1012,15 +1080,15 @@ Results.updated <- Results.updated %>%
 Results.updated
 ```
 
-The three historical approaches can now be compared side by side.
+The three historical approaches are compared side by side.
 
 ```{r}
 #| label: fig-hsaoaoa
-#| fig-cap: "Hull's suboptimal alpha (left); optimal alpha (center); optimal alpha CAC40 (right)."
+#| fig-cap: "Historical losses under original, minimum-variance, and CAC40-target weights."
 par(mfrow=c(1, 3), oma = c(0, 0, 2, 0))
 par(pty = "s")
 plot(l, type = "h", ylim = c(-600, 600), lwd = 2, xlab = "",
-     main = "Hull original case.",
+     main = "Benchmark allocation",
      ylab = "Portfolio gains (-) and losses (+)",
      col = ifelse(l < 0, "blue", "red"))
 abline(0, 0)
@@ -1028,15 +1096,15 @@ abline(v = 0)
 abline(h = max(l), lty = 2)
 abline(h = min(l), lty = 2)
 plot(l2, type = "h", ylim = c(-600, 600), lwd = 2,
-     main = "Minimum variance.",
-     xlab = "500 scenarios sorted by historical date.", ylab = "",
+     main = "Minimum variance",
+     xlab = "500 scenarios sorted by historical date", ylab = "",
      col = ifelse(l2 < 0, "blue", "red"))
 abline(0, 0)
 abline(v = 0)
 abline(h = max(l2), lty = 2)
 abline(h = min(l2), lty = 2)
 plot(l3, type = "h", ylim = c(-600, 600), lwd = 2, xlab = "",
-     main = "Optimal targeting CAC 40.", ylab = "",
+     main = "CAC40 target return", ylab = "",
      col = ifelse(l3 < 0, "blue", "red"))
 abline(0, 0)
 abline(v = 0)
@@ -1044,7 +1112,9 @@ abline(h = max(l3), lty = 2)
 abline(h = min(l3), lty = 2)
 ```
 
-A quantile comparison.
+The side-by-side view makes the effect of allocation visible. The optimized portfolios reduce the height of the worst loss bars in this historical window, while the CAC 40 target-return case changes the distribution partly through the short FTSE exposure.
+
+The quantiles provide a compact comparison of the three loss distributions.
 
 ```{r}
 lq <- quantile(l, c(0.25, 0.5, 0.75))
@@ -1056,20 +1126,21 @@ colours <- c("red", "orange", "blue")
 
 ```{r}
 #| label: fig-qcold
-#| fig-cap: "Quantile comparison of losses distribution."
+#| fig-cap: "Loss quantiles under alternative portfolio weights."
 barplot(as.matrix(t(ll)), beside = TRUE, col = colours,
         ylim = c(-60, 60), xlab = "Quantiles",
         ylab = "Portfolio gains (-) and Losses (+)")
-legend("topleft", c("Hull original","Optimal minvar",
-                    "Replicating CAC40 ER"), cex = 1.3, bty = "n",
+legend("topleft", c("Benchmark","Minimum variance",
+                    "CAC40 target return"), cex = 1.3, bty = "n",
        fill = colours)
 ```
 
-The chapter's main value is integration. The VaR number is only the final
-summary. Before that summary, the analyst had to prepare international index
-data, convert foreign values into US dollars, define portfolio weights,
-generate loss scenarios, estimate volatility and covariance inputs, compare
-allocation choices, and read the realized outcome. This is why VaR belongs in
-the Financial Modeling with R path: it turns data, returns, allocation, and
-market-risk assumptions into a single loss statement that can be audited and
-recomputed.
+The quantile comparison summarizes the same message without the full time ordering of scenarios: changing weights shifts the empirical loss distribution, and VaR changes because it is a tail quantile of that distribution.
+
+The chapter's main value is integration. The VaR number is the final summary,
+after the analyst prepares international index data, converts foreign values
+into US dollars, defines portfolio weights, generates loss scenarios, estimates
+volatility and covariance inputs, compares allocation choices, and reads the
+realized outcome. Within the Financial Modeling with R path, VaR turns data,
+returns, allocation, and market-risk assumptions into a single loss statement
+that can be audited and recomputed.

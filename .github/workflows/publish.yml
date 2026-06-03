@@ -58,7 +58,9 @@ jobs:
           pmf_packages <- c(
             "digest",
             "dplyr",
+            "ggraph",
             "ggplot2",
+            "igraph",
             "kableExtra",
             "knitr",
             "lubridate",
@@ -74,6 +76,7 @@ jobs:
             "scales",
             "tibble",
             "tbl2xts",
+            "tidygraph",
             "tidyquant",
             "tidyr",
             "vembedr",

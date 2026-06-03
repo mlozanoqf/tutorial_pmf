@@ -5,9 +5,12 @@ rm(list = ls())
 
 library(digest)
 library(dplyr)
+library(ggraph)
 library(ggplot2)
+library(igraph)
 library(openssl)
 library(tibble)
+library(tidygraph)
 
 set.seed(13)
 theme_set(theme_minimal(base_size = 12))
@@ -17,8 +20,7 @@ The previous chapters worked with market data, returns, trading rules, asset
 pricing, portfolio allocation, and market risk. This chapter changes the object
 of analysis. A blockchain is treated here as a financial-computing mechanism:
 a way to maintain a shared record of transfers, validate changes to that
-record, and coordinate incentives across participants that do not all rely on a
-single central ledger.
+record, and coordinate incentives without requiring a single central ledger.
 
 The financial question is direct: how can a system record transfers of value
 when many participants can read the ledger, submit transactions, and verify the
@@ -31,18 +33,19 @@ history? The answer combines several ideas:
 * a consensus rule that tells nodes which history to accept;
 * incentives that reward participants who help maintain the ledger.
 
-The chapter has three layers. The first layer is a generic blockchain model:
-we build a small ledger, define valid transactions, group transactions into
-blocks, link blocks with hashes, and validate the resulting history. The second
-layer uses Bitcoin as the main proof-of-work case. Bitcoin is useful because it
-turns the generic mechanism into an economic system with miners, fees, scarce
-issuance, public verification, and costly history rewriting. The third layer
-introduces tokenization as a financial extension, where a ledger records
-ownership units and cash-flow allocation rules.
+The chapter uses Bitcoin as the motivating case, then builds the technical
+pieces needed to understand it. Bitcoin is useful because it turns a ledger
+mechanism into an economic system with wallets, private keys, miners, fees,
+scarce issuance, public verification, and costly history rewriting. Once those
+pieces are visible, tokenization becomes a natural financial extension: a
+ledger can also record ownership units and cash-flow allocation rules for
+claims whose value may depend on assets outside the ledger.
 
 The route is therefore:
 
 $$
+\mathrm{Bitcoin\ as\ motivation}
+\longrightarrow
 \mathrm{generic\ ledger\ mechanism}
 \longrightarrow
 \mathrm{Bitcoin\ proof\ of\ work\ case}
@@ -50,8 +53,8 @@ $$
 \mathrm{tokenized\ financial\ claims}.
 $$
 
-The examples are intentionally small. They are meant to show the logic of the
-system, not to reproduce a production blockchain.
+The examples are intentionally small teaching models. They show the logic of
+the system at a scale where each moving part can be inspected.
 
 A useful way to read the chapter is through four frictions: a user may try to
 spend the same value twice; block space can become scarce; settlement becomes
@@ -60,14 +63,102 @@ between the ledger record and the legal or operational asset. These frictions
 make blockchain a financial topic, because they connect technology to scarcity,
 incentives, custody, and settlement.
 
+## Bitcoin as motivating case
+
+Students usually meet blockchain through Bitcoin prices, wallets, exchanges,
+and transaction confirmations. Those entry points are useful, but they hide the
+mechanism. A Bitcoin payment is a signed instruction that spends previous
+outputs, moves through a peer-to-peer network, competes for block space, and
+becomes harder to reverse as proof-of-work accumulates above it.
+
+The financial modeling question is therefore richer than "what is the price of
+Bitcoin?" We also need to ask:
+
+| Object | Modeling question | Financial meaning |
+|---|---|---|
+| Private key | Who can authorize spending? | Custody and operational control |
+| Transaction | Which value is being transferred, and under what fee? | Payment, settlement, and fee pressure |
+| Block | Which transactions enter the next ledger update? | Scarce inclusion and audit trail |
+| Proof-of-work | How costly is it to replace recent history? | Settlement confidence |
+| Network | How do transactions and blocks propagate? | Latency, monitoring, and public observability |
+| Token rule | What claim does a ledger entry represent? | Ownership, cash-flow allocation, and legal linkage |
+
+The path from familiar market objects to protocol mechanics can be drawn as a
+short workflow.
+
+```{r}
+#| label: fig-bitcoin-motivation-map
+#| fig-cap: "From market-facing Bitcoin objects to protocol mechanics."
+#| fig-width: 8.4
+#| fig-height: 2.3
+motivation_nodes <- tibble(
+  id = c("price", "account", "wallet", "transaction",
+         "mempool", "block", "confirmations"),
+  label = c("Price\nquote", "Exchange\naccount", "Wallet\nkey",
+            "Signed\ntransaction", "Mempool", "Block",
+            "Confirmations"),
+  layer = c("Market", "Market", "Custody", "Protocol",
+            "Protocol", "Protocol", "Settlement"),
+  x = seq(0.6, 7.8, length.out = 7),
+  y = 1
+)
+
+motivation_edges <- motivation_nodes |>
+  arrange(x) |>
+  mutate(xend = lead(x), yend = lead(y)) |>
+  filter(!is.na(xend))
+
+ggplot() +
+  geom_segment(
+    data = motivation_edges,
+    aes(x = x + 0.38, y = y, xend = xend - 0.38, yend = yend),
+    arrow = grid::arrow(length = grid::unit(0.11, "inches")),
+    color = "#6C7A89", linewidth = 0.7
+  ) +
+  geom_rect(
+    data = motivation_nodes,
+    aes(xmin = x - 0.45, xmax = x + 0.45,
+        ymin = y - 0.26, ymax = y + 0.26, fill = layer),
+    color = "white", linewidth = 0.8
+  ) +
+  geom_text(
+    data = motivation_nodes,
+    aes(x = x, y = y, label = label),
+    size = 2.9, lineheight = 0.88
+  ) +
+  scale_fill_manual(values = c(
+    "Market" = "#FDEBD0",
+    "Custody" = "#D5F5E3",
+    "Protocol" = "#D6EAF8",
+    "Settlement" = "#E8DAEF"
+  )) +
+  coord_cartesian(xlim = c(0.05, 8.35), ylim = c(0.62, 1.38),
+                  expand = FALSE, clip = "off") +
+  guides(fill = guide_legend(title = "Layer")) +
+  theme_void() +
+  theme(
+    legend.position = "bottom",
+    plot.margin = margin(2, 4, 2, 4)
+  )
+```
+
+The figure sets the chapter's stance. A price quote or an exchange account is
+one visible surface of the system. The modeling work begins when custody,
+authorization, pending settlement, block inclusion, and confirmations are tied
+to the same record of value.
+
+The rest of the chapter builds these objects in small pieces. Each teaching
+model corresponds to a production concern: double spending, block construction,
+signatures, custody, network propagation, confirmations, and tokenized claims.
+
 ## Generic blockchain model
 
-The generic model abstracts from the details of any specific blockchain. It
-uses an account-based ledger because balances are easy to read: each wallet has
-a balance, transactions move value across wallets, fees compensate the block
+The generic model is a compact laboratory for the Bitcoin case. It uses an
+account-based ledger because balances are easy to read: each wallet has a
+balance, transactions move value across wallets, fees compensate the block
 producer, and the final ledger state can be checked directly. Bitcoin uses a
 different accounting model, based on unspent transaction outputs, and that
-difference is discussed later.
+difference is introduced after the generic mechanism is in place.
 
 The generic model answers four questions:
 
@@ -78,7 +169,7 @@ The generic model answers four questions:
 | Block structure | Which transactions enter the next ledger update? | Groups accepted transfers into an auditable batch |
 | Consensus rule | Which history should nodes extend? | Coordinates participants around one accepted ledger |
 
-The important sequence is:
+The sequence to keep in view is:
 
 $$
 \mathrm{current\ ledger}
@@ -95,10 +186,10 @@ $$
 **A shared ledger problem**
 
 A conventional financial ledger records who owns what and how balances change
-after transactions. In a centralized system, one institution can update the
-ledger, reject invalid transfers, and resolve conflicts. A blockchain moves
-part of that logic into a shared protocol. Many participants can hold copies of
-the ledger, check the same rules, and agree on the accepted history.
+after transactions. In a centralized system, one institution updates the
+ledger, rejects invalid transfers, and resolves conflicts. A blockchain moves
+part of that logic into a shared protocol: many participants can hold copies of
+the ledger, check the same rules, and converge on an accepted history.
 
 The most basic financial state is a table of balances. Suppose four wallets
 start with the following balances.
@@ -135,14 +226,10 @@ x>0,
 f \geq 0.
 $$
 
-The rest of the generic model turns this accounting idea into a blockchain
-workflow. The ledger state tells us the balances at a point in time. The block
-history tells us how the ledger reached that state. This distinction matters in
-finance because a balance without an auditable path is weaker than a balance
-that can be traced through accepted transactions.
-
-At this point there is no Bitcoin yet. There is only a minimal transfer system:
-wallets, balances, transaction rules, fees, and an accepted ledger history.
+This accounting rule is the starting point for the blockchain workflow. The
+ledger state gives balances at one moment; the block history explains how those
+balances were reached. For finance, that audit path matters because ownership
+claims are stronger when they can be traced through accepted transactions.
 
 **Double-spending pressure**
 
@@ -210,6 +297,8 @@ double_spend_outcome
 ```
 
 ```{r}
+#| label: fig-double-spend-conflict
+#| fig-cap: "Conflicting transactions under two ordering rules."
 #| fig-width: 7.2
 #| fig-height: 3.1
 ggplot(
@@ -280,17 +369,18 @@ block <- list(
   nonce = 0
 )
 
-block
+tibble(
+  field = names(block),
+  value = vapply(block, as.character, character(1))
+)
 ```
 
-This object is not yet chained to any history. The next step is to compute a
-hash.
+This object still needs a hash before it can be chained to a history.
 
-The block is useful because it gives the system a unit of agreement. Instead of
-asking the network to agree on each isolated transaction, the system asks the
-network to agree on a batch of transactions and on the previous history that
-the batch extends. This is why the parent hash is part of the block: it tells
-the reader which past ledger the new block is trying to update.
+The block gives the system a unit of agreement. The network evaluates a batch
+of transactions together with the previous history that the batch extends. The
+parent hash records that link: it identifies the past ledger state that the new
+block is trying to update.
 
 **Hashes**
 
@@ -318,16 +408,32 @@ The examples use SHA-256 through the <tt>`digest`</tt> package. SHA-256 returns
 256 bits, which correspond to 32 bytes or 64 hexadecimal characters.
 
 ```{r}
-digest("Alice pays Bob 10", algo = "sha256")
-nchar(digest("Alice pays Bob 10", algo = "sha256"))
+hash_example <- digest("Alice pays Bob 10", algo = "sha256")
+
+tibble(
+  message = "Alice pays Bob 10",
+  algorithm = "SHA-256",
+  hex_characters = nchar(hash_example),
+  hash_prefix = substr(hash_example, 1, 16)
+)
 ```
 
 A tiny change in the message changes the digest.
 
 ```{r}
-digest("Alice pays Bob 10", algo = "sha256")
-digest("Alice pays Bob 11", algo = "sha256")
+hash_comparison <- tibble(
+  message = c("Alice pays Bob 10", "Alice pays Bob 11"),
+  sha256 = vapply(message, digest, character(1), algo = "sha256")
+) |>
+  mutate(hash_prefix = substr(sha256, 1, 18)) |>
+  select(message, hash_prefix)
+
+hash_comparison
 ```
+
+The table shows only hash prefixes to keep the output readable. The important
+point is that the two prefixes already diverge after a one-character change,
+while each full SHA-256 digest remains 64 hexadecimal characters long.
 
 The following helper creates a block and then hashes the full block content.
 
@@ -372,18 +478,28 @@ block3 <- create_block(
 )
 
 chain <- list(block1, block2, block3)
-chain
+
+chain_summary <- tibble(
+  block = vapply(chain, function(x) x$number, numeric(1)),
+  data = vapply(chain, function(x) x$data, character(1)),
+  parent_hash = vapply(chain, function(x) substr(x$parent_hash, 1, 12),
+                       character(1)),
+  block_hash = vapply(chain, function(x) substr(x$hash, 1, 12),
+                      character(1))
+)
+
+chain_summary
 ```
 
-The financial meaning of this construction is integrity. A later block commits
-to the hash of the previous block. If an old transaction changes, the old hash
-changes, and the later blocks no longer point to the same history.
+The summary keeps the block order, data, parent commitment, and block
+commitment visible without printing the full nested R objects.
 
-This is a commitment mechanism. A block hash is a compact fingerprint of the
-block content. A parent hash is a compact fingerprint of the previous accepted
-history. Linking those fingerprints creates a chain of commitments: the latest
-block implicitly refers to every earlier accepted block through the sequence of
-hashes.
+The financial meaning of this construction is integrity. A block hash is a
+compact cryptographic commitment to the block content, and a parent hash is a
+commitment to the previous accepted history. Linking those commitments means
+that the latest block implicitly refers to every earlier accepted block. If an
+old transaction changes, the old hash changes, and later blocks no longer point
+to the same history.
 
 **Chain validation**
 
@@ -415,7 +531,7 @@ validate_chain <- function(chain) {
   TRUE
 }
 
-validate_chain(chain)
+tibble(check = "Original chain", valid = validate_chain(chain))
 ```
 
 The chain can be drawn as a sequence of blocks connected by hashes.
@@ -454,13 +570,17 @@ ggplot(chain_plot) +
   theme(plot.margin = margin(0, 0, 0, 0))
 ```
 
+The arrows carry the key dependency: block 2 names the hash of block 1, and
+block 3 names the hash of block 2. A change in an earlier block breaks the
+labels that later blocks use to identify their parent history.
+
 Now change an old block.
 
 ```{r}
 tampered_chain <- chain
 tampered_chain[[2]]$data <- "Alice pays Bob 100"
 
-validate_chain(tampered_chain)
+tibble(check = "Changed block 2 data", valid = validate_chain(tampered_chain))
 ```
 
 The validation fails because the declared hash of block 2 no longer matches
@@ -471,25 +591,25 @@ block 2 hash.
 tampered_rehashed <- tampered_chain
 tampered_rehashed[[2]]$hash <- hash_block(tampered_rehashed[[2]])
 
-validate_chain(tampered_rehashed)
+tibble(check = "Rehashed block 2 only",
+       valid = validate_chain(tampered_rehashed))
 ```
 
 This is the core of the chain idea. A historical alteration requires updating
 the altered block and every later block. In a real network, the attacker would
-also need the rest of the network to accept that altered history.
+also need the rest of the network to accept the altered history.
 
-The toy validation function checks structural consistency. Real systems add
-many more checks: transaction signatures, double-spending rules, block-size or
-block-weight limits, timestamp rules, consensus-specific constraints, and
-network-level acceptance. The simplified function is still useful because it
-shows the main idea: a valid ledger history is a sequence whose content and
-links agree.
+The teaching validation function checks structural consistency. Real systems add
+transaction signatures, double-spending rules, block-size or block-weight
+limits, timestamp rules, consensus-specific constraints, and network-level
+acceptance. The simplified function preserves the main idea: a valid ledger
+history is a sequence whose content and links agree.
 
 **Proof-of-work**
 
 Hashes are fast to compute, so hashing alone does not make history expensive
 to rewrite. Proof-of-work adds a cost. A miner searches for a nonce such that
-the block hash satisfies a difficulty condition. In the toy rule below, the
+the block hash satisfies a difficulty condition. In the teaching rule below, the
 hash must start with $d$ zeros:
 
 $$
@@ -502,9 +622,8 @@ leading zeros. Finding a valid nonce requires repeated trials.
 
 This asymmetry is the key idea. Producing the proof is costly; checking it is
 cheap. In a financial ledger, that asymmetry can be used to make accepted
-history costly to replace. The cost does not come from secrecy. Everyone can
-see the block and verify the proof. The cost comes from the amount of work
-needed to find an alternative valid chain.
+history costly to replace. The block remains visible and verifiable; the
+barrier is the amount of work needed to find an alternative valid chain.
 
 ```{r}
 proof_of_work <- function(block, difficulty) {
@@ -530,7 +649,13 @@ pow_block <- list(
   parent_hash = block3$hash
 )
 
-proof_of_work(pow_block, difficulty = 2)
+pow_result_example <- proof_of_work(pow_block, difficulty = 2)
+
+tibble(
+  difficulty = 2,
+  nonce = pow_result_example$nonce,
+  hash_start = substr(pow_result_example$hash, 1, 16)
+)
 ```
 
 The number of trials tends to rise quickly with difficulty.
@@ -546,7 +671,7 @@ difficulty_table
 
 ```{r}
 #| label: fig-pow-difficulty
-#| fig-cap: "Proof-of-work trials under increasing toy difficulty."
+#| fig-cap: "Proof-of-work trials under increasing teaching difficulty."
 #| fig-width: 7
 #| fig-height: 3.4
 ggplot(difficulty_table, aes(x = difficulty, y = nonce)) +
@@ -556,6 +681,10 @@ ggplot(difficulty_table, aes(x = difficulty, y = nonce)) +
   scale_y_continuous(labels = scales::comma) +
   labs(x = "Difficulty: required leading zeros", y = "Nonce found")
 ```
+
+The exact nonce depends on the block content, but the figure shows why
+difficulty matters: adding required leading zeros turns hashing into repeated
+search. Verification still requires a single hash check.
 
 Bitcoin is the canonical proof-of-work case. Miners gather valid transactions,
 construct candidate blocks, search for a valid nonce, and broadcast the block
@@ -569,11 +698,9 @@ Transactions are the financial content of blocks. A pending transaction has a
 sender, receiver, amount, and fee. The fee compensates the block producer for
 including the transaction.
 
-The ledger should reject a transaction for three basic reasons in this toy
-model. First, the sender may not have enough balance. Second, the transaction
-may have an invalid amount or fee. Third, the block may already be full. These
-are different failures. Insufficient balance is an accounting failure. A
-negative amount or fee is a rule failure. A full block is a capacity failure.
+In this teaching model, rejection has three sources: insufficient sender balance,
+invalid amount or fee, and limited block capacity. The first is an accounting
+failure, the second is a rule failure, and the third is a scarcity problem.
 
 ```{r}
 pending_transactions <- tibble(
@@ -597,7 +724,7 @@ T^* = \operatorname{top}_m(\mathrm{fee}_j)
 \quad \mathrm{among\ valid\ pending\ transactions}.
 $$
 
-The toy function below processes transactions in descending fee order and
+The teaching function below processes transactions in descending fee order and
 updates balances sequentially.
 
 ```{r}
@@ -650,22 +777,26 @@ block_selection <- select_for_block(
   miner = "Miner"
 )
 
-block_selection$accepted
-block_selection$rejected
+block_decision <- bind_rows(
+  mutate(block_selection$accepted, status = "Accepted"),
+  mutate(block_selection$rejected, status = "Rejected")
+) |>
+  arrange(desc(fee))
+
+block_decision
 block_selection$balances
 ```
 
-The accepted transactions are valid under the balance rule and fit inside the
-block capacity. The rejected transactions either fail the validity test or are
-left outside the block capacity in this simple example.
-
-This small example also shows why fees matter. If several valid transactions
-compete for limited block capacity, a fee ranking can influence which transfers
-enter first. In production systems the selection rule can be more complex, but
-the economic intuition is already visible: users pay for inclusion, and block
-producers respond to those incentives.
+The first output records the inclusion decision; the second output records the
+resulting balances. The accepted transactions are valid under the balance rule
+and fit inside the block capacity. The rejected transactions fail validation or
+remain outside the limited block space. The economic intuition is already
+visible: users pay for inclusion, and block producers respond to those
+incentives.
 
 ```{r}
+#| label: fig-fee-ranking
+#| fig-cap: "Fee ranking and block inclusion in a small pending pool."
 #| fig-width: 7
 #| fig-height: 3.2
 fee_competition <- pending_transactions |>
@@ -685,9 +816,8 @@ ggplot(fee_competition, aes(x = tx_id, y = fee, fill = status)) +
 
 This turns block construction into a market for scarce inclusion. The fee is
 small relative to the transfer amount, but it can decide timing when many
-transactions compete for limited capacity. This is one reason public blockchain
-data can be financially rich: pending transactions, fees, and inclusion delays
-reveal pressure on the settlement layer.
+transactions compete for limited capacity. Pending transactions, fees, and
+inclusion delays therefore reveal pressure on the settlement layer.
 
 ```{r}
 #| label: fig-wallet-balances
@@ -704,7 +834,9 @@ ggplot(balance_plot, aes(x = wallet, y = balance, fill = state)) +
   labs(x = "Wallet", y = "Balance", fill = "")
 ```
 
-The miner balance increases by the sum of the fees included in the block:
+The balance plot connects block inclusion to state change. Senders lose the
+amount plus fee, receivers gain the transferred amount, and the next formula
+isolates the miner's fee reward in this simplified example:
 
 $$
 \mathrm{Reward}_{\mathrm{fees}}
@@ -712,11 +844,14 @@ $$
 $$
 
 ```{r}
-sum(block_selection$accepted$fee)
+fee_reward <- sum(block_selection$accepted$fee)
+
+tibble(component = "Transaction fees", reward = fee_reward)
 ```
 
 In Bitcoin, miners can also receive a block subsidy according to the issuance
-schedule. In this toy account-based model, only transaction fees are shown.
+schedule. In this teaching account-based model, only transaction fees are
+shown.
 
 **Mining a transaction block**
 
@@ -737,9 +872,21 @@ candidate_block$hash <- pow_result$hash
 
 transaction_chain <- c(chain, list(candidate_block))
 
-validate_chain(transaction_chain)
-candidate_block
+mined_block_summary <- tibble(
+  block = candidate_block$number,
+  transactions = nrow(candidate_block$data),
+  nonce = candidate_block$nonce,
+  parent_hash = substr(candidate_block$parent_hash, 1, 12),
+  block_hash = substr(candidate_block$hash, 1, 12),
+  valid_chain = validate_chain(transaction_chain)
+)
+
+mined_block_summary
 ```
+
+The summary keeps the mined block readable while preserving the pieces that
+matter for validation: transaction count, nonce, parent hash, block hash, and
+chain status.
 
 Changing a transaction after the block is mined breaks the chain.
 
@@ -747,46 +894,104 @@ Changing a transaction after the block is mined breaks the chain.
 altered_transaction_chain <- transaction_chain
 altered_transaction_chain[[4]]$data$amount[1] <- 250
 
-validate_chain(altered_transaction_chain)
+tibble(check = "Altered mined transaction",
+       valid = validate_chain(altered_transaction_chain))
 ```
 
-This example connects three financial objects: pending transactions, balances,
-and the accepted ledger state. The hash does not make the transaction true by
-itself. The validation rules, signatures, balance checks, consensus rule, and
-network acceptance determine which transactions enter the ledger.
+This example connects pending transactions, balances, and the accepted ledger
+state. The hash commits to the candidate block; validation rules, signatures,
+balance checks, consensus, and network acceptance determine which transactions
+enter the ledger.
 
-The example also separates two views of the same system. The transaction view
-asks which transfers are accepted. The state view asks what the balances are
-after those transfers. Financial applications need both views: the history is
-needed for auditability, while the state is needed for valuation, reporting,
-and risk controls.
+It also separates two views of the same system. The transaction view asks which
+transfers are accepted. The state view asks what the balances are after those
+transfers. Financial applications need both: history for auditability and state
+for valuation, reporting, and risk controls.
 
 **Digital signatures**
 
-A transaction also needs authorization. Digital signatures use public-key
-cryptography to connect a message with a private key. The sender signs the
-transaction with a private key. Anyone with the corresponding public key can
-verify that the signature matches the message.
+A transaction also needs authorization. The ledger can define valid balances,
+fees, and block rules, but it still needs evidence that the owner of the value
+approved the transfer. Public-key cryptography supplies that authorization
+layer.
 
-This provides two properties:
+The basic object is a key pair:
 
-* authenticity: the signature matches the public key;
-* integrity: changing the message invalidates the signature.
+$$
+(\mathrm{sk}, \mathrm{pk}),
+$$
 
-Confidentiality is a separate issue. A signature verifies who authorized a
-message and whether it changed. Encryption hides message contents from parties
-that do not have the decryption key.
+where $\mathrm{sk}$ is the private key and $\mathrm{pk}$ is the public key. The
+private key must be kept secret. The public key can be shared because it is used
+for verification. A simplified signature workflow is:
 
-In ledger terms, a signature answers a narrow question: did the holder of the
-relevant private key authorize this exact message? It does not prove that the
-sender is a real-world person, that the transfer is legal, or that the asset
-behind a token exists. Those questions require identity, legal, operational,
-and governance layers outside the cryptographic signature.
+$$
+m = \mathrm{serialize}(\mathrm{transaction}),
+\qquad
+h = H(m),
+\qquad
+\sigma = \mathrm{Sign}_{\mathrm{sk}}(h),
+$$
+
+and verification checks:
+
+$$
+\mathrm{Verify}_{\mathrm{pk}}(h,\sigma)\in\{\mathrm{TRUE},\mathrm{FALSE}\}.
+$$
+
+This gives two properties that matter for a financial ledger:
+
+* authenticity: the signature matches the public key associated with the
+  spending authority;
+* integrity: changing the signed message invalidates the signature.
+
+The ledger question is narrow and powerful: did the holder of the relevant
+private key authorize this exact transaction message? That question is smaller
+than legal identity, investor eligibility, tax treatment, or the existence of an
+off-chain asset. Those issues require identity, legal, operational, and
+governance layers around the cryptographic system.
+
+The code below should be read as one security workflow:
+
+* create a key pair;
+* sign an exact transaction message;
+* verify the signature with the public key;
+* alter the message and see verification fail;
+* separate signature logic from confidentiality.
+
+The next example uses RSA keys through the <tt>`openssl`</tt> package. This is
+a teaching choice. Bitcoin signatures use elliptic-curve schemes, including
+ECDSA over secp256k1 and Schnorr signatures for Taproot outputs. The teaching
+idea is the same: one key signs, the corresponding public key verifies, and any
+change to the signed message breaks verification.
 
 ```{r}
-alice_key <- rsa_keygen()
+alice_key <- rsa_keygen(bits = 2048)
 alice_public_key <- alice_key$pubkey
 
+key_roles <- tibble(
+  object = c("Private key", "Public key"),
+  kept_secret = c(TRUE, FALSE),
+  can_sign = c(TRUE, FALSE),
+  can_verify = c(TRUE, TRUE),
+  financial_role = c(
+    "Controls spending authority",
+    "Allows others to verify authorization"
+  )
+)
+
+key_roles
+```
+
+The private key is the sensitive asset. The public key can travel through the
+network because it is used to check signatures. A wallet, custodian, or
+exchange may manage this key material for a user, but the economic implication
+is the same: control of the private key controls the ability to authorize
+spending.
+
+Now create a transaction message and sign it.
+
+```{r}
 signed_transaction <- list(
   sender = "Alice",
   receiver = "Bob",
@@ -795,18 +1000,35 @@ signed_transaction <- list(
 )
 
 serialized_transaction <- serialize(signed_transaction, NULL)
+transaction_digest <- sha256(serialized_transaction)
 signature <- signature_create(serialized_transaction, sha256, key = alice_key)
 
-signature_verify(
+tibble(
+  object = c("Serialized transaction", "SHA-256 digest", "Digital signature"),
+  bytes = c(length(serialized_transaction),
+            length(transaction_digest),
+            length(signature))
+)
+```
+
+The signature is a compact object attached to the transaction data. Anyone with
+Alice's public key can verify the signature.
+
+```{r}
+signature_valid <- signature_verify(
   serialized_transaction,
   signature,
   sha256,
   pubkey = alice_public_key
 )
+
+tibble(message = "Original signed transaction",
+       valid_signature = signature_valid)
 ```
 
 Now alter the transaction and verify the old signature against the altered
-message.
+message. The amount and fee are unchanged, but the receiver changes from Bob to
+Carol.
 
 ```{r}
 altered_signed_transaction <- list(
@@ -818,7 +1040,7 @@ altered_signed_transaction <- list(
 
 altered_serialized_transaction <- serialize(altered_signed_transaction, NULL)
 
-tryCatch(
+altered_signature_valid <- tryCatch(
   signature_verify(
     altered_serialized_transaction,
     signature,
@@ -827,11 +1049,126 @@ tryCatch(
   ),
   error = function(e) FALSE
 )
+
+tibble(message = "Altered receiver",
+       valid_signature = altered_signature_valid)
 ```
 
 The altered message fails verification. This is why signatures are part of the
 financial logic of a blockchain: the ledger should only accept transactions
 authorized by the holder of the relevant private key.
+
+**Confidentiality and encryption**
+
+Signatures and encryption solve different problems. A signature answers who
+authorized a message and whether the message changed. Encryption hides message
+contents from parties that do not hold the decryption key.
+
+In a public-key encryption system, a sender can encrypt a message with the
+receiver's public key. The receiver decrypts it with the receiver's private
+key:
+
+$$
+c = \mathrm{Enc}_{\mathrm{pk}_B}(m),
+\qquad
+m = \mathrm{Dec}_{\mathrm{sk}_B}(c).
+$$
+
+Bitcoin transactions are usually public enough for network validation, so
+ordinary transaction data is visible to nodes. The encryption example below is
+therefore a teaching example for confidentiality. It clarifies why a private
+key is valuable: the key can authorize messages through signatures and can
+decrypt messages that were encrypted to the matching public key.
+
+```{r}
+bob_key <- rsa_keygen(bits = 2048)
+bob_public_key <- bob_key$pubkey
+
+payment_note <- charToRaw("Alice pays Bob 10 with fee 0.1")
+
+cipher_text <- rsa_encrypt(payment_note, bob_public_key)
+recovered_note <- rsa_decrypt(cipher_text, bob_key)
+
+tibble(
+  object = c("Plain message", "Encrypted message", "Recovered message"),
+  bytes = c(length(payment_note), length(cipher_text), length(recovered_note)),
+  readable = c(rawToChar(payment_note), "<cipher text>", rawToChar(recovered_note))
+)
+```
+
+The encrypted message is longer and unreadable as ordinary text. The receiver's
+private key recovers the original message.
+
+```{r}
+tibble(check = "Recovered message matches original",
+       valid = identical(payment_note, recovered_note))
+```
+
+In production systems, large messages are commonly encrypted with a symmetric
+key, and the symmetric key is protected with public-key encryption. The small
+RSA example is still useful because it separates three ideas that are often
+mixed together:
+
+| Object | Main question | Financial meaning |
+|---|---|---|
+| Hash | Did the data change? | Integrity and compact commitment |
+| Signature | Who authorized this exact data? | Spending authority and non-repudiation in the ledger model |
+| Encryption | Who can read the data? | Confidentiality and access control |
+| Private-key custody | Who can use the secret key? | Operational control over value |
+
+This separation matters for blockchain finance. A public ledger can allow
+verification while still creating privacy problems. A signature can prove that
+a key authorized a transaction while leaving the real-world owner of the key
+uncertain. Encryption can protect message contents while leaving metadata,
+timing, amounts, or network relationships exposed.
+
+**Custody and key risk**
+
+Private-key custody turns cryptography into a financial risk. If the private
+key is stolen, an attacker can authorize transfers. If the private key is lost,
+the owner may lose the ability to spend. If a custodian controls the private
+key, the user faces operational, legal, and counterparty risk. These risks are
+different from market risk, but they can dominate the financial outcome.
+
+```{r}
+custody_scenarios <- tibble(
+  scenario = c(
+    "Self-custody",
+    "Lost private key",
+    "Stolen private key",
+    "Exchange custody",
+    "Two-of-three multisignature"
+  ),
+  who_can_sign = c(
+    "The holder of the wallet key",
+    "Nobody, if the key cannot be recovered",
+    "The attacker",
+    "The exchange or custodian",
+    "Any two authorized key holders"
+  ),
+  main_financial_risk = c(
+    "Operational mistakes by the owner",
+    "Permanent loss of spending ability",
+    "Unauthorized transfer",
+    "Counterparty, legal, and operational failure",
+    "Coordination failure or compromised signers"
+  )
+)
+
+custody_scenarios
+```
+
+Multisignature arrangements are one way to reduce single-key failure. A
+two-of-three setup can require any two authorized keys to sign before funds
+move. That design changes the operational problem from protecting one secret to
+coordinating several secrets. It can reduce theft and loss risk, but it adds
+governance and recovery procedures.
+
+For this chapter, the important point is that security is part of the financial
+model. The ledger state says who controls value according to protocol rules.
+The signature says which key authorized a transaction. Custody determines who
+can use that key in practice. Privacy determines how much of the transfer
+history can be linked to people, institutions, or strategies.
 
 **Network and consensus**
 
@@ -846,86 +1183,162 @@ proof-of-work workflow is:
 * nodes accept the block if the proof and the transactions are valid;
 * new blocks build on the accepted parent hash.
 
+The same workflow can be represented as a graph. Let $a_{ij}=1$ when a message
+can move from node $i$ to node $j$, and $a_{ij}=0$ otherwise. A simple measure
+of local connectivity is the total degree:
+
+$$
+d_i = \sum_j a_{ij} + \sum_j a_{ji}.
+$$
+
+In the next figure, node size is proportional to $d_i$. Wallets are peripheral,
+while relay, full-node, and mining nodes sit closer to the center of message
+propagation.
+
 ```{r}
 #| label: fig-network-flow
 #| fig-cap: "A simplified peer-to-peer blockchain network."
 #| fig-width: 8.6
-#| fig-height: 2.8
+#| fig-height: 4.4
 network_nodes <- tibble(
-  id = c("wallet_a", "wallet_b", "wallet_c", "pool",
-         "miner_1", "miner_2", "node_1", "node_2", "node_3", "ledger"),
-  label = c("Wallet A", "Wallet B", "Wallet C", "Pending\npool",
-            "Miner 1", "Miner 2", "Full node\n1", "Full node\n2",
-            "Full node\n3", "Accepted\nledger"),
-  type = c("Wallet", "Wallet", "Wallet", "Pool",
-           "Miner", "Miner", "Node", "Node", "Node", "Ledger"),
-  x = c(0, 0, 0, 2.2, 4.3, 4.3, 6.5, 6.5, 6.5, 8.7),
-  y = c(3, 2, 1, 2, 2.7, 1.3, 3, 2, 1, 2)
+  id = c("wallet_a", "wallet_b", "wallet_c", "exchange",
+         "relay_1", "relay_2", "full_1", "full_2", "full_3",
+         "miner_1", "miner_2", "chain"),
+  label = c("Wallet A", "Wallet B", "Wallet C", "Exchange\nnode",
+            "Relay\nnode 1", "Relay\nnode 2", "Full\nnode 1",
+            "Full\nnode 2", "Full\nnode 3", "Miner 1", "Miner 2",
+            "Accepted\nchain"),
+  type = c("Wallet", "Wallet", "Wallet", "Service",
+           "Relay", "Relay", "Full node", "Full node", "Full node",
+           "Miner", "Miner", "Ledger"),
+  x = c(0.2, 0.6, 0.2, 0.9, 2.5, 3.0, 4.3, 4.6, 4.0, 6.0, 6.3, 7.9),
+  y = c(3.4, 2.2, 1.0, 4.4, 3.2, 1.5, 4.0, 2.4, 0.8, 3.5, 1.4, 2.4)
 )
 
 network_edges <- tibble(
-  from = c("wallet_a", "wallet_b", "wallet_c", "pool", "pool",
-           "miner_1", "miner_2", "miner_1", "miner_2",
-           "node_1", "node_2", "node_3"),
-  to = c("pool", "pool", "pool", "miner_1", "miner_2",
-         "node_1", "node_3", "node_2", "node_2",
-         "ledger", "ledger", "ledger")
-) |>
-  left_join(network_nodes |> select(from = id, x, y), by = "from") |>
-  rename(x_from = x, y_from = y) |>
-  left_join(network_nodes |> select(to = id, x, y), by = "to") |>
-  rename(x_to = x, y_to = y)
+  from = c("wallet_a", "wallet_b", "wallet_c", "exchange",
+           "exchange", "relay_1", "relay_1", "relay_1", "relay_2",
+           "relay_2", "full_1", "full_2", "full_3", "full_1",
+           "full_2", "full_3", "miner_1", "miner_2", "miner_1",
+           "miner_2", "relay_2"),
+  to = c("relay_1", "relay_1", "full_3", "relay_2",
+         "full_2", "full_1", "full_2", "miner_1", "full_2",
+         "miner_2", "relay_2", "relay_1", "relay_2", "chain",
+         "chain", "chain", "full_1", "full_2", "chain",
+         "chain", "full_3"),
+  relation = c("Transaction relay", "Transaction relay",
+               "Transaction relay", "Transaction relay",
+               "Transaction relay", "Peer relay", "Peer relay",
+               "Candidate block", "Peer relay", "Candidate block",
+               "Peer relay", "Peer relay", "Peer relay",
+               "Validation state", "Validation state",
+               "Validation state", "Block relay", "Block relay",
+               "Validation state", "Validation state", "Peer relay"),
+  weight = c(1.0, 1.0, 0.7, 1.1, 0.8, 0.9, 1.0, 1.4, 0.9, 1.3,
+             0.8, 0.8, 0.7, 1.2, 1.2, 1.0, 1.3, 1.3, 1.5, 1.5, 0.7)
+)
 
-ggplot() +
-  geom_segment(
-    data = network_edges,
-    aes(x = x_from, y = y_from, xend = x_to, yend = y_to),
-    arrow = grid::arrow(length = grid::unit(0.12, "inches")),
-    color = "#7F8C8D", linewidth = 0.65, alpha = 0.9
+network_graph <- igraph::graph_from_data_frame(
+  d = network_edges,
+  directed = TRUE,
+  vertices = network_nodes
+)
+
+igraph::V(network_graph)$degree <- igraph::degree(network_graph, mode = "all")
+
+network_tbl_graph <- tidygraph::as_tbl_graph(network_graph)
+
+ggraph(
+  network_tbl_graph,
+  layout = "manual",
+  x = igraph::V(network_graph)$x,
+  y = igraph::V(network_graph)$y
+) +
+  geom_edge_link(
+    aes(edge_width = weight, edge_colour = relation),
+    arrow = grid::arrow(length = grid::unit(0.11, "inches")),
+    end_cap = circle(5, "mm"),
+    start_cap = circle(5, "mm"),
+    alpha = 0.8
   ) +
-  geom_point(
-    data = network_nodes,
-    aes(x = x, y = y, fill = type),
-    shape = 21, size = 12, color = "white", stroke = 1.1
+  geom_node_point(
+    aes(size = degree, fill = type),
+    shape = 21, color = "white", stroke = 1.1
   ) +
-  geom_text(
-    data = network_nodes,
-    aes(x = x, y = y, label = label),
-    size = 2.95, lineheight = 0.88
+  geom_node_text(
+    aes(label = label),
+    size = 2.8, lineheight = 0.9
   ) +
+  scale_edge_width(range = c(0.35, 1.9), guide = "none") +
+  scale_edge_colour_manual(values = c(
+    "Transaction relay" = "#2874A6",
+    "Peer relay" = "#566573",
+    "Candidate block" = "#B03A2E",
+    "Block relay" = "#196F3D",
+    "Validation state" = "#B7950B"
+  )) +
   scale_fill_manual(values = c(
     "Wallet" = "#D6EAF8",
-    "Pool" = "#FCF3CF",
+    "Service" = "#FCF3CF",
+    "Relay" = "#EAECEE",
+    "Full node" = "#D5F5E3",
     "Miner" = "#FADBD8",
-    "Node" = "#D5F5E3",
     "Ledger" = "#E8DAEF"
   )) +
-  coord_cartesian(xlim = c(-0.45, 9.1), ylim = c(0.65, 3.35), expand = FALSE) +
-  guides(fill = "none") +
+  scale_size(range = c(8, 18), guide = "none") +
+  coord_cartesian(xlim = c(-0.25, 8.3), ylim = c(0.35, 4.8),
+                  expand = FALSE, clip = "off") +
+  guides(
+    edge_colour = guide_legend(title = "Message"),
+    fill = guide_legend(title = "Node type")
+  ) +
   theme_void() +
-  theme(plot.margin = margin(0, 0, 0, 0))
+  theme(
+    legend.position = "bottom",
+    legend.box = "vertical",
+    plot.margin = margin(4, 6, 4, 6)
+  )
 ```
 
-The diagram is a simplified network view. Wallets submit transactions to the
-pending pool. Miners collect transactions and propose blocks. Full nodes verify
-the candidate block and the ledger rules. The accepted ledger represents the
-history that nodes are willing to extend.
+The diagram shows how ledger validity depends on message propagation. Wallets
+and service nodes inject transactions from the edge of the graph. Relay and
+full nodes move messages across the network. Miners receive candidate
+transactions, propose blocks, and broadcast block information back to
+validating nodes. The accepted chain is the history that nodes are willing to
+extend after verification.
+
+The useful part of this graph is the topology. The same transaction can reach
+the accepted ledger through several paths, and nodes with more connections have
+more influence over propagation. A valid transaction still has to move through
+a communication layer before it becomes part of the history that participants
+observe.
 
 Consensus is the rule that tells nodes which valid history to extend. In
 Bitcoin, the accepted history is tied to accumulated proof-of-work. The economic
 security argument is that rewriting history requires controlling enough
 computational work to replace the accepted chain, which is costly.
 
-This is also where incentives matter. Fees and block rewards encourage miners
-to spend resources on valid blocks. Invalid blocks waste effort because nodes
+Incentives complete the mechanism. Fees and block rewards encourage miners to
+spend resources on valid blocks. Invalid blocks waste effort because nodes
 reject them.
+
+The generic lab now has enough pieces to read Bitcoin more carefully:
+
+| Toy mechanism | Bitcoin object | Financial reading |
+|---|---|---|
+| Account balance table | UTXO set reconstructed from unspent outputs | Spendable value controlled by keys |
+| Toy transaction | Signed transaction with inputs, outputs, and fee | Payment instruction and settlement cost |
+| Block with parent hash | Block header linked to the previous block | Commitment to accepted history |
+| Toy proof-of-work difficulty | Network difficulty target | Cost of rewriting recent settlement |
+| Fee reward | Fees plus protocol-defined subsidy | Miner incentive and block-space allocation |
+| Peer-to-peer message graph | Wallets, relays, full nodes, miners, and services | Propagation, validation, and observability |
 
 ## Bitcoin case: a proof-of-work ledger
 
-At this point the chapter has built a generic blockchain mechanism. Bitcoin is
-the next step because it turns that mechanism into a specific monetary and
-payment system. Its design connects payments, proof-of-work, scarce issuance,
-public verification, and private-key custody [@nakamoto2008bitcoin].
+With that map in place, Bitcoin can be read as a specific monetary and payment
+system built from ledger, hash, signature, network, and proof-of-work pieces.
+Its design connects payments, scarce issuance, public verification, private-key
+custody, and costly history rewriting [@nakamoto2008bitcoin].
 
 The generic model and Bitcoin share the same broad workflow:
 
@@ -943,89 +1356,65 @@ $$
 \mathrm{accepted\ ledger\ history}.
 $$
 
-The differences are important:
+The bridge above gives the correspondence. The main simplifications are:
 
 | Generic model in this chapter | Bitcoin case |
 |---|---|
 | Account balances are stored directly for teaching clarity | Balances are inferred from unspent transaction outputs |
 | Transactions move amounts from sender to receiver | Transactions consume previous outputs and create new outputs |
-| The miner receives transaction fees in the toy balance table | Miners can receive fees and a protocol-defined block subsidy |
+| The miner receives transaction fees in the teaching balance table | Miners can receive fees and a protocol-defined block subsidy |
 | Difficulty is a small number of leading zeros | Difficulty adjusts so blocks arrive near the protocol target interval |
 | Finality is shown as a valid chain in R | Settlement confidence grows as more blocks build on top |
 
-The relevant Bitcoin network roles can be represented as nodes rather than as a
-single line of steps. A wallet creates a signed transaction and broadcasts it.
-The mempool is the waiting area for valid pending transactions. Miners convert
-some of those transactions into candidate blocks. Full nodes check the proposed
-block against the consensus rules. Exchanges, custodians, merchants, and block
-explorers sit outside the core protocol while remaining financially important
-as common points of access, monitoring, and settlement interpretation.
+A table also helps separate protocol roles from market access roles:
 
-```{r}
-#| label: fig-bitcoin-network-roles
-#| fig-cap: "Relevant roles in a simplified Bitcoin network."
-#| fig-width: 8.4
-#| fig-height: 2.8
-bitcoin_nodes <- tibble(
-  id = c("payer", "receiver", "mempool", "miner", "full_nodes",
-         "chain", "exchange", "explorer"),
-  label = c("Payer\nwallet", "Receiver\nwallet", "Mempool", "Miner",
-            "Full\nnodes", "Accepted\nchain", "Exchange/\ncustodian",
-            "Explorer/\nanalytics"),
-  type = c("Wallet", "Wallet", "Pool", "Miner", "Node",
-           "Ledger", "Access", "Analytics"),
-  x = c(0.4, 7.7, 2.3, 4.1, 5.9, 7.7, 0.4, 5.9),
-  y = c(2.5, 0.8, 1.65, 2.45, 1.65, 1.65, 0.8, 0.45)
-)
+| Role | Protocol or market function | Financial reading |
+|---|---|---|
+| Wallet | Creates and signs transactions | Custody and spending authority |
+| Mempool | Holds valid pending transactions before block inclusion | Fee pressure and settlement delay |
+| Miner | Selects transactions and searches for proof-of-work | Incentives and block-space allocation |
+| Full node | Verifies blocks and transactions against consensus rules | Independent validation |
+| Accepted chain | Stores the history participants extend | Settlement reference |
+| Exchange or custodian | Provides market access and often manages keys | Counterparty and operational risk |
+| Explorer or analytics tool | Makes public transaction data searchable | Monitoring, attribution, and compliance |
 
-bitcoin_edges <- tibble(
-  from = c("payer", "mempool", "miner", "full_nodes", "chain",
-           "exchange", "chain", "full_nodes"),
-  to = c("mempool", "miner", "full_nodes", "chain", "receiver",
-         "mempool", "explorer", "exchange")
-) |>
-  left_join(bitcoin_nodes |> select(from = id, x, y), by = "from") |>
-  rename(x_from = x, y_from = y) |>
-  left_join(bitcoin_nodes |> select(to = id, x, y), by = "to") |>
-  rename(x_to = x, y_to = y)
+This table separates protocol roles from financial access roles. A price, a
+wallet balance, a transaction status, and an exchange account are produced by
+different parts of the system. Treating them as one object makes Bitcoin look
+flatter than it is.
 
-ggplot() +
-  geom_segment(
-    data = bitcoin_edges,
-    aes(x = x_from, y = y_from, xend = x_to, yend = y_to),
-    arrow = grid::arrow(length = grid::unit(0.11, "inches")),
-    color = "#7F8C8D", linewidth = 0.6, alpha = 0.9
-  ) +
-  geom_point(
-    data = bitcoin_nodes,
-    aes(x = x, y = y, fill = type),
-    shape = 21, size = 12, color = "white", stroke = 1.1
-  ) +
-  geom_text(
-    data = bitcoin_nodes,
-    aes(x = x, y = y, label = label),
-    size = 2.85, lineheight = 0.88
-  ) +
-  scale_fill_manual(values = c(
-    "Wallet" = "#D6EAF8",
-    "Pool" = "#FCF3CF",
-    "Miner" = "#FADBD8",
-    "Node" = "#D5F5E3",
-    "Ledger" = "#E8DAEF",
-    "Access" = "#FDEBD0",
-    "Analytics" = "#EAECEE"
-  )) +
-  coord_cartesian(xlim = c(-0.2, 8.2), ylim = c(0.05, 2.95), expand = FALSE) +
-  guides(fill = "none") +
-  theme_void() +
-  theme(plot.margin = margin(0, 0, 0, 0))
-```
+A Bitcoin transaction also has an operational path:
 
-The diagram separates protocol roles from financial access roles. Wallets,
-miners, full nodes, and the accepted chain describe the transaction validation
-path. Exchanges and custodians describe how many users actually enter the
-system. Explorers and analytics tools describe how public data becomes
-observable, searchable, and useful for monitoring.
+| Stage | Mechanism | Financial consequence |
+|---|---|---|
+| Wallet construction | The wallet selects spendable outputs, creates new outputs, and signs the transaction | Spending authority and fee choice |
+| Mempool relay | Nodes hold valid pending transactions according to local policy | Pending settlement and public fee pressure |
+| Block construction | Miners select transactions subject to block weight and fee incentives | Scarce block space |
+| Coinbase transaction | The miner includes a special transaction that pays the subsidy and collected fees | Miner revenue and issuance rule |
+| Confirmation | The transaction is included in a block, then new blocks build above it | Increasing settlement confidence |
+
+Fee-rate thinking is useful because block space is measured by transaction size
+as well as by amount paid. A compact model is:
+
+$$
+\mathrm{FeeRate}_j =
+\frac{\mathrm{Fee}_j}{\mathrm{VirtualBytes}_j}.
+$$
+
+Miners compare valid pending transactions under block-space constraints, so a
+large transaction may need a larger absolute fee to offer the same fee rate as
+a smaller transaction. The miner's block revenue combines the protocol-defined
+subsidy and the fees from included transactions:
+
+$$
+\mathrm{MinerRevenue}_t =
+\mathrm{Subsidy}_t + \sum_{j\in B_t}\mathrm{Fee}_j.
+$$
+
+The subsidy follows the issuance schedule, while the fee component changes with
+demand for block space. This is why mempool conditions, fee rates, and
+confirmation depth are financial variables, even before looking at the market
+price of bitcoin.
 
 The account-based model says that Alice has a balance and can send part of it.
 Bitcoin uses a UTXO model. A UTXO is an unspent transaction output. If Alice
@@ -1048,10 +1437,225 @@ $$
 \mathrm{Fee} = \sum \mathrm{Inputs} - \sum \mathrm{Outputs}.
 $$
 
-This differs from the account example above, where the fee was an explicit
-column. The economic meaning is similar: the sender gives up value, the
-receiver obtains value, and the miner has an incentive to include the
-transaction.
+In the account example above, the fee was an explicit column. Here the fee is
+the unassigned remainder after inputs and outputs are compared. The economic
+meaning is similar: the sender gives up value, the receiver obtains value, and
+the miner has an incentive to include the transaction.
+
+The same example can be read as a small UTXO table:
+
+| Side | Reference | Amount (BTC) | Controlled by | Role |
+|---|---:|---:|---|---|
+| Input | Previous output 1 | 0.80 | Alice key | Spent source of value |
+| Input | Previous output 2 | 0.40 | Alice key | Spent source of value |
+| Output | New output 1 | 0.90 | Bob key | Payment to receiver |
+| Output | New output 2 | 0.28 | Alice key | Change back to sender |
+| Fee | Implicit remainder | 0.02 | Miner | Incentive for inclusion |
+
+The table balances because inputs of 1.20 BTC fund outputs of 1.18 BTC and an
+implicit fee of 0.02 BTC. After the transaction is accepted, the two previous
+outputs are spent, and only the new outputs remain available for future
+transactions.
+
+**Bitcoin transactions as a network**
+
+A UTXO ledger can also be read as a network. Nodes represent wallets,
+addresses, services, or output clusters. Directed edges represent value moving
+from one node to another. The edge weight can be the BTC amount. This view is
+useful because it changes the question from a single payment to a system of
+relationships: which nodes concentrate flow, which nodes mostly receive, which
+nodes mostly distribute, and where fees or change outputs appear.
+
+The next example uses a small synthetic transaction network. It is not meant to
+identify real addresses. Its purpose is to show how network tools can turn
+ledger data into a visual model. This is the point where the chapter moves from
+blockchain as a validation mechanism to blockchain as analyzable financial
+data.
+
+```{r}
+#| label: fig-utxo-transaction-network
+#| fig-cap: "A synthetic UTXO transaction network with BTC-weighted flows."
+#| fig-width: 8.4
+#| fig-height: 4.8
+utxo_nodes <- tibble(
+  name = c("coinbase", "miner", "exchange", "custodian", "alice", "bob",
+           "merchant", "change_a", "cold_storage", "fee_pool"),
+  label = c("Coinbase\nreward", "Miner", "Exchange\nhot wallet",
+            "Custodian", "Alice\nwallet", "Bob\nwallet",
+            "Merchant", "Change\naddress A", "Cold\nstorage",
+            "Fee\npool"),
+  type = c("Protocol", "Miner", "Custody", "Custody", "Wallet", "Wallet",
+           "Merchant", "Change", "Storage", "Fees"),
+  x = c(0.3, 1.6, 3.0, 4.4, 5.6, 5.6, 7.0, 7.0, 8.2, 3.0),
+  y = c(2.9, 2.9, 2.1, 2.9, 3.4, 1.8, 2.7, 1.1, 1.6, 0.8)
+)
+
+utxo_edges <- tibble(
+  from = c("coinbase", "miner", "miner", "exchange", "exchange",
+           "exchange", "custodian", "alice", "alice", "bob", "bob",
+           "merchant", "change_a", "exchange"),
+  to = c("miner", "exchange", "fee_pool", "alice", "bob",
+         "custodian", "exchange", "merchant", "change_a", "merchant",
+         "fee_pool", "exchange", "cold_storage", "fee_pool"),
+  btc = c(6.25, 2.40, 0.06, 1.25, 0.80, 1.10, 0.75,
+          0.42, 0.81, 0.20, 0.02, 0.55, 0.60, 0.04),
+  role = c("Block reward", "Distribution", "Fee", "Withdrawal",
+           "Withdrawal", "Custody", "Rebalance", "Payment", "Change",
+           "Payment", "Fee", "Settlement", "Savings", "Fee")
+)
+
+utxo_graph <- igraph::graph_from_data_frame(
+  d = utxo_edges,
+  directed = TRUE,
+  vertices = utxo_nodes
+)
+
+igraph::V(utxo_graph)$in_value <- igraph::strength(
+  utxo_graph,
+  mode = "in",
+  weights = igraph::E(utxo_graph)$btc
+)
+igraph::V(utxo_graph)$out_value <- igraph::strength(
+  utxo_graph,
+  mode = "out",
+  weights = igraph::E(utxo_graph)$btc
+)
+igraph::V(utxo_graph)$total_value <-
+  igraph::V(utxo_graph)$in_value + igraph::V(utxo_graph)$out_value
+igraph::V(utxo_graph)$degree <- igraph::degree(utxo_graph, mode = "all")
+
+utxo_tbl_graph <- tidygraph::as_tbl_graph(utxo_graph)
+
+ggraph(
+  utxo_tbl_graph,
+  layout = "manual",
+  x = igraph::V(utxo_graph)$x,
+  y = igraph::V(utxo_graph)$y
+) +
+  geom_edge_link(
+    aes(edge_width = btc, edge_colour = role),
+    arrow = grid::arrow(length = grid::unit(0.12, "inches")),
+    end_cap = circle(5, "mm"),
+    start_cap = circle(5, "mm"),
+    alpha = 0.82
+  ) +
+  geom_node_point(
+    aes(size = total_value, fill = type),
+    shape = 21, color = "white", stroke = 1.1
+  ) +
+  geom_node_text(
+    aes(label = label),
+    size = 2.75, lineheight = 0.86
+  ) +
+  scale_edge_width(range = c(0.35, 2.7), guide = "none") +
+  scale_edge_colour_manual(values = c(
+    "Block reward" = "#117A65",
+    "Distribution" = "#2874A6",
+    "Fee" = "#922B21",
+    "Withdrawal" = "#7D3C98",
+    "Custody" = "#CA6F1E",
+    "Rebalance" = "#566573",
+    "Payment" = "#1F618D",
+    "Change" = "#85929E",
+    "Settlement" = "#196F3D",
+    "Savings" = "#B7950B"
+  )) +
+  scale_fill_manual(values = c(
+    "Protocol" = "#D6EAF8",
+    "Miner" = "#FADBD8",
+    "Custody" = "#FDEBD0",
+    "Wallet" = "#D5F5E3",
+    "Merchant" = "#E8DAEF",
+    "Change" = "#EAECEE",
+    "Storage" = "#FCF3CF",
+    "Fees" = "#F5B7B1"
+  )) +
+  scale_size(range = c(8, 22), guide = "none") +
+  coord_cartesian(xlim = c(-0.2, 8.8), ylim = c(0.35, 3.75),
+                  expand = FALSE, clip = "off") +
+  guides(edge_colour = guide_legend(title = "Edge role"),
+         fill = guide_legend(title = "Node type")) +
+  theme_void() +
+  theme(
+    legend.position = "bottom",
+    legend.box = "vertical",
+    plot.margin = margin(6, 6, 6, 6)
+  )
+```
+
+The network view carries a different kind of explanation. The exchange and the
+miner appear as high-flow nodes because several edges pass through them. Alice
+creates both a payment edge and a change edge. The fee pool collects small
+edges that would be easy to miss in a table. A merchant receives payments and
+later settles part of the balance back to an exchange. These are financial
+roles, even in a synthetic network.
+
+This figure should be read as an accounting map. The edge width shows value,
+the edge color shows transaction role, and the node size shows total flow
+handled by each participant. It makes three concepts visible at once: issuance
+through the coinbase reward, payments through wallet-to-merchant edges, and
+operational concentration through the exchange and miner nodes.
+
+We can summarize the same graph numerically. Let $w_{ij}$ be the BTC value sent
+from node $i$ to node $j$. The incoming and outgoing value of node $i$ are:
+
+$$
+\mathrm{InValue}_i = \sum_j w_{ji},
+\qquad
+\mathrm{OutValue}_i = \sum_j w_{ij}.
+$$
+
+```{r}
+network_node_summary <- igraph::as_data_frame(utxo_graph, what = "vertices") |>
+  as_tibble() |>
+  transmute(
+    node = gsub("\n", " ", label),
+    type,
+    in_value = round(in_value, 2),
+    out_value = round(out_value, 2),
+    total_value = round(total_value, 2),
+    degree
+  ) |>
+  arrange(desc(total_value))
+
+network_node_summary
+```
+
+```{r}
+#| label: fig-utxo-node-flow
+#| fig-cap: "Incoming plus outgoing BTC by node in the synthetic UTXO network."
+#| fig-width: 7.4
+#| fig-height: 3.6
+network_node_summary |>
+  mutate(node = reorder(node, total_value)) |>
+  ggplot(aes(x = node, y = total_value, fill = type)) +
+  geom_col(width = 0.68) +
+  coord_flip() +
+  scale_fill_manual(values = c(
+    "Protocol" = "#D6EAF8",
+    "Miner" = "#FADBD8",
+    "Custody" = "#FDEBD0",
+    "Wallet" = "#D5F5E3",
+    "Merchant" = "#E8DAEF",
+    "Change" = "#EAECEE",
+    "Storage" = "#FCF3CF",
+    "Fees" = "#F5B7B1"
+  )) +
+  labs(x = "Node", y = "Incoming plus outgoing BTC", fill = "")
+```
+
+This is where network analysis becomes useful for financial interpretation.
+Large nodes can indicate custody, market access, mining income, payments, or
+operational concentration. The meaning depends on the node label and the
+transaction role. A high-flow exchange address has a different interpretation
+from a high-flow merchant or miner address.
+
+The bar chart forces the visual claim into a simple metric. In the synthetic
+data, the miner and the exchange dominate total observed flow, while the fee
+pool is small in value but important for incentives. A real blockchain dataset
+would require address clustering, time windows, filtering rules, and careful
+labeling, but the modeling question is the same: which parts of the transaction
+graph carry the most economic activity?
 
 Bitcoin also makes proof-of-work part of monetary security. A miner proposes a
 block and searches for a valid proof. Nodes verify the block by checking the
@@ -1081,6 +1685,8 @@ attacker has less than half of total work, each additional confirmation lowers
 the catch-up probability.
 
 ```{r}
+#| label: fig-confirmation-risk
+#| fig-cap: "Approximate catch-up probability by confirmations and attacker share."
 #| fig-width: 7.2
 #| fig-height: 3.5
 confirmation_grid <- as_tibble(expand.grid(
@@ -1108,9 +1714,9 @@ ggplot(
 
 The logarithmic scale makes the settlement intuition visible. Confirmations
 translate settlement depth into a practical risk measure: they express the cost
-of replacing recent history. The same payment can be operationally acceptable at different
-confirmation depths depending on amount, counterparty risk, liquidity needs,
-and the recipient's tolerance for reversal risk.
+of replacing recent history. The same payment can be operationally acceptable
+at different confirmation depths depending on amount, counterparty risk,
+liquidity needs, and the recipient's tolerance for reversal risk.
 
 Bitcoin is financially interesting for four reasons.
 
@@ -1154,6 +1760,8 @@ resolution. This is why tokenization is a finance topic as much as a technology
 topic.
 
 ```{r}
+#| label: fig-tokenization-layers
+#| fig-cap: "Tokenization layers from off-chain asset to cash-flow rule."
 #| fig-width: 8
 #| fig-height: 1.1
 token_layers <- tibble(
@@ -1301,6 +1909,10 @@ ggplot(token_plot, aes(x = holder, y = token_balance, fill = state)) +
   labs(x = "Holder", y = "Token balance", fill = "")
 ```
 
+The plot separates issuance from redistribution. The issuer begins with the
+full supply, and later balances show which investors would receive cash flows
+under a proportional allocation rule.
+
 If the pool distributes cash flow $C$, a proportional token rule allocates:
 
 $$
@@ -1321,9 +1933,81 @@ cash_distribution <- token_register_after |>
 cash_distribution
 ```
 
-This simple example shows why tokenization belongs in a financial modeling
-course. It combines a ledger, ownership units, transfer rules, and cash-flow
-allocation. The hard parts appear quickly: custody, investor rights, transfer
+The same register can be connected to valuation. If the token represents a
+proportional claim on expected cash flows $C_t$, and $r$ is the discount rate,
+then holder $h$ has a model value:
+
+$$
+\mathrm{PV}_h =
+\frac{\mathrm{Token}_h}{S}
+\sum_{t=1}^T
+\frac{\mathbb{E}[C_t]}{(1+r)^t}.
+$$
+
+This is a simple discounted cash-flow model. The blockchain register tells us
+the token balance. The valuation model still needs expected cash flows,
+discount rates, legal enforceability, and servicing assumptions.
+
+```{r}
+cash_flow_scenarios <- as_tibble(expand.grid(
+  year = 1:4,
+  scenario = c("Downside", "Base", "Upside")
+)) |>
+  mutate(
+    expected_cash_flow = case_when(
+      scenario == "Downside" ~ c(3200, 3400, 3500, 3600)[year],
+      scenario == "Base" ~ c(4500, 4750, 5000, 5250)[year],
+      TRUE ~ c(5600, 6100, 6500, 6900)[year]
+    ),
+    discount_rate = case_when(
+      scenario == "Downside" ~ 0.14,
+      scenario == "Base" ~ 0.10,
+      TRUE ~ 0.08
+    ),
+    present_value = expected_cash_flow / (1 + discount_rate)^year
+  )
+
+scenario_value <- cash_flow_scenarios |>
+  group_by(scenario, discount_rate) |>
+  summarise(pool_value = sum(present_value), .groups = "drop") |>
+  mutate(value_per_token = pool_value / token_metadata$total_supply)
+
+holder_token_value <- token_register_after |>
+  tidyr::crossing(scenario_value) |>
+  mutate(holder_value = token_balance * value_per_token) |>
+  arrange(scenario, desc(holder_value))
+
+scenario_value
+holder_token_value
+```
+
+```{r}
+#| label: fig-token-scenario-value
+#| fig-cap: "Scenario value of the tokenized cash-flow claim."
+#| fig-width: 7.2
+#| fig-height: 3.4
+holder_token_value |>
+  mutate(holder = reorder(holder, holder_value)) |>
+  ggplot(aes(x = holder, y = holder_value, fill = scenario)) +
+  geom_col(position = "dodge", width = 0.68) +
+  coord_flip() +
+  scale_fill_manual(values = c(
+    "Downside" = "#BFC9CA",
+    "Base" = "#2E86C1",
+    "Upside" = "#27AE60"
+  )) +
+  labs(x = "Holder", y = "Modeled token value", fill = "")
+```
+
+The valuation figure is deliberately simple. It shows that a token register and
+a valuation model answer different questions. The register answers who holds
+units. The cash-flow model asks what those units may be worth under a set of
+assumptions. Tokenization becomes financially meaningful when those two layers
+are kept aligned.
+
+This example shows why tokenization belongs in a financial modeling course. It
+combines a ledger, ownership units, transfer rules, cash-flow allocation, and
+valuation. The hard parts appear quickly: custody, investor rights, transfer
 restrictions, identity checks, tax treatment, legal enforceability, valuation,
 and operational controls.
 
@@ -1340,11 +2024,151 @@ bank, and regulators. A public blockchain makes more information visible to the
 network. Privacy-preserving tools, address management, zero-knowledge proofs,
 and permissioned ledgers are attempts to balance auditability and privacy.
 
+For modeling purposes, privacy can be treated as a linkage problem. A public
+address may start without a real-world name, but repeated use, counterparties,
+service labels, timing, and transaction amounts can make the address easier to
+classify. A simple exposure score for address $a$ can be written as:
+
+$$
+\mathrm{Exposure}_a =
+\mathrm{Reuse}_a
++ \mathrm{Counterparties}_a
++ \mathrm{ServiceLabel}_a,
+$$
+
+where $\mathrm{ServiceLabel}_a$ equals one when the address has been linked to
+a known service such as an exchange, custodian, merchant, or public donation
+address.
+
+```{r}
+privacy_events <- tibble(
+  address = c("addr_A", "addr_A", "addr_A", "addr_B", "addr_B",
+              "addr_C", "addr_D", "addr_D", "addr_E"),
+  counterparty = c("exchange_1", "merchant_1", "merchant_2", "wallet_x",
+                   "wallet_y", "exchange_1", "donation_page",
+                   "exchange_1", "wallet_z"),
+  amount = c(0.40, 0.08, 0.12, 0.55, 0.20, 1.10, 0.03, 0.07, 0.18),
+  service_label = c(TRUE, FALSE, FALSE, FALSE, FALSE,
+                    TRUE, TRUE, TRUE, FALSE)
+)
+
+privacy_summary <- privacy_events |>
+  group_by(address) |>
+  summarise(
+    reuse = n(),
+    counterparties = n_distinct(counterparty),
+    labeled_service = as.integer(any(service_label)),
+    observed_amount = sum(amount),
+    exposure_score = reuse + counterparties + labeled_service,
+    .groups = "drop"
+  ) |>
+  arrange(desc(exposure_score), desc(observed_amount))
+
+privacy_summary
+```
+
+```{r}
+#| label: fig-privacy-exposure
+#| fig-cap: "Address exposure score in a small public-ledger example."
+#| fig-width: 7
+#| fig-height: 3.2
+privacy_summary |>
+  mutate(
+    address = reorder(address, exposure_score),
+    service_status = if_else(labeled_service == 1,
+                             "Linked to service", "Unlabeled")
+  ) |>
+  ggplot(aes(x = address, y = exposure_score, fill = service_status)) +
+  geom_col(width = 0.68) +
+  coord_flip() +
+  scale_fill_manual(values = c("Linked to service" = "#B03A2E",
+                               "Unlabeled" = "#7F8C8D")) +
+  labs(x = "Address", y = "Exposure score", fill = "")
+```
+
+The chart makes the linkage problem easier to see. Addresses with repeated
+activity, many counterparties, and service labels rise in the exposure ranking.
+This kind of score can guide monitoring, clustering, and privacy-risk review.
+It should not be read as proof of identity by itself.
+
+The score is a teaching device, but the logic is important. Address reuse and
+public service labels reduce ambiguity. A blockchain can be transparent enough
+for audit and still expose sensitive relationships, strategies, or customer
+activity. This is why privacy is a financial design issue: disclosure affects
+trading behavior, institutional adoption, compliance, and personal safety.
+
+Privacy tools change the tradeoff. Address rotation can reduce simple reuse.
+Coin-control policies can reduce accidental linkage. Zero-knowledge proofs can
+allow verification of selected statements while hiding underlying transaction
+details. Permissioned ledgers can restrict who sees transaction data. Each
+choice changes auditability, compliance cost, market confidence, and the amount
+of information available for analysis.
+
 ## Advantages and limits
 
-The chapter's main lesson is that blockchain is a ledger design. Its financial
-interest comes from combining records, verification, incentives, and settlement
-rules in one protocol.
+The chapter's main lesson is that blockchain is a design for financial records
+and transfers. Its interest comes from combining records, verification,
+incentives, custody, privacy, and settlement rules in one system. Bitcoin shows
+the native-asset case: the ledger, asset, issuance rule, and settlement process
+belong to the same protocol. Tokenization shows a different use: the ledger
+records units whose value may depend on legal claims, servicing, and assets
+outside the ledger.
+
+```{r}
+#| label: fig-blockchain-closing-map
+#| fig-cap: "Blockchain mechanisms and financial modeling questions."
+#| fig-width: 8.4
+#| fig-height: 2.5
+closing_nodes <- tibble(
+  id = c("crypto", "ledger", "network", "incentives", "finance"),
+  label = c("Cryptography\nhashes + signatures",
+            "Ledger\nblocks + registers",
+            "Network\nmempool + nodes",
+            "Incentives\nfees + rewards",
+            "Financial questions\nsettlement + custody\nvaluation + privacy"),
+  layer = c("Mechanism", "Mechanism", "Mechanism", "Mechanism", "Finance"),
+  x = c(0.7, 2.4, 4.1, 5.8, 7.7),
+  y = c(1, 1, 1, 1, 1)
+)
+
+closing_edges <- tibble(
+  from_x = closing_nodes$x[-nrow(closing_nodes)] + 0.48,
+  to_x = closing_nodes$x[-1] - 0.48,
+  y = 1
+)
+
+ggplot() +
+  geom_segment(
+    data = closing_edges,
+    aes(x = from_x, xend = to_x, y = y, yend = y),
+    arrow = grid::arrow(length = grid::unit(0.12, "inches")),
+    color = "#566573", linewidth = 0.75
+  ) +
+  geom_rect(
+    data = closing_nodes,
+    aes(xmin = x - 0.56, xmax = x + 0.56,
+        ymin = y - 0.28, ymax = y + 0.28, fill = layer),
+    color = "white", linewidth = 0.9
+  ) +
+  geom_text(
+    data = closing_nodes,
+    aes(x = x, y = y, label = label),
+    size = 2.7, lineheight = 0.88
+  ) +
+  scale_fill_manual(values = c("Mechanism" = "#D6EAF8",
+                               "Finance" = "#FDEBD0")) +
+  coord_cartesian(xlim = c(0.05, 8.35), ylim = c(0.62, 1.38),
+                  expand = FALSE, clip = "off") +
+  guides(fill = "none") +
+  theme_void() +
+  theme(plot.margin = margin(2, 4, 2, 4))
+```
+
+The figure summarizes the modeling move in the chapter. Technical mechanisms
+matter because they change financial questions: who can authorize a transfer,
+which history is accepted, how quickly transactions settle, what incentives
+shape block inclusion, how token claims are valued, and how much information is
+visible to others.
 
 Potential advantages include:
 
@@ -1364,18 +2188,31 @@ Important limits include:
 * regulatory uncertainty;
 * weak links between on-chain tokens and off-chain assets.
 
-The strongest way to read blockchain in this book is as an extension of
-financial modeling. Prices, returns, portfolios, and VaR model market behavior.
-Blockchain models the record-keeping and transfer layer of financial value. The
-technical details matter because a small change in validation, incentives,
-privacy, or token rights can change the financial meaning of the system.
+The strongest way to read blockchain in this book is as a special application
+of financial modeling. Prices, returns, portfolios, and VaR model market
+behavior. Blockchain models the record-keeping and transfer layer of financial
+value. A private key changes who can authorize a payment. A fee changes which
+transactions may be included sooner. A confirmation changes settlement risk. A
+token rule changes who receives cash flows. A privacy design changes who can
+observe financial relationships. Small technical choices can therefore change
+the financial meaning of the system.
+
+This makes the chapter a bridge from market models to financial infrastructure.
+It asks how value is authorized, recorded, transferred, observed, and sometimes
+tokenized. That question is narrower than the full universe of digital assets,
+but it is rich enough to connect computation, cryptography, networks, and
+finance in one modeling problem.
 
 ## Further visual resources
 
-The following resources can be useful as visual complements to the R examples:
+The following resources are optional visual complements. They are most useful
+after the R examples, when the reader already has the ledger, hash, signature,
+network, and privacy objects in mind.
 
-* [Blockchain Explanation](https://youtu.be/J-ab9was1p0)
-* [How does a blockchain work - Simply Explained](https://youtu.be/SSo_EIwHSd4)
-* [Asymmetric Encryption - Simply explained](https://youtu.be/AQDCe585Lnc)
-* [Proof-of-Stake (vs proof-of-work)](https://youtu.be/M3EFi_POhps)
-* [Zero Knowledge Proof - ZKP](https://youtu.be/OcmvMs4AMbM)
+| Resource | Best use in this chapter |
+|---|---|
+| [Blockchain Explanation](https://youtu.be/J-ab9was1p0) | Review the full ledger-to-blockchain intuition |
+| [How does a blockchain work - Simply Explained](https://youtu.be/SSo_EIwHSd4) | Visualize blocks, hashes, and chain linkage |
+| [Asymmetric Encryption - Simply explained](https://youtu.be/AQDCe585Lnc) | Reinforce public-key logic before signatures and custody |
+| [Proof-of-Stake (vs proof-of-work)](https://youtu.be/M3EFi_POhps) | Contrast consensus mechanisms after the proof-of-work example |
+| [Zero Knowledge Proof - ZKP](https://youtu.be/OcmvMs4AMbM) | Extend the privacy discussion beyond address linkage |

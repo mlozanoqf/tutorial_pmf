@@ -1,4 +1,4 @@
-# Asset pricing
+# Return co-movement and beta
 
 ```{r include=FALSE}
 rm(list = ls())
@@ -8,21 +8,21 @@ library(tidyr)
 library(dplyr)
 ```
 
-The previous chapter used prices, returns, indicators, and a classifier to build a simple trading rule. This chapter changes the modeling question. Instead of predicting the next direction of a single asset, asset pricing asks how returns are related to systematic sources of risk.
+The previous chapter used prices, returns, indicators, and a classifier to build a simple trading rule. This chapter changes the modeling question. The focus is return co-movement: how one asset's returns move with related firms and with a broad market benchmark.
 
-Asset pricing models connect expected returns with the risks investors bear. The practical question is: which part of an asset's return moves with a broader market or risk factor, and which part remains specific to the asset? This chapter introduces that question with pairs of related stocks, then moves to a single-index model in which each stock return is compared with a market return.
+Asset-pricing theory connects expected returns with the risks investors bear. This chapter takes a narrower applied route. The practical question is how much of an asset's return moves with a broader market or risk factor, and how much remains specific to the asset. The chapter introduces that question with pairs of related stocks, then moves to a single-index model in which each stock return is compared with a market return.
 
-Asset pricing models are simplifications. Many risk factors have been proposed in the literature, and no short example can explain all observed prices or returns. The goal here is narrower and more useful for the book's path: estimate exposures, read beta as a sensitivity measure, and use those estimates as inputs for portfolio thinking.
+The models are simplifications. Many risk factors have been proposed in the literature, and no short example can explain all observed prices or returns. The goal here is to estimate exposures, read beta as a sensitivity measure, and use those estimates as inputs for portfolio thinking.
 
-## What drives asset return changes?
+## Drivers of asset return changes
 
-Stock returns change as expectations change. New information about the firm, the industry, the economy, liquidity, interest rates, or market risk can affect demand and supply for the stock. The asset-pricing question is to identify which sources of variation are broad enough to be treated as risk factors and how strongly each asset responds to them.
+Stock returns change as expectations change. New information about the firm, the industry, the economy, liquidity, interest rates, or market risk can affect demand and supply for the stock. The modeling question is to identify which sources of variation are broad enough to be treated as risk factors and how strongly each asset responds to them.
 
-Risk factors are useful because they organize return variation. Industry exposure, market exposure, firm size, valuation ratios, liquidity, and macroeconomic conditions can all affect expected returns. In a short applied chapter, we begin with a simple version of that idea: related firms often share risk factors, and their returns may move together.
+Risk factors are useful because they organize return variation. Industry exposure, market exposure, firm size, valuation ratios, liquidity, and macroeconomic conditions can all affect expected returns. This applied chapter begins with a simple version of that idea: related firms often share risk factors, and their returns may move together.
 
-Mastercard and Visa provide a natural starting point. They operate in the same broad payments industry and are exposed to similar payment volumes, consumer spending, regulation, technology, and market conditions. If the firms share important risk factors, their stock returns should show a positive relationship. We start there before moving to the broader market model.
+Mastercard and Visa provide a natural starting point. They operate in the same broad payments industry and are exposed to similar payment volumes, consumer spending, regulation, technology, and market conditions. If the firms share important risk factors, their stock returns should show a positive relationship. The chapter starts there before moving to the broader market model.
 
-We first compare these two firms by looking at their respective cumulative returns, using the same wealth-index logic introduced earlier in the book.
+The first comparison uses cumulative returns and the same wealth-index logic introduced earlier in the book.
 
 ```{r}
 # Download the price data.
@@ -32,13 +32,13 @@ stock_prices_MA_V <- c("MA", "V") |>
     group_by(symbol)
 ```
 
-Then transform prices into cumulative returns and plot them. With log returns $r_t=\log(P_t/P_{t-1})$, the wealth index used in the plot is:
+The prices are then transformed into cumulative returns and plotted. With log returns $r_t=\log(P_t/P_{t-1})$, the wealth index used in the plot is defined below.
 
 $$
-W_t = 100\prod_{j=1}^{t}(1+r_j).
+W_t = 100 \exp\left(\sum_{j=1}^{t}r_j\right).
 $$
 
-For small daily returns, this approximation remains close to the simple-return wealth index used elsewhere in the book.
+This is the log-return version of the same compounding idea used elsewhere in the book.
 
 ```{r}
 #| label: fig-mavwi
@@ -51,7 +51,7 @@ stock_cumret_MA_V <- stock_prices_MA_V |>
                  type = "log",
                  col_rename = "returns") |>
 # Create the wealth index.
-    mutate(wealth.index = 100 * cumprod(1 + returns))
+    mutate(wealth.index = 100 * exp(cumsum(returns)))
 # Visualize the wealth index.
 ggplot(stock_cumret_MA_V, aes(x = date, y = wealth.index, color = symbol)) +
   geom_line(size = 1, alpha = 0.7) +
@@ -63,7 +63,7 @@ ggplot(stock_cumret_MA_V, aes(x = date, y = wealth.index, color = symbol)) +
   scale_y_continuous(labels = scales::dollar)
 ```
 
-Apparently, these stock returns are indeed closely related. Ups and downs are very similar in this time-series. These are the exact values:
+The two wealth-index paths move closely together. Their upward and downward movements are similar over this period, which suggests strong co-movement before any formal model is estimated. The final values provide a numerical check.
 
 ```{r}
 # Last values of the wealth index.
@@ -73,13 +73,13 @@ stock_cumret_MA_V |>
   tail()
 ```
 
-The 100 USD investment growth is basically the same in both assets by the end of the investment period.
+The 100 USD investment growth is almost the same in both assets by the end of the investment period.
 
 Daily returns provide a more direct way to evaluate whether both stocks move together.
 
 ```{r}
 #| label: fig-vrosr
-#| fig-cap: "Visualizing relationship of stocks returns."
+#| fig-cap: "Mastercard and Visa daily returns over time."
 # Show the return relationship.
 stock_ret_MA_V <- stock_prices_MA_V |>
     tq_transmute(select     = adjusted,
@@ -99,7 +99,7 @@ The time-series overlay is useful for chronology, but it hides the cross-asset r
 
 ```{r}
 #| label: fig-vrosracv
-#| fig-cap: "Visualizing relationship of stocks returns, a clearer view."
+#| fig-cap: "Mastercard returns versus Visa returns."
 # Show the return relationship.
 stock_ret_MA_V  |>
   spread(key = symbol, value = returns) |>
@@ -109,11 +109,11 @@ stock_ret_MA_V  |>
   theme_tq()
 ```
 
-Dropping the time (or the date) and plotting coordinates looks better. The scatter plot above suggests that if Visa stock returns are low, Mastercard stock returns are low as well. By the same token, if Visa sock returns are high, Mastercard stock returns are high as well. We have 504 points; every point represents a pair of daily returns of both firms. Stock returns are then positively related, and this relationship seems to be strong and linear. We can add one line to the above plot to summarize this linear relationship between the 504 stock return pairs.
+The scatter plot removes time from the display and focuses on paired daily returns. Each point represents one trading day, with Visa's return on the horizontal axis and Mastercard's return on the vertical axis. Low Visa returns tend to appear with low Mastercard returns, and high Visa returns tend to appear with high Mastercard returns. The positive relationship looks strong and approximately linear, so a fitted line can summarize the co-movement across the 504 daily pairs.
 
-Note that this straight line summarizes quite well the relationship between the stock returns. This is, most of the points lie very close to the straight line. The general equation of a straight line is $y = a + bx$, the value $a$ is called intercept and $b$ is the line slope. The slope measures how steep the line is, the higher the slope the steeper the line. We care about the slope because it measures how related are $x$ and $y$. In particular, a slope of zero means that there is no relationship between $x$ and $y$, whereas a slope of 1 means that if $x$ increases 2, then we should expect $y$ increases by 2 as well. The slope is interesting because it is the magnitude of the relationship between $x$ and $y$. The sign of $b$ reveals whether the relationship is positive or negative. According to the above plot, we can anticipate that the slope $b$ is positive and it should be close to 1.
+The fitted line summarizes the relationship because most points lie close to it. The general equation of a straight line is $y = a + bx$, where $a$ is the intercept and $b$ is the slope. The slope measures the change in $y$ associated with a one-unit change in $x$. A slope of zero would indicate no linear relationship, while a slope of 1 would indicate a one-for-one movement. The sign of $b$ indicates whether the relationship is positive or negative. The plot suggests that $b$ is positive and close to 1.
 
-In this case, the general model is $MA_i = \alpha+\beta V_i$, where $i=1,...,504$ as we have 504 observations of $MA$ and $V$ stock returns. It is easy to estimate the values of $\alpha$ and $\beta$ by conducting a simple regression analysis. The regression analysis basically finds out the values of $\alpha$ and $\beta$ that fits better the observed relationship between $MA$ and $V$.
+In this case, the general model is $MA_i = \alpha+\beta V_i$, where $i=1,...,504$ because the sample contains 504 paired observations of Mastercard and Visa returns. A simple linear regression estimates the values of $\alpha$ and $\beta$ that best summarize the observed linear relationship between $MA$ and $V$.
 
 ```{r}
 # Prepare the data.
@@ -124,7 +124,7 @@ lm(MA ~ V, data = reg) |>
 summary()
 ```
 
-In general our model is $MA_i = \alpha+\beta V_i$, and in particular we have our model estimation result as $MA_i = 0.0001130+0.8133658 V_i$. Without going into details, our linear regression analysis suggests that a 1% return on $V$ is associated with a 0.8133658% return in $MA$. This is a good fit of the observations.
+The estimated model is $MA_i = 0.0001130+0.8133658 V_i$. In this sample, a 1% return on Visa is associated with a 0.8133658% return in Mastercard under the fitted linear model. The fit is strong for a two-stock daily-return regression. The reading is co-movement, and causal interpretation would require a different research design.
 
 The following observation gives a concrete numerical example.
 
@@ -132,21 +132,21 @@ The following observation gives a concrete numerical example.
 filter(reg, date == "2015-04-22")
 ```
 
-Consider the observation pair $V=0.03989731$, $MA=0.03833513$. According to our regression line, the value of $MA$ at $V=0.03989731$ should be $MA = 0.0001130 + 0.03989731 \times 0.8133658 = 0.03256411$. The difference between the observed 3.833513% and the estimated 3.256411% is the estimation error. Note that the observed value is higher than the estimated value, this is the observation is slightly above the blue regression line.
+Consider the observation pair $V=0.03989731$, $MA=0.03833513$. According to the regression line, the value of $MA$ at $V=0.03989731$ should be $MA = 0.0001130 + 0.03989731 \times 0.8133658 = 0.03256411$. The difference between the observed 3.833513% and the estimated 3.256411% is the estimation error. The observed value is higher than the estimated value, so this observation is slightly above the blue regression line.
 
-Our results suggests that Visa represent a risk factor of Mastercard. This is because according to our model Mastercard return changes can be explained by changes in Visa returns. The relationship between this pair of stock returns according to beta is almost perfect as 0.8133658 is close to 1. We can also calculate the correlation of both stock returns. The correlation (or Pearson correlation) is a statistic that measures linear correlation between two variables. It has a value between +1 and −1. A value of +1 is total positive linear correlation, 0 is no linear correlation, and −1 is total negative linear correlation. The beta is similar but it could be higher than +1 or lower than −1.
+The regression uses Visa returns as an explanatory variable for Mastercard returns. In this sample, a positive Visa return is associated with a positive Mastercard return, and the estimated beta of 0.8133658 indicates that Mastercard moves less than one-for-one with Visa under this specification. Pearson correlation provides a complementary summary of linear association. It has a value between +1 and -1. A value of +1 is perfect positive linear correlation, 0 is no linear correlation, and -1 is perfect negative linear correlation. Beta is related to covariance and variance, so it can be higher than +1 or lower than -1.
 
 ```{r}
 cor(reg$MA, reg$V)
 ```
 
-In this case, the correlation of Visa and Mastercard stock returns is 0.8485187. This correlation value is very close to 1, so these variables are strongly linear correlated. This is important because we can argue that these two stocks are very similar, if one increases the other increases and if one decreases the other decreases. This behaviour makes sense because as we said before these firms are exposed to the same (or very similar) risk factors.
+In this case, the correlation of Visa and Mastercard stock returns is 0.8485187. This value is close to 1, so the two series are strongly positively correlated in this sample. The result is consistent with the fact that both firms are exposed to similar business models, payment activity, consumer spending, and broad market conditions.
 
 The next figure adds a 1:1 reference line in red.
 
 ```{r}
 #| label: fig-vrosrotorir
-#| fig-cap: "Visualizing relationship of stocks returns, one to one reference in red."
+#| fig-cap: "Mastercard and Visa returns with one-to-one reference line."
 # Add a reference red line representing beta=1.
 stock_ret_MA_V  |>
   spread(key = symbol, value = returns) |>
@@ -157,9 +157,9 @@ stock_ret_MA_V  |>
   theme_tq()
 ```
 
-The strength of this fit can be measured by the R-squared. The R-squared value can be interpreted as the variation of $MA$ explained by variations of $V$. In particular, almost 72% of the variations of $MA$ is explained by variations in $V$. The rest (about 28%) remains unexplained according to the model. This 28% could be explained by adding more risk factors to the asset pricing model, or proposing an alternative estimation method.
+The strength of this fit can be measured by the R-squared. In this regression, the R-squared value reports the share of Mastercard return variation associated with Visa return variation through the fitted linear model. In particular, almost 72% of the sample variation in $MA$ is captured by variation in $V$. The remaining 28% is residual variation under this specification and could motivate additional risk factors, a different model, or a different sample.
 
-The first regression used Visa returns as the explanatory variable for Mastercard returns. Reversing the direction gives a similar descriptive relationship. At this stage, the exercise is about co-movement rather than a causal claim.
+The first regression used Visa returns as the explanatory variable for Mastercard returns. Reversing the direction gives a similar descriptive relationship. At this stage, the exercise describes co-movement; causal interpretation would require a different design.
 
 ```{r}
 # Estimate the model.
@@ -167,26 +167,26 @@ lm(V ~ MA, data = reg) |>
     summary()
 ```
 
-Here, we estimate $V_i = \alpha+\beta MA_i$, and in particular we have $V_i = -1.104 \times 10^{6}+0.8852 MA_i$.
+The reverse regression estimates $V_i = \alpha+\beta MA_i$, with fitted equation $V_i = -1.104 \times 10^{-5}+0.8852 MA_i$.
 
 ## Single-index model
 
-The relationship of the risk-return trade-off is the heart of equilibrium asset pricing theories and models. The asset pricing theories are fascinating as they allow us to go deeper in the understanding of the determinants of asset returns. Here, we will skip many aspects regarding the theory, derivation, assumptions and comparison of asset pricing models, theories and estimation approaches. Here, we motivate the main ideas underlying the asset pricing models, the underlying programming approach, and what can we learn from them.
+The risk-return trade-off is central to equilibrium asset-pricing theories and models. A full treatment would require more theory, derivation, assumptions, and econometric diagnostics than this chapter can cover. The goal here is applied: motivate the main modeling idea, estimate the relevant quantities in R, and read what the output contributes to the broader portfolio workflow.
 
-The same idea can be extended from two related firms to a market benchmark. The return of an individual asset can be partially explained by the return of a broad market index. The S&P 500 is commonly used for this purpose because it summarizes the performance of large publicly traded firms in the United States.
+The same idea can be extended from two related firms to a market benchmark. The return of an individual asset can be compared with the return of a broad market index. The S&P 500 is commonly used for this purpose because it summarizes the performance of large publicly traded firms in the United States.
 
-Market indexes as the S&P500 are important for several reasons. We have discussed that stock price evolution is a good way to track the performance of a single company. However, we are usually interested in evaluating the performance of all the companies in the market, not only one or two. Stock market indexes are formed by several firms or in some cases many participants known as constituents. There is a wide variety of stock market indexes, some are country specific, or based on industries and other firm characteristics. By looking at the price or index evolution of these indexes we can track what happens with the firms in an aggregate approach. Then, an index value change in a day show what happened with the firms in average in that specific day. If the S&P500 increases in one day then we interpret this as if most of the firms that participate in the S&P500 increased its value in that particular day.
+Market indexes such as the S&P 500 are important because they summarize broad market behavior. A single stock price tracks one company; an index tracks a basket of constituents. Some indexes are country-specific, while others are based on industries, firm size, or other characteristics. Index returns provide a compact measure of the average movement of a market segment. If the S&P 500 increases on a given day, the usual interpretation is that the large firms represented in the index increased in aggregate value.
 
-We estimate the market model with a regression:
+The market model is estimated with a regression.
 $R_{i,j} = \alpha_i + \beta_i R_{m,j} + \epsilon_{i,j}$,
-where $i$ represents a given stock and $j$ the historical observation. The term $R_{m,j}$ is the market return, here approximated with the S&P500. This is a single-index model because it uses one market factor. Multi-factor models add other risk factors, for example:
+where $i$ represents a given stock and $j$ the historical observation. The term $R_{m,j}$ is the market return, here approximated with the S&P 500. This is a single-index model because it uses one market factor. Multi-factor models add other risk factors, as in the equation below.
 $R_{i,j} = \alpha_i + \beta_i R_{m,j} + \delta_i F_j + \epsilon_{i,j}$.
 
 According to the single-index model, the stock return is decomposed into three parts: an intercept $\alpha_i$, a component proportional to the market index $\beta_i R_{m,j}$, and a residual component $\epsilon_{i,j}$. The intercept is the expected return when the market return is zero in this sample regression. It is often discussed as abnormal performance, and that interpretation requires statistical tests and a more formal model. Beta measures the security's sensitivity to market movements. The residual captures firm-specific variation left after the market component. This simple decomposition can oversimplify real uncertainty because industry events, liquidity conditions, accounting news, and macroeconomic shocks can affect assets in different ways.
 
 The single-index model is estimated for 10 stocks, $i=1,...10$, using 72 monthly return observations, $j=1,...,72$. The estimation objective is to obtain $\alpha_i$ and $\beta_i$ for each stock.
 
-First, we download the corresponding 10 monthly stock returns.
+The estimation starts by downloading the corresponding 10 monthly stock returns.
 The set keeps the same broad sector logic: <tt>`VTR`</tt> represents healthcare real estate exposure and <tt>`VOD`</tt> represents telecommunications exposure.
 
 ```{r}
@@ -203,7 +203,7 @@ R_stocks <- c("NEM", "AMCR", "CLX", "VTR", "KR", "TXN", "F", "TXT",
 R_stocks
 ```
 
-Then, we download the S&P500 monthly returns, the symbol is \^GSPC.
+The market benchmark is the monthly return of the S&P 500, identified by the symbol \^GSPC.
 
 ```{r}
 # Download the market index return.
@@ -217,7 +217,7 @@ R_market <- "^GSPC" |>
 R_market
 ```
 
-Now, we join <tt>`R_stocks`</tt> and <tt>`R_market`</tt> in the same variable or R object. This is convenient in the estimation procedure.
+The individual stock returns and market returns are joined into one object for estimation.
 
 ```{r}
 # Prepare the database.
@@ -225,7 +225,7 @@ R_stocks_market <- left_join(R_stocks, R_market, by = c("date" = "date"))
 R_stocks_market
 ```
 
-We can use the <tt>`tq_performance()`</tt> function to facilitate the regression analysis estimation.
+The <tt>`tq_performance()`</tt> function estimates the CAPM-style summary for each stock.
 
 ```{r}
 # 10 models estimated at once.
@@ -237,17 +237,17 @@ select(symbol, Alpha, Beta, `R-squared`)
 R_capm
 ```
 
-Here, we have the results for the single-index model estimation for the 10 stocks.
+The table reports the single-index model estimates for the 10 stocks.
 
-Please note how we arrange the stocks according to beta. We interpret beta as the riskiness of the stock with respect to the market. Stocks with low betas are less exposed to changes in the S&P500 under this specification. Stocks with high betas are more exposed to changes in the S&P500. A beta higher than 1 means that the stock tends to react more than proportionally with respect to changes in the stock market.
+The stocks are arranged by beta. In this specification, beta measures the stock's exposure to S&P 500 movements. Stocks with low betas are less exposed to market changes, while stocks with high betas are more exposed. A beta greater than 1 means that the stock tends to react more than proportionally to changes in the market benchmark.
 
-We need a deeper econometric analysis to validate our interpretations. Alphas are all very close to zero in this sample. The R-squared is also relevant because it shows what proportion of changes in the stock returns are explained by changes in the stock market. These estimates are descriptive. A formal interpretation would require standard errors, p-values, diagnostics, and usually excess returns over a risk-free rate.
+Deeper econometric analysis would be needed to validate these interpretations. Alphas are all very close to zero in this sample. The R-squared is also relevant because it reports the proportion of stock-return variation associated with market-return variation in the fitted model. These estimates are descriptive. A formal interpretation would require standard errors, p-values, diagnostics, and usually excess returns over a risk-free rate.
 
-We can illustrate the previous results in a graphical way.
+The previous estimates can be compared graphically.
 
 ```{r}
 #| label: fig-rbaram
-#| fig-cap: "Relationship between asset return and market."
+#| fig-cap: "Asset returns versus S&P 500 returns."
 R_stocks_market$symbol <-
   factor(R_stocks_market$symbol, levels =
            unique(R_stocks_market$symbol))
@@ -269,9 +269,9 @@ Beta is useful because it translates market exposure into a portfolio decision. 
 
 In practice, beta estimates require statistical checks. Standard errors, p-values, diagnostics, benchmark choice, return frequency, and sample length can change the estimate and its interpretation. Financial sites often report betas without enough detail about the estimation procedure, so professional use requires a transparent and documented methodology. The interpretation above assumes that the estimated betas are stable enough for the intended analysis.
 
-The Capital Asset Pricing Model (CAPM) was created by William Sharpe in 1964, see @sharpe1964capital. He won the 1990 Nobel Prize in Economic Sciences, along with Harry Markowitz and Merton Miller, for developing models to assist with investment decision making like the CAPM. CAPM links expected excess return to beta and the market risk premium. The regression above estimates beta from historical returns; CAPM uses beta inside an equilibrium statement about expected returns. Here we use the estimated betas as a practical bridge between the empirical market model and the CAPM intuition.
+The Capital Asset Pricing Model (CAPM) was created by William Sharpe in 1964, see @sharpe1964capital. He won the 1990 Nobel Prize in Economic Sciences, along with Harry Markowitz and Merton Miller, for developing models to assist with investment decision making like the CAPM. CAPM links expected excess return to beta and the market risk premium. The regression above estimates beta from historical returns; CAPM uses beta inside an equilibrium statement about expected returns. In this chapter, the estimated betas serve as a practical bridge between the empirical market model and the CAPM intuition.
 
-We can extend our analysis further. Given our 10 set of assets, we can calculate annualized returns and annualized Sharpe ratios (return per unit of risk). With a zero risk-free rate, the annualized Sharpe ratio reported below follows:
+The same 10-asset set can also be summarized with annualized returns and annualized Sharpe ratios. With a zero risk-free rate, the annualized Sharpe ratio reported below follows:
 
 $$
 SR=\frac{E(R)-R_f}{\sigma(R)}, \qquad R_f=0.
@@ -289,7 +289,7 @@ A stock beta measures individual asset sensitivity with respect to the market. T
 
 ```{r}
 #| label: fig-thtrthtr2
-#| fig-cap: "The higher the risk, the higher the return?"
+#| fig-cap: "Annualized risk-return comparison."
 # Calculate annualized returns.
 R_stocks_market_stats <- R_stocks_market |>
     tq_performance(Ra = R_stocks, Rb = NULL,
@@ -311,7 +311,7 @@ R_stocks_market_stats
 ```
 The reference line has slope 1. Assets above this line have return per unit of risk above 1 under the zero risk-free-rate convention used here. Assets below the line have return per unit of risk below 1.
 
-An alternative view to show the Sharpe ratio.
+The Sharpe ratio can also be shown directly.
 
 ```{r}
 #| label: fig-asrf1s
@@ -327,9 +327,9 @@ R_stocks_market_stats <- R_stocks_market |>
 R_stocks_market_stats
 ```
 
-The beta and Sharpe-ratio estimates can also be used to form simple portfolio comparisons. A portfolio combines several smaller positions into a single investment object. The first benchmark is an equally weighted portfolio with 10% invested in each of the 10 assets. This portfolio does not tilt toward high-beta or high-Sharpe-ratio stocks; it gives every asset the same weight.
+The beta and Sharpe-ratio estimates can also be used to form simple portfolio comparisons. A portfolio combines several smaller positions into a single investment object. The first benchmark is an equally weighted portfolio with 10% invested in each of the 10 assets. It gives every asset the same weight, with no tilt toward high-beta or high-Sharpe-ratio stocks.
 
-For $N=10$ assets, the equal weight is:
+For $N=10$ assets, the equal weight is defined below.
 
 $$
 w_i=\frac{1}{N}=0.1.
@@ -351,7 +351,7 @@ portfolio_returns_monthly |>
   ggplot(aes(x = date, y = Ra)) +
   geom_bar(stat = "identity", fill = "blue") +
   labs(subtitle = "10% in each one of the 10 assets.",
-       caption = "Shows an above-zero trend meaning positive returns.",
+       caption = "The fitted line summarizes the sample trend in monthly portfolio returns.",
        x = "", y = "Monthly returns") +
   geom_smooth(method = "lm", color = "red") +
   theme_tq() +
@@ -359,7 +359,7 @@ portfolio_returns_monthly |>
   scale_y_continuous(labels = scales::percent)
 ```
 
-A monthly returns plot is a good representation, but we normally show the evolution of an investment's growth. In this case, we consider an initial investment of 10,000 USD. If $R^p_t$ is the portfolio return, the dollar value is:
+A monthly returns plot shows period-by-period variation. Investment growth shows the cumulative path. In this case, the initial investment is 10,000 USD. If $R^p_t$ is the portfolio return, the dollar value is defined below.
 
 $$
 V_t = 10000\prod_{j=1}^{t}(1+R^p_j).
@@ -383,7 +383,7 @@ portfolio_growth_monthly |>
   geom_point(aes(x = as.Date("2010-01-01"), y = 10000),
              size = 4, col = "black", alpha = 0.4) +
   labs(subtitle = "10% in each one of the 10 assets.",
-      caption = "Now, we can really visualize performance!",
+      caption = "Investment growth summarizes the portfolio path.",
       x = "", y = "Portfolio value") +
   geom_smooth(method = "loess", color = "black") +
   theme_tq() +
@@ -391,7 +391,7 @@ portfolio_growth_monthly |>
   scale_y_continuous(labels = scales::dollar)
 ```
 
-This gives a useful benchmark. The next comparison asks whether beta-based and Sharpe-ratio-based weights would have produced different investment growth. In particular, a beta increasing portfolio and a Sharpe ratio increasing portfolio. These are basically incremental weights of 10%, 20%, 30% and 40% for the highest four betas and for the highest four Sharpe ratios.
+This gives a useful benchmark. The next comparison asks whether beta-based and Sharpe-ratio-based weights would have produced different investment growth. Two tilted portfolios are constructed: one allocates more weight to higher-beta stocks, and the other allocates more weight to higher-Sharpe-ratio stocks. In both cases, the largest four selected assets receive incremental weights of 10%, 20%, 30%, and 40%.
 
 ```{r}
 # Calculate annualized returns.
@@ -419,7 +419,7 @@ weights_table <-  tibble(stocks) |>
     group_by(portfolio)
 ```
 
-See the results.
+The resulting portfolios can now be compared through their investment-growth paths.
 
 ```{r}
 # See the evolution of three portfolios.
@@ -438,9 +438,9 @@ portfolio_growth_monthly_multi |>
     geom_line(size = 2) +
     geom_point(aes(x = as.Date("2010-01-01"), y = 10000),
              size = 4, col = "black", alpha = 0.4) +
-    labs(title = "Portfolio growth of $10,000.",
+    labs(title = "Portfolio growth of $10,000",
          subtitle = "1: Equally weighted; 2: Sharpe ratio; 3: Beta",
-         caption = "Portfolio 2 is a standout!",
+         caption = "Portfolio 2 has the highest terminal value in this sample.",
          x = "", y = "Portfolio value",
          color = "Portfolio") +
     geom_smooth(method = "loess") +
@@ -448,6 +448,6 @@ portfolio_growth_monthly_multi |>
     scale_y_continuous(labels = scales::dollar)
 ```
 
-In this case the increasing Sharpe ratio portfolio is the best one. In particular, the portfolio is: 10% in KLAC, 20% in TXN, 30% in CLX, 40% in KR, and 0% in the rest.
+In this historical comparison, the increasing Sharpe ratio portfolio has the highest terminal investment value among the three alternatives. Its weights are 10% in KLAC, 20% in TXN, 30% in CLX, 40% in KR, and 0% in the rest.
 
-The next section deals with the actual investment problem. In which assets should we invest? How much should we invest in each asset? Those questions can be addressed by learning asset allocation or portfolio selection techniques.
+The next section turns these return, risk, beta, and Sharpe-ratio summaries into an explicit allocation problem. Portfolio allocation asks which assets enter the portfolio and how much capital each one receives.

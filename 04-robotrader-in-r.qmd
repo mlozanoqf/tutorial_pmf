@@ -2,9 +2,9 @@
 
 The previous chapter introduced the return objects used to compare assets,
 measure risk, and summarize price movements. This chapter keeps that foundation
-and adds a trading layer: we transform prices and returns into lagged indicators,
-use those indicators as predictors, and evaluate whether a simple rule would
-have worked out of sample.
+and adds a trading layer: prices and returns become lagged indicators, those
+indicators become predictors, and the resulting predictions are evaluated with
+a simple out-of-sample trading rule.
 
 Stock price movements are influenced by a large number of factors, including
 market trends, economic indicators, company-specific news, liquidity, risk
@@ -13,22 +13,23 @@ hard problem. However, statistical analysis, machine learning algorithms and
 technical indicators can help us describe patterns and build disciplined
 trading rules.
 
-The purpose is pedagogical: we use moving averages to build features, estimate
+The purpose is pedagogical: moving averages are used to build features, estimate
 a classification model, and translate the classification into a trading signal.
 The model is presented for learning and should not be read as an investment
-recommendation. It is a compact example of the full workflow:
+recommendation. It is a compact example of the full workflow. The sequence is to
 download prices, calculate returns, engineer predictors, split the data in time
 order, estimate a model, evaluate out-of-sample accuracy, and finally test a
 simple trading rule.
 
 The trading rules use the same timing discipline. Before the return for day
 $t$ is known, the model uses information available through day $t-1$ to predict
-whether day $t$ will be `Up` or `Down`. We then compare a conservative
+whether day $t$ will be `Up` or `Down`. The chapter then compares a conservative
 long/cash rule, an aggressive long/short rule, and the same long/short rule
-after trading and short-selling costs. This timing convention is essential: we
-do not use today's close to predict today's close-to-close return.
+after trading and short-selling costs. This timing convention is essential because
+today's close is excluded from the information set used to predict today's
+close-to-close return.
 
-The mathematical objects in the chapter are:
+The mathematical objects in the chapter are defined below.
 
 $$
 P_t = \text{closing price on day } t,
@@ -65,7 +66,7 @@ $$
 $$
 
 The trading rule then converts the predicted class into a position and a
-strategy return. This is the bridge we need to keep visible: prices become
+strategy return. This bridge should remain visible: prices become
 returns, returns become labels, lagged moving averages predict labels, and
 predictions become trading positions.
 
@@ -86,7 +87,7 @@ set.seed(13)
 
 ## Download the data
 
-This period includes both training and test data.
+The chosen period includes both training and test data.
 
 ```{r download-stock-data}
 ticker <- "AAPL"
@@ -96,13 +97,13 @@ end_date <- "2023-01-06"
 stock_raw <- tq_get(ticker, from = start_date, to = end_date)
 ```
 
-Take a look at the data.
+The first rows verify the downloaded structure.
 
 ```{r}
 head(stock_raw)
 ```
 
-We keep the closing price and calculate daily returns. The return is the
+The closing price is kept, and daily returns are calculated. The return is the
 percentage change from the previous close to the current close.
 
 The formula implemented in the code is
@@ -164,7 +165,7 @@ prices %>%
   head(10)
 ```
 
-A density plot:
+The density plot summarizes the distribution of daily returns.
 
 ```{r}
 #| label: fig-robotrader-density
@@ -180,7 +181,7 @@ stock data. The wider parts of the density show that a small number of days can
 produce meaningfully larger gains or losses. A directional model has to work in
 this noisy environment, where many observations are small and hard to classify.
 
-Compared with a normal distribution:
+The empirical density can be compared with a simulated normal distribution.
 
 ```{r}
 #| label: fig-robotrader-density-normal
@@ -203,7 +204,7 @@ benchmark. This visual comparison is a reminder that daily returns can have
 asymmetry and tail behavior that a simple normal approximation may smooth away.
 For trading, those tail days can dominate cumulative performance.
 
-Positive and negative daily returns in the training and test periods.
+The same returns can be separated into positive and negative days across the training and test periods.
 
 ```{r}
 #| label: fig-robotrader-return-bars
@@ -222,9 +223,9 @@ frequently. The test period includes several negative stretches, which creates
 an environment where avoiding exposure, or taking short exposure, can matter
 more than slightly improving average classification accuracy.
 
-We isolate the test set daily returns using the visual split and calculate
-cumulative returns assuming that we invest one dollar and reinvest gains and
-losses.
+The test set daily returns are isolated using the visual split, and cumulative
+returns are calculated under a one-dollar initial investment with reinvested
+gains and losses.
 
 For buy-and-hold, the value of one dollar after day $t$ is
 
@@ -243,7 +244,7 @@ test_returns_visual <- prices %>%
 head(test_returns_visual)
 ```
 
-Graphically:
+The benchmark can be plotted directly.
 
 ```{r}
 #| label: fig-robotrader-buy-hold
@@ -264,8 +265,8 @@ decline or benefit from correctly identified down days.
 ## Simple moving averages
 
 As technical analysis suggests, simple moving averages can be used as a tool to
-summarize recent price behavior. A moving average answers a practical question:
-where is the current price relative to its recent history?
+summarize recent price behavior. A moving average places the current price
+relative to its recent history.
 
 For a window length $n$, the simple moving average is
 
@@ -290,7 +291,7 @@ sma <- function(x, n) {
 }
 ```
 
-Calculate 5, 10, 15 and 20 day moving averages.
+The code calculates 5, 10, 15 and 20 day moving averages.
 
 ```{r moving-averages}
 trading_tbl <- prices %>%
@@ -312,7 +313,7 @@ trading_tbl %>%
   head(10)
 ```
 
-The 5 and 20 day simple moving averages and the closing daily stock price:
+The plot compares the 5-day and 20-day simple moving averages with the closing daily stock price.
 
 ```{r}
 #| label: fig-robotrader-sma
@@ -335,7 +336,7 @@ moving average. When the short and long averages separate or cross, they
 summarize recent momentum changes. These signals are useful as inputs, but they
 remain noisy because price reversals can happen quickly.
 
-A zoom view:
+The final observations make the timing difference clearer.
 
 ```{r}
 #| label: fig-robotrader-sma-zoom
@@ -359,8 +360,8 @@ before the return being evaluated.
 
 ## Preliminaries to classify returns
 
-We are interested in anticipating positive and negative daily stock price
-movements. The response variable is therefore a class:
+The modeling objective is to anticipate positive and negative daily stock price
+movements. The response variable has two classes.
 
 - `Up` means the realized daily return was positive;
 - `Down` means the realized daily return was zero or negative.
@@ -368,7 +369,7 @@ movements. The response variable is therefore a class:
 The lagged moving averages are the predictor variables $X$, and the current
 return direction is the target variable $y$.
 
-This makes the classification table:
+This gives the following classification table.
 
 $$
 \left(x_{t-1}, d_t\right)
@@ -384,8 +385,7 @@ $$
 
 The timing is now explicit. The features in row $t$ are moving averages known
 at the end of day $t-1$, while the label is the return direction realized over
-day $t$. This means we are using yesterday's information to make today's
-trading decision, which is exactly the intended discipline.
+day $t$. The trading decision is therefore based on yesterday's information.
 
 ```{r classification-data}
 model_tbl <- trading_tbl %>%
@@ -402,11 +402,11 @@ model_tbl <- trading_tbl %>%
 head(model_tbl)
 ```
 
-Both training and test sets are split in time order. We do not shuffle the data
+Both training and test sets are split in time order. The data are not shuffled
 because that would mix past and future observations.
 
 The training set is the first 80% of the observations and the test set is the
-remaining 20%:
+remaining 20%.
 
 $$
 \mathcal{T}_{train} = \{1,\ldots,T_0\},
@@ -436,12 +436,12 @@ tibble(
 
 ## Set up the model
 
-We estimate a random forest. A random forest is an ensemble of decision trees.
+A random forest is estimated. A random forest is an ensemble of decision trees.
 Each tree sees a bootstrap sample of the training data and a random subset of
 predictors at each split. The final class is chosen by majority vote.
 
-If the forest has $B$ trees, each tree votes for either `Up` or `Down`. We
-count the votes for both classes:
+If the forest has $B$ trees, each tree votes for either `Up` or `Down`. The
+vote counts for both classes are defined below.
 
 $$
 V_{\text{Up}} = \text{number of trees voting Up},
@@ -473,9 +473,9 @@ fit_rf
 ## Evaluate the model
 
 The following helper function calculates classification accuracy and a
-confusion matrix. We predict from the vote counts and apply the tie rule
-ourselves. If the vote is exactly tied, the helper returns `Down`. That
-explicit tie rule keeps the backtest reproducible.
+confusion matrix. Predictions are created from the vote counts with an explicit
+tie rule. If the vote is exactly tied, the helper returns `Down`. That rule
+keeps the backtest reproducible.
 
 The implemented rule is therefore
 
@@ -487,7 +487,7 @@ $$
 \end{cases}
 $$
 
-Classification accuracy is the proportion of days classified correctly:
+Classification accuracy is the proportion of days classified correctly.
 
 $$
 \text{Accuracy}
@@ -509,7 +509,7 @@ accuracy_value <- function(actual, predicted) {
 }
 ```
 
-Training performance:
+Training performance is evaluated first.
 
 ```{r train-classification-performance}
 pred_train <- predict_direction(fit_rf, train_tbl)
@@ -526,7 +526,7 @@ as.data.frame.matrix(train_confusion) %>%
 accuracy_value(train_tbl$direction, pred_train)
 ```
 
-Test performance:
+Test performance is evaluated next.
 
 ```{r test-classification-performance}
 pred_test <- predict_direction(fit_rf, test_tbl)
@@ -566,7 +566,7 @@ tibble(
 
 ## Trading rules and backtest
 
-Now we translate the predicted class into three trading rules. Since the
+The predicted class is translated into three trading rules. Since the
 prediction uses lagged moving averages, the position for day $t$ is based on
 information available before $r_t$ is realized.
 
@@ -584,9 +584,9 @@ $$
 R_t^{LC} = q_t r_t.
 $$
 
-This rule answers a conservative allocation question: *should we be exposed to
-the stock today, or should we sit in cash?* It never shorts the stock. When the
-model predicts `Down`, the strategy avoids exposure to the decline.
+This rule answers a conservative allocation question about market exposure. It
+never shorts the stock. When the model predicts `Down`, the strategy avoids
+exposure to the decline.
 
 The aggressive long/short rule is
 
@@ -600,30 +600,29 @@ p_t =
 \end{cases}
 $$
 
-This rule answers a stronger directional question: *should we be long or short
-today?* It is always exposed to the stock. A correct `Down` prediction can make
+This rule answers a stronger directional question about long versus short
+exposure. It is always exposed to the stock. A correct `Down` prediction can make
 money because the short position gains when the stock return is negative. The
 trade-off is that a wrong `Down` prediction loses money when the stock rises,
 and short positions introduce operational constraints that cash positions do
 not have.
 
-The third rule applies trading and short-selling costs to the long/short rule:
+The third rule applies trading and short-selling costs to the long/short rule.
 
 $$
 R_t^{LS,net}
 =
 p_t r_t
 - c_{trade}|p_t-p_{t-1}|
-- c_{short}\text{ if }p_t=-1.
+- c_{short}\mathbf{1}(p_t=-1).
 $$
 
 So the short cost is charged only on days when the strategy is short. If
 $p_t=1$, that last cost term is zero.
 
-This rule answers the practical question: *does the long/short result survive
-basic trading frictions?* It is the same signal as the gross long/short rule,
-but the return is reduced when the strategy changes position and when it holds
-a short position.
+This rule tests whether the long/short result survives basic trading frictions.
+It uses the same signal as the gross long/short rule, with returns reduced when
+the strategy changes position and when it holds a short position.
 
 At the beginning of the test period, the strategy starts from cash. Therefore,
 entering the first long or short position counts as a position change and pays
@@ -661,7 +660,7 @@ kable(rule_map,
 
 Here, $c_{trade}$ captures trading frictions such as commissions, bid-ask
 spread and slippage, while $c_{short}$ captures the daily cost of borrowing
-shares for short exposure. We use a base scenario of 5 basis points per unit of
+shares for short exposure. The base scenario uses 5 basis points per unit of
 position change and 1 basis point per short day, approximately 2.52% annualized
 over 252 trading days. These are pedagogical assumptions, not broker-specific
 quotes.
@@ -671,7 +670,7 @@ specific broker. They are a transparent backtest haircut. The commission part
 can be low for U.S. stocks at some brokers; for example, Interactive Brokers
 lists zero-commission U.S. stocks and ETFs for IBKR Lite and low per-share
 commissions for IBKR Pro ([Interactive Brokers commissions](https://www.interactivebrokers.com/commissions)).
-But explicit commissions are not the whole trading cost. A backtest also needs
+Explicit commissions are only one part of trading cost. A backtest also needs
 to reserve room for bid-ask spread and slippage. For the short leg, Interactive
 Brokers documents that short-sale cost depends on the borrow fee, collateral
 value and daily accrual ([Interactive Brokers short sale cost](https://brokerage.ibkr.com/en/pricing/short-sale-cost.php)).
@@ -766,7 +765,7 @@ test_strategy %>%
 ```
 
 This is the final return comparison over the test period. For a strategy return
-series $r^s_1,\ldots,r^s_T$, the final value and total return are:
+series $r^s_1,\ldots,r^s_T$, the final value and total return are defined below.
 
 $$
 F_T=\prod_{t=1}^{T}(1+r^s_t),
@@ -802,9 +801,9 @@ strategy_summary %>%
 ```
 
 The net result uses the base cost assumptions above. To check whether that
-conclusion depends too much on one cost number, we also evaluate three cost
-scenarios. The signal and the positions are unchanged; only the cost haircut
-changes. The net daily return is:
+conclusion depends too much on one cost number, three cost scenarios are
+evaluated. The signal and the positions are unchanged; only the cost haircut
+changes. The net daily return is defined below.
 
 $$
 r^{net}_t
@@ -855,23 +854,23 @@ cost_sensitivity %>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
-The sensitivity table is not a proof of robustness. It is a first check that
-the long/short result is not created entirely by ignoring basic costs. A more
-serious trading study would test many assets, many periods and broker-specific
-cost assumptions.
+The sensitivity table is a first robustness check. It asks whether the
+long/short result remains visible after basic costs are included. A more serious
+trading study would test many assets, many periods and broker-specific cost
+assumptions.
 
 The long/cash rule is the most conservative reading of the classifier because a
 `Down` prediction simply removes market exposure. The long/short rule is more
 powerful in a falling market because a `Down` prediction becomes a short
-position. That is why its gross cumulative return is much higher in this test
+position. This explains why its gross cumulative return is much higher in this test
 window: Apple declined substantially, and the model predicted `Down` on 44 of
 the 97 test days. On those days, long/cash has zero exposure, while long/short
 tries to earn the opposite of the stock return. The net long/short rule keeps
 the same directional exposure but asks whether the advantage is large enough to
 remain after trading frictions and short-borrow costs.
 
-The comparison should not be read as three unrelated models. The classifier is
-the same in all three robo trader rules. Only the portfolio mapping changes:
+The comparison uses the same classifier in all three robo trader rules. Only the
+portfolio mapping changes.
 
 $$
 \hat{g}(x_{t-1})
@@ -881,10 +880,9 @@ $$
 \text{strategy return}.
 $$
 
-That is useful pedagogically because it separates the machine-learning question
-from the trading-design question. First, does the classifier produce useful
-directional information? Second, how should a trading rule convert that
-information into exposure?
+That is useful pedagogically because it separates the machine-learning task
+from the trading-design task. The classifier produces directional information,
+and the trading rule converts that information into exposure.
 
 The following table summarizes how often the strategy is invested and how often
 it moves between positions.
@@ -917,8 +915,8 @@ are charged when the desired position changes. A move from long to short is a
 two-unit change in exposure, from $+1$ to $-1$, so it is more expensive than
 moving from cash to long.
 
-Graphically, we compare the robo trader with buy-and-hold over the test
-period.
+The cumulative comparison places the robo trader rules against buy-and-hold over
+the test period.
 
 ```{r}
 #| label: fig-robotrader-strategy
@@ -959,14 +957,13 @@ cost.
 The conclusion is deliberately narrow. The chapter shows how to translate a
 classification model into a trading rule and how to compute the resulting
 cumulative return under a clear timing convention. The net long/short rule also
-shows how sensitive the result is to explicit trading frictions. This still
-does not establish a profitable trading strategy. To make that stronger claim,
-the evaluation would also need broader cost sensitivity, position limits, risk
-measures, drawdowns, alternative train/test splits and live out-of-sample
-monitoring.
+shows how sensitive the result is to explicit trading frictions. Establishing a
+profitable trading strategy would require broader cost sensitivity, position
+limits, risk measures, drawdowns, alternative train/test splits and live
+out-of-sample monitoring.
 
 The next chapter changes the question from short-run direction to systematic
-return exposure. Instead of asking whether a rule predicts tomorrow's up or
-down movement, we ask how much of an asset's return can be associated with
-market movements and other risk factors. That shift takes us from trading
-signals to asset pricing.
+return exposure. After asking whether a rule predicts tomorrow's up or down
+movement, the next question asks how much of an asset's return can be associated
+with market movements and other risk factors. That shift takes the book from
+trading signals to return co-movement and beta.

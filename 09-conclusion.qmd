@@ -3,32 +3,35 @@
 Finance covers much more than making money. It studies how to find and use
 resources, how to assign them to projects, and how to evaluate uncertain
 outcomes. This book followed that idea through a reproducible R workflow:
-financial data, prices and returns, trading rules, asset pricing, asset
-allocation, Value at Risk, and blockchain as a focused technical application.
+financial data, prices and returns, the robotrader trading example, return
+co-movement and beta, portfolio allocation, Value at Risk, and blockchain as a
+focused technical application.
 
 The central thread is that every financial object becomes clearer when the
-concept, the formula, the data, and the code are kept together. Prices become
-returns. Returns become distributions, regressions, trading signals, portfolio
-weights, and loss scenarios. Portfolio allocation helps decide how capital can
-be distributed across assets. Value at Risk translates those portfolio choices
-into a statement about potential losses under explicit assumptions. Blockchain
-then extends the computational toolkit toward distributed records,
-cryptographic validation, and transaction design.
+concept, the formula, the data, and the code are kept together. Financial data
+provide the evidence base. Prices become returns, and returns become
+distributions, regressions, trading signals, portfolio weights, and loss
+scenarios. The robotrader example tests how indicators can become trading
+signals. Return co-movement and beta turn market exposure into estimated
+sensitivities. Portfolio allocation turns assets into capital weights. Value at
+Risk translates those portfolio choices into a statement about potential losses under explicit
+assumptions. As an extension, blockchain applies the same modeling habit to
+distributed records, cryptographic validation, and transaction design.
 
 The variety of topics is deliberate. The book treats financial modeling as a
 practice that moves across data sources, market instruments, statistical
 summaries, trading rules, allocation methods, risk measures, and computational
-infrastructure. What holds the sequence together is the repeated discipline of
-asking a financial question, defining the mathematical object, implementing the
-calculation in R, and reading the result carefully.
+infrastructure. The sequence is held together by a repeated discipline of
+stating a financial question, defining the mathematical object, implementing
+the calculation in R, and reading the result carefully.
 
-The examples in the book are intentionally compact. They are designed to show
-how financial reasoning can be made reproducible and auditable. In practice,
-professional decisions require better data governance, broader validation,
-stress testing, economic interpretation, and ethical judgment. R helps organize
-that work because scripts, equations, tables, and figures can be reviewed,
-rerun, and improved as assumptions change.
+The examples in the book are intentionally compact. They are starting points
+for reproducible financial reasoning. Professional decisions require stronger
+data governance, broader validation, stress testing, economic interpretation,
+implementation constraints, and ethical judgment. R helps organize that work
+because scripts, equations, tables, and figures can be reviewed, rerun, and
+improved as assumptions change.
 
-Good financial modeling is therefore a disciplined way to connect uncertainty
-with decisions. The goal is to make better, more transparent choices about
+Good financial modeling is a disciplined way to connect uncertainty with
+decisions. The goal is to make better, more transparent choices about
 investment, financing, risk, and innovation.
